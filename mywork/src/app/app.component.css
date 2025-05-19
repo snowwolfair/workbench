@@ -3,16 +3,21 @@
     background-color: aquamarine;
 }
 
-.count1{
+.shuxing1{
     float: left;
-    width: 50%;
+    width: 12em;
     height: fit-content;
     word-wrap: break-word;
+    padding: 1em;
+    text-align: center;
 }
 
-.count2{
+.shuxing2{
     float: right;
     position: relative;
     width: 50%;
     height: fit-content;
+    padding: 1em;
+    text-align: center;
 }
+

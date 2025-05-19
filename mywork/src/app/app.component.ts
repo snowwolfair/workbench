@@ -1,6 +1,7 @@
-import { Component, signal, computed} from '@angular/core';
+import { Component, signal, computed, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {} from '@angular/core';
+import { CanvasDemoComponent } from './canvas-demo/canvas-demo.component';
 
 const firstName = signal('Morgan');
 console.log(firstName());
@@ -13,6 +14,7 @@ console.log(firstName());
   selector: 'app-user',
   template: `<div class = "count1">{{count()}}</div>
             <div class = "count2">{{tencount()}}</div>
+            <button [class]="buttonClasses">hello</button>
             <button (click)="increment()">up</button>`,
   styles: `.count1{
       float: left;
@@ -32,6 +34,11 @@ export class UserComponent {
   increment(){
     this.count.set(this.count() + 1);
   }
+
+  buttonClasses = {
+    highlighted: true,
+    embiggened: false,
+  };
   
 }
 
@@ -39,10 +46,12 @@ export class UserComponent {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  imports: [UserComponent,RouterOutlet],
+  imports: [UserComponent, RouterOutlet, CanvasDemoComponent],
 })
 export class AppComponent {
   title = 'mywork';
   city = 'San franceseco';
   isLoggin = 1 > 2;
 }
+
+
