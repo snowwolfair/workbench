@@ -6,18 +6,18 @@ import { RouterOutlet } from '@angular/router';
   template: '<h1>{{user}}</h1>', 
 })
 export class UserComponent {
-  user = '1'+1;
+  user = 'hdsf';
+  
 }
 
 @Component({
   selector: 'app-root',
-  template: `
-    <section>
-      <app-user />  
-    </section>`,
-  imports: [UserComponent],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  imports: [UserComponent,RouterOutlet],
 })
 export class AppComponent {
   title = 'mywork';
   city = 'San franceseco';
+  isLoggin = true;
 }
