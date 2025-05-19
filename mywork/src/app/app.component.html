@@ -1,14 +1,11 @@
 <section>
-    <h1>
+    <div class = title>
         @if(isLoggin){
-            <p>hell</p>
+            <h1>hell</h1>
         }
-    </h1>
-    <h2>
-
-    </h2>
-    <h3>
-
-    </h3>
-    <app-user />
+        @else {
+            <h1>no hell</h1>
+        }
+        <app-user />
+    </div>
 </section>

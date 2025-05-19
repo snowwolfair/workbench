@@ -1,0 +1,18 @@
+.title{
+    font-size: 3em;
+    background-color: aquamarine;
+}
+
+.count1{
+    float: left;
+    width: 50%;
+    height: fit-content;
+    word-wrap: break-word;
+}
+
+.count2{
+    float: right;
+    position: relative;
+    width: 50%;
+    height: fit-content;
+}

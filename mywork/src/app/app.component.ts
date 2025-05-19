@@ -1,12 +1,37 @@
-import { Component } from '@angular/core';
+import { Component, signal, computed} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import {} from '@angular/core';
+
+const firstName = signal('Morgan');
+console.log(firstName());
+firstName.set('Jaime');
+console.log(firstName());
+firstName.update(name => name.toUpperCase());
+console.log(firstName());
 
 @Component({
   selector: 'app-user',
-  template: '<h1>{{user}}</h1>', 
+  template: `<div class = "count1">{{count()}}</div>
+            <div class = "count2">{{tencount()}}</div>
+            <button (click)="increment()">up</button>`,
+  styles: `.count1{
+      float: left;
+      width: 50%;
+    }
+          .count2{
+      float: right;
+      width: 50%;
+    }` 
 })
 export class UserComponent {
-  user = 'hdsf';
+  count = signal(0);
+  tencount = (()=>{
+    return this.count() * 10;
+  })
+
+  increment(){
+    this.count.set(this.count() + 1);
+  }
   
 }
 
@@ -19,5 +44,5 @@ export class UserComponent {
 export class AppComponent {
   title = 'mywork';
   city = 'San franceseco';
-  isLoggin = true;
+  isLoggin = 1 > 2;
 }
