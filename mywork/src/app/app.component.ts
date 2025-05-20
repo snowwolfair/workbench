@@ -1,14 +1,7 @@
 import { Component, signal, computed, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {} from '@angular/core';
+import { RingChartComponent } from './ring-chart/ring-chart.component';
 import { CanvasDemoComponent } from './canvas-demo/canvas-demo.component';
-
-const firstName = signal('Morgan');
-console.log(firstName());
-firstName.set('Jaime');
-console.log(firstName());
-firstName.update(name => name.toUpperCase());
-console.log(firstName());
 
 @Component({
   selector: 'app-user',
@@ -18,10 +11,12 @@ console.log(firstName());
             <button (click)="increment()">up</button>`,
   styles: `.count1{
       float: left;
+      text-align: center;
       width: 50%;
     }
           .count2{
       float: right;
+      text-align: center;
       width: 50%;
     }` 
 })
@@ -37,7 +32,6 @@ export class UserComponent {
 
   buttonClasses = {
     highlighted: true,
-    embiggened: false,
   };
   
 }
@@ -46,12 +40,21 @@ export class UserComponent {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  imports: [UserComponent, RouterOutlet, CanvasDemoComponent],
+  imports: [UserComponent, RouterOutlet, CanvasDemoComponent, RingChartComponent],
 })
 export class AppComponent {
   title = 'mywork';
   city = 'San franceseco';
-  isLoggin = 1 > 2;
+  isLoggin = 3 > 2;
+
+  shuxingcom = {
+    shuxing2: true,
+    highlighted: this.isLoggin
+  }
+
+  colorful = {
+    'background-color':'yellow',
+  }
 }
 
 

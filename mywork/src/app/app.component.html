@@ -8,7 +8,15 @@
         }
         <app-user />
     </div>
-    <div class = "shuxing1">{{title}}</div>
-    <div class = "shuxing2">{{city}}</div>
-    <app-canvas-demo></app-canvas-demo>
+    <div>
+        <div class = "shuxing1">{{title}}</div>
+        <div [class] = "shuxingcom" [style.background-color]="colorful">{{city}}</div>
+        <div>
+            <app-canvas-demo>hello</app-canvas-demo>
+        </div>
+        <div>
+            <app-ring-chart [data]="[10, 20, 30, 15, 5, 8, 12, 7, 9, 6]"></app-ring-chart>
+        </div>
+    </div>
+
 </section>
