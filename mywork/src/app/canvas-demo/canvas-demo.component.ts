@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, Injectable} from '@angular/core';
 
 @Component({
   selector: 'app-canvas-demo',
@@ -25,3 +25,11 @@ export class CanvasDemoComponent implements AfterViewInit {
     }
   }
 }
+
+@Injectable({providedIn:'root'})
+export class Calculator{
+  adds(x: number,y: number, z:number){
+    return x + y + z;
+  }
+}
+

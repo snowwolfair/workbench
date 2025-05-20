@@ -1,7 +1,7 @@
-import { Component, signal, computed, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import { Component, signal, computed, OnInit, ViewChild, ViewContainerRef, inject} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { RingChartComponent } from './ring-chart/ring-chart.component';
-import { CanvasDemoComponent } from './canvas-demo/canvas-demo.component';
+import { CanvasDemoComponent, Calculator } from './canvas-demo/canvas-demo.component';
 
 @Component({
   selector: 'app-user',
@@ -45,7 +45,17 @@ export class UserComponent {
 export class AppComponent {
   title = 'mywork';
   city = 'San franceseco';
-  isLoggin = 3 > 2;
+  private calculator = inject(Calculator);
+
+
+  isLoggin = this.calculator.adds(1, 1, 1) > 2;
+
+
+  datapack = [
+    this.calculator.adds(1, 1, 1),
+    this.calculator.adds(3, 9, 8),
+    this.calculator.adds(0, 0, 1)
+  ]
 
   shuxingcom = {
     shuxing2: true,
@@ -54,6 +64,10 @@ export class AppComponent {
 
   colorful = {
     'background-color':'yellow',
+  }
+
+  seeit(){
+    this.title = 'new work'
   }
 }
 

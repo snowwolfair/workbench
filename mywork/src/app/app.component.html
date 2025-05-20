@@ -9,13 +9,16 @@
         <app-user />
     </div>
     <div>
-        <div class = "shuxing1">{{title}}</div>
+        <div class = "shuxing1" (blur)="seeit()">{{title}}</div>
         <div [class] = "shuxingcom" [style.background-color]="colorful">{{city}}</div>
         <div>
             <app-canvas-demo>hello</app-canvas-demo>
         </div>
         <div>
-            <app-ring-chart [data]="[10, 20, 30, 15, 5, 8, 12, 7, 9, 6]"></app-ring-chart>
+            <app-ring-chart [data]="datapack"></app-ring-chart>
+        </div>
+        <div>
+            {{city}}
         </div>
     </div>
 
