@@ -46,6 +46,7 @@ export class UserComponent {
 export class AppComponent {
   title = 'mywork';
   city = 'San franceseco';
+  color = '';
 
 
   @HostBinding('style.color') bgcolor = 'black';
@@ -82,10 +83,6 @@ export class AppComponent {
 
   colorful = {
     'background-color':'yellow',
-  }
-
-  seeit(){
-    this.title = 'new work'
   }
 }
 

@@ -9,7 +9,7 @@
         <app-user />
     </div>
     <div>
-        <div class = "shuxing1" (blur)="seeit()" >{{title}}</div>
+        <div class = "shuxing1">{{title}}</div>
         <div [class] = "shuxingcom" [style.background-color]="colorful">{{city}}</div>
         <div>
             <app-canvas-demo>hello</app-canvas-demo>
@@ -20,9 +20,15 @@
         <div (click)="toColor()">
             {{city}}
         </div>
-        <div appHighlight>
+        <div [appHighlight]="color" defaultColor="violet">
             {{title}}
         </div>
+        <div>
+            <input type="radio" name="colors" (click)="color='lightgreen'">Green
+            <input type="radio" name="colors" (click)="color='yellow'">Yellow
+            <input type="radio" name="colors" (click)="color='cyan'">Cyan
+        </div>
+
     </div>
 
 </section>
