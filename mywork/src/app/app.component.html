@@ -9,7 +9,7 @@
         <app-user />
     </div>
     <div>
-        <div class = "shuxing1" (blur)="seeit()">{{title}}</div>
+        <div class = "shuxing1" (blur)="seeit()" >{{title}}</div>
         <div [class] = "shuxingcom" [style.background-color]="colorful">{{city}}</div>
         <div>
             <app-canvas-demo>hello</app-canvas-demo>
@@ -17,8 +17,11 @@
         <div>
             <app-ring-chart [data]="datapack"></app-ring-chart>
         </div>
-        <div>
+        <div (click)="toColor()">
             {{city}}
+        </div>
+        <div appHighlight>
+            {{title}}
         </div>
     </div>
 

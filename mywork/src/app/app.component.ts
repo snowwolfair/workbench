@@ -1,7 +1,8 @@
-import { Component, signal, computed, OnInit, ViewChild, ViewContainerRef, inject} from '@angular/core';
+import { Component, signal, computed, OnInit, ViewChild, ViewContainerRef, inject, HostListener, HostBinding} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { RingChartComponent } from './ring-chart/ring-chart.component';
 import { CanvasDemoComponent, Calculator } from './canvas-demo/canvas-demo.component';
+import { HighlightDirective } from './highlight.directive'
 
 @Component({
   selector: 'app-user',
@@ -40,13 +41,30 @@ export class UserComponent {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  imports: [UserComponent, RouterOutlet, CanvasDemoComponent, RingChartComponent],
+  imports: [UserComponent, RouterOutlet, CanvasDemoComponent, RingChartComponent, HighlightDirective],
 })
 export class AppComponent {
   title = 'mywork';
   city = 'San franceseco';
-  private calculator = inject(Calculator);
 
+
+  @HostBinding('style.color') bgcolor = 'black';
+  
+  toColor(){
+    this.bgcolor = this.bgcolor === 'black' ? "pink" : 'black';
+  }
+
+  @HostListener('click', ['$event'])
+  changeColor(event: Event){
+
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(event: Event) {
+    console.log('窗口滚动了', window.scrollY);
+  }
+
+  private calculator = inject(Calculator);
 
   isLoggin = this.calculator.adds(1, 1, 1) > 2;
 

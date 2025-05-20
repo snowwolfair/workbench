@@ -34,7 +34,7 @@ export class RingChartComponent implements AfterViewInit, OnChanges {
   targetRadii: number[] = [];
   animationFrameId: number | null = null;
   defaultRingWidth = 18;
-  hoverRingWidth = 30;
+  hoverRingWidth = 22;
   currentWidths: number[] = [];
   targetWidths: number[] = [];
 
