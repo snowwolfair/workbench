@@ -1,0 +1,34 @@
+<div class="map-container">
+  <!-- 左侧3D组件列表 -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3>3D组件列表</h3>
+      <p class="description">记录用户上传的.nbt文件</p>
+    </div>
+    
+    <div class="component-list">
+      <div class="component-item" *ngFor="let component of components">
+        <div class="component-icon">📦</div>
+        <div class="component-info">
+          <div class="component-name">{{component.name}}</div>
+          <div class="component-date">{{component.date}}</div>
+        </div>
+      </div>
+      <div class="more-items">.........</div>
+    </div>
+    
+    <div class="upload-section">
+      <button class="upload-btn">上传</button>
+    </div>
+  </div>
+  
+  <!-- 右侧地图展示区域 -->
+  <div class="map-content">
+    <div class="map-placeholder">
+      <div class="map-info">
+        <h2>我的世界地图展示页面</h2>
+        <p>(从BlueMap导入)</p>
+      </div>
+    </div>
+  </div>
+</div>

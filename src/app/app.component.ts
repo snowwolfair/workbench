@@ -1,8 +1,9 @@
-import { Component, signal, computed, OnInit, ViewChild, ViewContainerRef, inject, HostListener, HostBinding} from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, signal, computed, OnInit, ViewChild, ViewContainerRef, inject, HostListener, HostBinding, output} from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { RingChartComponent } from './ring-chart/ring-chart.component';
 import { CanvasDemoComponent, Calculator } from './canvas-demo/canvas-demo.component';
 import { HighlightDirective } from './highlight.directive'
+import { SelectDirective } from './select.directive'
 
 @Component({
   selector: 'app-user',
@@ -41,7 +42,7 @@ export class UserComponent {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  imports: [UserComponent, RouterOutlet, CanvasDemoComponent, RingChartComponent, HighlightDirective],
+  imports: [UserComponent, RouterOutlet, RouterLink, RouterLinkActive, CanvasDemoComponent, RingChartComponent, HighlightDirective],
 })
 export class AppComponent {
   title = 'mywork';
