@@ -10,6 +10,6 @@
 
 #### 服务器地图预览：
 
-![bluemap-screenshot](C:\Users\16229\Downloads\bluemap-screenshot.png)
+![bluemap-screenshot](./img/bluemap-screenshot.png)
 
 准备更改这个区域为现代都市区域
