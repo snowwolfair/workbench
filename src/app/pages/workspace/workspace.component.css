@@ -1,0 +1,32 @@
+.workspace-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+app-top-nav-bar {
+  flex: 0 0 auto;
+}
+
+.workspace-main {
+  display: flex;
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+app-litematica {
+  width: 25%;
+  min-width: 260px;
+  max-width: 350px;
+  background: #fff;
+  border-right: 1px solid #eee;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.03);
+  z-index: 1;
+}
+
+app-map-view {
+  flex: 1 1 auto;
+  background: #f5f5f5;
+  min-width: 0;
+  overflow: auto;
+}

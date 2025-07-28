@@ -1,18 +1,4 @@
 <div class="map-container">
-  <!-- 左侧组件列表 -->
-  <app-component-list 
-    (componentSelected)="onComponentSelected($event)">
-  </app-component-list>
-  
-  <!-- 中间地图区域 -->
-  <app-map></app-map>
-  
-  <!-- 右侧详情面板 -->
-  <app-component-detail 
-    [component]="selectedComponent"
-    (closeDetailEvent)="onCloseDetail()"
-    (viewOnMapEvent)="onViewOnMap($event)"
-    (downloadEvent)="onDownload($event)"
-    (deleteEvent)="onDelete($event)">
-  </app-component-detail>
+  <!-- 地图区域 -->
+  <div class="map-placeholder">这里是地图区域</div>
 </div>
