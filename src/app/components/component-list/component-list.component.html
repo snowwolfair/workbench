@@ -1,0 +1,24 @@
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h3>3D组件列表</h3>
+    <p class="description">记录用户上传的.nbt文件</p>
+  </div>
+  
+  <div class="component-list">
+    <div class="component-item" 
+         *ngFor="let component of components" 
+         (click)="selectComponent(component)"
+         [class.selected]="selectedComponent?.id === component.id">
+      <div class="component-icon">📦</div>
+      <div class="component-info">
+        <div class="component-name">{{component.name}}</div>
+        <div class="component-date">{{component.date}}</div>
+      </div>
+    </div>
+    <div class="more-items">.........</div>
+  </div>
+  
+  <div class="upload-section">
+    <button class="upload-btn" (click)="uploadComponent()">上传</button>
+  </div>
+</div>

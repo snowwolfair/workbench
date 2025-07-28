@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RingChartComponent } from './ring-chart.component';
+import { ComponentListComponent } from './component-list.component';
 
-describe('RingChartComponent', () => {
-  let component: RingChartComponent;
-  let fixture: ComponentFixture<RingChartComponent>;
+describe('ComponentListComponent', () => {
+  let component: ComponentListComponent;
+  let fixture: ComponentFixture<ComponentListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RingChartComponent]
+      imports: [ComponentListComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RingChartComponent);
+    fixture = TestBed.createComponent(ComponentListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

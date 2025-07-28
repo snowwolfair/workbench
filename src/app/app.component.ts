@@ -1,9 +1,6 @@
 import { Component, signal, computed, OnInit, ViewChild, ViewContainerRef, inject, HostListener, HostBinding, output} from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { RingChartComponent } from './ring-chart/ring-chart.component';
-import { CanvasDemoComponent, Calculator } from './canvas-demo/canvas-demo.component';
-import { HighlightDirective } from './highlight.directive'
-import { SelectDirective } from './select.directive'
+
 
 @Component({
   selector: 'app-user',
@@ -42,7 +39,7 @@ export class UserComponent {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  imports: [UserComponent, RouterOutlet, RouterLink, RouterLinkActive, CanvasDemoComponent, RingChartComponent, HighlightDirective],
+  imports: [UserComponent, RouterOutlet, RouterLink, RouterLinkActive],
 })
 export class AppComponent {
   title = 'mywork';
@@ -64,22 +61,6 @@ export class AppComponent {
   @HostListener('window:scroll', ['$event'])
   onWindowScroll(event: Event) {
     console.log('窗口滚动了', window.scrollY);
-  }
-
-  private calculator = inject(Calculator);
-
-  isLoggin = this.calculator.adds(1, 1, 1) > 2;
-
-
-  datapack = [
-    this.calculator.adds(1, 1, 1),
-    this.calculator.adds(3, 9, 8),
-    this.calculator.adds(0, 0, 1)
-  ]
-
-  shuxingcom = {
-    shuxing2: true,
-    highlighted: this.isLoggin
   }
 
   colorful = {
