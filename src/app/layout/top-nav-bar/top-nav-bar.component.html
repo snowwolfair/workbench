@@ -1,9 +1,17 @@
-<nav>
-  <ul>
-    <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
-    <li><a routerLink="/about" routerLinkActive="active">关于</a></li>
-    <li><a routerLink="/users" routerLinkActive="active">用户列表</a></li>
-    <li><a routerLink="/map" routerLinkActive="active">地图</a></li>
-    <li><a routerLink="/workspace" routerLinkActive="active">工作区</a></li>
-  </ul>
-</nav>
+<ul nz-menu mode="horizontal" nzTheme="light">
+  <li nz-menu-item nzMatchRouter>
+    <a routerLink="/dashboard">Dashboard</a>
+  </li>
+  <li nz-menu-item nzMatchRouter>
+    <a routerLink="/about">关于</a>
+  </li>
+  <li nz-menu-item nzMatchRouter>
+    <a routerLink="/users">用户列表</a>
+  </li>
+  <li nz-menu-item nzMatchRouter>
+    <a routerLink="/map">地图</a>
+  </li>
+  <li nz-menu-item nzMatchRouter>
+    <a routerLink="/workspace">工作区</a>
+  </li>
+</ul>

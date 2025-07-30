@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { TopNavBarComponent } from './layout/top-nav-bar/top-nav-bar.component';
 
 @Component({
@@ -10,8 +10,7 @@ import { TopNavBarComponent } from './layout/top-nav-bar/top-nav-bar.component';
       <router-outlet></router-outlet>
     </main>
   `,
-  styleUrls: ['./app.component.css'],
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, TopNavBarComponent],
+  imports: [RouterOutlet, TopNavBarComponent],
 })
 export class AppComponent {}
 

@@ -8,6 +8,7 @@ import zh from '@angular/common/locales/zh';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
+import { ALAIN_CONFIG } from '@delon/util';
 
 registerLocaleData(zh);
 
@@ -19,6 +20,18 @@ export const appConfig: ApplicationConfig = {
     provideNzI18n(zh_CN),
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
-    provideHttpClient()
+    provideHttpClient(),
+    {
+      provide: ALAIN_CONFIG,
+      useValue: {
+        page: {
+          toTop: true,
+          toTopOffset: 100
+        },
+        theme: {
+          primary: '#1890ff'
+        }
+      }
+    }
   ]
 };
