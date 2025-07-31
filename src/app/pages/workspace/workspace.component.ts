@@ -5,10 +5,9 @@ import { LitematicaComponent } from '../../pages/litematica/litematica.component
 import { MapViewComponent } from '../../pages/map-view/map-view.component';
 
 @Component({
-  selector: 'app-workspace',
-  standalone: true,
-  imports: [CommonModule, TopNavBarComponent, LitematicaComponent, MapViewComponent],
-  templateUrl: './workspace.component.html',
-  styleUrls: ['./workspace.component.css']
+    selector: 'app-workspace',
+    imports: [CommonModule, TopNavBarComponent, LitematicaComponent, MapViewComponent],
+    templateUrl: './workspace.component.html',
+    styleUrls: ['./workspace.component.css']
 })
 export class WorkspaceComponent {}
