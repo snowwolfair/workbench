@@ -5,7 +5,15 @@
   "projects": {
     "mywork": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "skipTests": false,
+          "flat": false,
+          "inlineStyle": true,
+          "inlineTemplate": false,
+          "style": "less"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -25,15 +33,12 @@
                 "glob": "**/*",
                 "input": "public"
               },
-              {
-                "glob": "**/*",
-                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
-                "output": "/assets/"
-              }
+              "src/assets",
+              "src/favicon.ico"
             ],
             "styles": [
               "src/theme.less",
-              "src/styles.css"
+              "src/styles.less"
             ],
             "scripts": [],
             "server": "src/main.server.ts",
@@ -99,7 +104,7 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.less"
             ],
             "scripts": []
           }

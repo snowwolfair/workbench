@@ -7,6 +7,8 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
 @Component({
     selector: 'app-top-nav-bar',
     templateUrl: './top-nav-bar.component.html',
-    styleUrl: './top-nav-bar.component.less'
+    styleUrls: ['./top-nav-bar.component.less'],
+    standalone: true,
+    imports: [NzMenuModule, NzIconModule, RouterLink]
 })
 export class TopNavBarComponent {}

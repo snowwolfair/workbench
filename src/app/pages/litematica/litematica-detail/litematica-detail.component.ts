@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-litematica-detail',
   imports: [],
   templateUrl: './litematica-detail.component.html',
-  styleUrl: './litematica-detail.component.css'
+  styleUrl: './litematica-detail.component.less'
 })
 export class LitematicaDetailComponent {
 

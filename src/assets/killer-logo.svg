@@ -1,0 +1,19 @@
+<svg version="1.1" width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+  <!-- 银色边框 -->
+  <rect x="1" y="1" width="95" height="95" fill="none" stroke="#EAEA00" stroke-width="1"/>
+  
+  <!-- 背景（可选，这里用透明） -->
+  <rect x="2" y="2" width="92" height="92" fill="rgba(0,0,0,0.1)"/>
+  
+  <!-- 文字组，应用Y轴镜像翻转 -->
+  <g transform="translate(49, 50) scale(1, 1)">
+    <!-- 无名 -->
+    <text x="0" y="-30" font-family="SimHei, Microsoft YaHei, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">无名</text>
+
+    <!-- 冷酷无情 -->
+    <text x="0" y="0" font-family="SimHei, Microsoft YaHei, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">冷酷无情</text>
+    
+    <!-- 杀手 -->
+    <text x="0" y="15" font-family="SimHei, Microsoft YaHei, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">杀手</text>
+  </g>
+</svg> 
