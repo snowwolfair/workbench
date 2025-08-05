@@ -6,8 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:mywork": "node dist/mywork/server/server.mjs"
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {
@@ -16,10 +15,8 @@
     "@angular/compiler": "^19.2.0",
     "@angular/core": "^19.2.0",
     "@angular/forms": "^19.2.0",
-    "@angular/platform-server": "^19.2.0",
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
-    "@angular/ssr": "^19.2.0",
     "@angular/router": "^19.2.0",
     "@delon/abc": "^19.2.0",
     "@delon/acl": "^19.2.0",
@@ -35,19 +32,21 @@
     "ngx-tinymce": "^19.0.0",
     "rxjs": "~7.8.0",
     "screenfull": "^6.0.2",
+    "three": "^0.179.1",
+    "three-orbitcontrols-ts": "^0.1.2",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-     "@angular-devkit/build-angular": "^19.2.7",
+    "@angular-devkit/build-angular": "^19.2.7",
     "@angular/cli": "^19.2.7",
     "@angular/compiler-cli": "^19.2.0",
     "@angular/language-service": "^19.2.0",
-    
     "@delon/testing": "^19.2.0",
     "@ng-util/monaco-editor": "^19.0.1",
     "@types/jasmine": "~5.1.0",
     "@types/jasminewd2": "~2.0.13",
+    "@types/three": "^0.178.1",
     "@typescript-eslint/eslint-plugin": "^8.29.1",
     "@typescript-eslint/parser": "^8.29.1",
     "@typescript-eslint/utils": "^8.29.1",

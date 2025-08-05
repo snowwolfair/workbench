@@ -40,12 +40,7 @@
               "src/theme.less",
               "src/styles.less"
             ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "prerender": true,
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -70,7 +65,7 @@
             }
           },
           "defaultConfiguration": "production"
-        },
+          },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {

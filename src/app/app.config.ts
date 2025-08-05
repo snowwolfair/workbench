@@ -20,6 +20,7 @@ import { ALAIN_SETTING_KEYS } from '@delon/theme';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { environment } from '@env/environment';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 registerLocaleData(zh);
 
@@ -41,6 +42,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(FormsModule),
     importProvidersFrom(NzModalModule),
     provideAnimationsAsync(),
+    
     provideHttpClient(),
     {
       provide: ALAIN_CONFIG,
@@ -53,6 +55,10 @@ export const appConfig: ApplicationConfig = {
           primary: '#1890ff'
         }
       }
-    }
+    },
+    {
+      provide: ALAIN_SETTING_KEYS,
+      useValue: { layout: 'layout', user: 'user', app: 'app' }
+    },
   ]
 };

@@ -1,10 +1,16 @@
-import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { SettingsService, User } from '@delon/theme';
+import { DA_SERVICE_TOKEN } from '@delon/auth';
 
+
+// rgba(24, 144, 255, 1);
 @Component({
   selector: 'layout-blank',
   template: `
@@ -29,20 +35,64 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
             <a routerLink="/map">地图</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/workspace">工作区</a>
+            <a routerLink="/workspace">工作区</a> 
           </li>
         </ul>
+        <div class="avator">
+          <div class="alain-default__nav-item d-flex align-items-center px-sm" nz-dropdown nzPlacement="bottomRight" [nzDropdownMenu]="userMenu">
+            <nz-avatar [nzSrc]="user.avatar" nzSize="small" class="mr-sm"/>
+            {{ user.name }}
+          </div>
+          <nz-dropdown-menu #userMenu="nzDropdownMenu">
+            <div nz-menu class="width-sm">
+              <div nz-menu-item routerLink="/pro/account/center">
+                <i nz-icon nzType="close" class="mr-sm"></i>
+                {{ 'menu.account.center'}}
+              </div>
+              <div nz-menu-item routerLink="/pro/account/settings">
+                <i nz-icon nzType="setting" class="mr-sm"></i>
+                {{ 'menu.account.settings'}}
+              </div>
+              <div nz-menu-item routerLink="/exception/trigger">
+                <i nz-icon nzType="close-circle" class="mr-sm"></i>
+                {{ 'menu.account.trigger'}}
+              </div>
+              <li nz-menu-divider></li>
+              <div nz-menu-item (click)="logout()">
+                <i nz-icon nzType="logout" class="mr-sm"></i>
+                {{ 'menu.account.logout'}}
+              </div>
+            </div>
+          </nz-dropdown-menu>
+        </div>
       </nz-header>
       <nz-content>
+        <nz-breadcrumb nzAutoGenerate="true" class="breadcrumb"></nz-breadcrumb>
         <router-outlet />
       </nz-content>
     </nz-layout>
   `,
   styles: [`
+    .mr-sm {
+      margin-right: 8px;
+    }
+    .width-sm {
+      width: 160px;
+    }
+    .pd-sm {
+      padding: 8px;
+    }
+    .alain-default__nav-item {
+      display: flex;
+      align-items: center;
+    }
+    .alain-default__nav-item:hover {
+      cursor: pointer;
+    }
     .logo {
       width: 120px;
       height: 64px;
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 1);
       margin: 16px 24px 16px 0;
       float: left;
       position: relative;
@@ -50,14 +100,24 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
     }
     .logimg {
       width: 100%;
-      height: 64px;
+      height: 32px;
+    }
+    .breadcrumb {
+      margin: 10px 5px;
+    }
+    .avator {
+      float: right;
+      width: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
     }
     .ant-layout-header {
       height: 64px;
       padding: 0 5px;
       color: rgba(255, 255, 255, 0.85);
       line-height: 64px;
-      background: #000000ff;
+      background: rgba(0, 0, 0, 1);
       display: flex;
       align-items: center;
     }
@@ -65,6 +125,28 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
   // host: {
   //   '[class.alain-blank]': 'true'
   // },
-  imports: [RouterOutlet, RouterLink, NzMenuModule, NzIconModule, NzLayoutModule, NzBreadCrumbModule]
+  imports: [
+    RouterOutlet, 
+    RouterLink, 
+    NzMenuModule, 
+    NzIconModule, 
+    NzLayoutModule, 
+    NzBreadCrumbModule, 
+    NzDropDownModule,
+    NzAvatarModule,
+  ],
 })
-export class LayoutBlankComponent {}
+export class LayoutBlankComponent {
+  private readonly settings = inject(SettingsService);
+  private readonly tokenService = inject(DA_SERVICE_TOKEN);
+  private readonly router = inject(Router);
+
+  get user(): User {
+    return this.settings.user;
+  }
+
+  logout(): void {
+    this.tokenService.clear();
+    this.router.navigateByUrl(this.tokenService.login_url!);
+  }
+}

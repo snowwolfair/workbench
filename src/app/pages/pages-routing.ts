@@ -11,21 +11,39 @@ export const routes: Routes = [
   // { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '',
     component: LayoutBlankComponent,
-    data: {},
+    data: {
+      breadcrumb: '首页',
+    },
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent },
+      { path: 'dashboard', component: DashboardComponent,
+        data: {
+          breadcrumb: '首页',
+        }
+      },
       { path: 'about',
         loadComponent: () => import('./about/about.component').then((m) => m.AboutComponent),
+        data: {
+          breadcrumb: '关于',
+        }
       },
       { path: 'users',
         loadComponent: () => import('./users/users.component').then((m) => m.UsersComponent),
+        data: {
+          breadcrumb: '用户列表',
+        }
       },
       { path: 'map',
         loadComponent: () => import('./map-view/map-view.component').then((m) => m.MapViewComponent),
+        data: {
+          breadcrumb: '地图',
+        }
       },
       { path: 'workspace',
         loadComponent: () => import('./workspace/workspace.component').then((m) => m.WorkspaceComponent),
+        data: {
+          breadcrumb: '工作区',
+        }
       },
     ]
   },
