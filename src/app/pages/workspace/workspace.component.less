@@ -1,32 +1,18 @@
-.workspace-layout {
+.workspace-layout.workspace {
   display: flex;
-  flex-direction: column;
-  height: 90vh;
-}
-
-app-top-nav-bar {
-  flex: 0 0 auto;
+  overflow: hidden;
 }
 
 .workspace-main {
   display: flex;
   flex: 1 1 auto;
-  height: 100%;
+  overflow: hidden;
 }
 
-app-litematica {
-  width: 25%;
-  min-width: 260px;
-  max-width: 350px;
-  background: #fff;
-  border-right: 1px solid #eee;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.03);
-  z-index: 1;
+nz-splitter-panel {
+  overflow: hidden;
 }
 
-app-map-view {
-  flex: 1 1 auto;
-  background: #f5f5f5;
-  min-width: 0;
-  overflow: auto;
+nz-splitter {
+  overflow: hidden;
 }

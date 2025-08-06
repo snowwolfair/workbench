@@ -18,7 +18,7 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
       <nz-header>
         <div class="logo">
           <a routerLink="/dashboard">
-            <img class="logimg" src="/assets/logo.svg" alt="Logo"/>
+            <img class="logimg" src="/assets/flower.svg" alt="Logo"/>
           </a>
         </div>
         <ul nz-menu nzMode="horizontal" nzTheme="dark">
@@ -67,7 +67,6 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
         </div>
       </nz-header>
       <nz-content>
-        <nz-breadcrumb nzAutoGenerate="true" class="breadcrumb"></nz-breadcrumb>
         <router-outlet />
       </nz-content>
     </nz-layout>
@@ -90,7 +89,7 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
       cursor: pointer;
     }
     .logo {
-      width: 120px;
+      width: 64px;
       height: 64px;
       background: rgba(0, 0, 0, 1);
       margin: 16px 24px 16px 0;
@@ -107,10 +106,10 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
     }
     .avator {
       float: right;
-      width: 300px;
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      margin-left: auto;
     }
     .ant-layout-header {
       height: 64px;

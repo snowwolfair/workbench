@@ -1,10 +1,19 @@
 <div class="workspace-layout">
 
-  <div class="workspace-main">
-    <!-- 左侧3D组件列表和上传按钮 -->
-    <app-litematica></app-litematica>
+  <div class="workspace-main" [style.height.px]="height">
+    
+    <nz-splitter>
 
-    <!-- 右侧地图展示区 -->
-    <app-map-view></app-map-view>
+      <nz-splitter-panel [nzDefaultSize]="'25%'" [nzResizable]="loading">
+        <!-- 左侧3D组件列表和上传按钮 -->
+        <app-litematica></app-litematica>
+      </nz-splitter-panel>
+
+      <nz-splitter-panel>
+        <!-- 右侧地图展示区 -->
+        <app-map-view></app-map-view>
+      </nz-splitter-panel>
+
+    </nz-splitter>
   </div>
 </div>
