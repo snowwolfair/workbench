@@ -1,0 +1,24 @@
+<div class="tag-pool-container">
+  <div class="selected-tags">
+    @for(tag of selectedTags; track tag.id) {
+      <div class="tag selected" (click)="deselectTag(tag)" [style.backgroundColor]="tag.color">
+        {{tag.name}}
+        <span class="remove-tag">×</span>
+      </div>
+    }
+  </div>
+  
+  <div class="tag-pool" #tagPool>
+    @for(tag of availableTags; track tag.id){
+      <div 
+         class="tag" 
+         (click)="selectTag(tag)" 
+         [style.left.px]="tag.x" 
+         [style.top.px]="tag.y" 
+         [style.backgroundColor]="tag.color" 
+         [attr.data-index]="tag.id">
+        {{tag.name}}
+      </div>
+    }
+  </div>
+</div>
