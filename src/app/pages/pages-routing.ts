@@ -6,6 +6,7 @@ import { UsersComponent } from './users/users.component';
 import { MapViewComponent } from './map-view/map-view.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 import { LayoutBlankComponent } from '../layout/blank/blank.component';
+import { TagPoolComponent } from './tag-pool/tag-pool.component';
 
 export const routes: Routes = [
   // { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -19,6 +20,11 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent,
         data: {
           breadcrumb: '首页',
+        }
+      },
+      { path: 'tag-pool', component: TagPoolComponent,
+        data: {
+          breadcrumb: '标签池',
         }
       },
       { path: 'about',
@@ -48,4 +54,4 @@ export const routes: Routes = [
     ]
   },
   { path: '**', component: DashboardComponent }
-]; 
+];

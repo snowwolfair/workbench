@@ -26,6 +26,9 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
             <a routerLink="/dashboard">Dashboard</a>
           </li>
           <li nz-menu-item nzMatchRouter>
+            <a routerLink="/tag-pool">标签池</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
             <a routerLink="/about">关于</a>
           </li>
           <li nz-menu-item nzMatchRouter>
