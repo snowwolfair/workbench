@@ -1,3 +1,36 @@
-<div class="titile">
-    Title
-</div>
+ 
+<form nz-form nzLabelAlign="left">
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="description" nzSpan="4">名称</nz-form-label>
+    <nz-form-control nzHasFeedback nzSpan="8">
+      <input class="input-setting" nz-input id="title" name="title" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="description" nzSpan="4">tag选择</nz-form-label>
+    <nz-form-control nzHasFeedback nzSpan="20">
+      <app-tag-pool ></app-tag-pool>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="description" nzSpan="4">描述</nz-form-label>
+    <nz-form-control nzHasFeedback nzSpan="8">
+      <input class="input-setting" nz-input id="title" name="title" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="description" nzSpan="4">模型文件</nz-form-label>
+    <nz-form-control nzHasFeedback nzSpan="16">
+      <nz-upload
+        nzAction="http://localhost:3000/upload"
+        [(nzFileList)]="fileList"
+        (nzChange)="handleChange($event)"
+        [nzShowUploadList]="showUploadList"
+        [nzSize]="fileSize"
+        [nzDisabled]="fileList.length == 1"
+      >
+        <button type="button" nz-button [disabled]="fileList.length == 1">+</button>
+      </nz-upload>
+    </nz-form-control>
+  </nz-form-item>
+</form>

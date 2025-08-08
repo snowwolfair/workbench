@@ -1,7 +1,7 @@
 .litematica-layout {
   flex: 1;
   overflow-y: auto;
-  height: 100%;
+  height: calc(100vh - 280px);
   min-height: 0;
 }
 .titile {
@@ -17,9 +17,10 @@
 .litematica-card {
   background: #fff;
   border-radius: 30px;
-  border: 2px solid #000000; 
+  border: 2px solid #000000;
   margin: 20px;
   padding: 20px;
+  height: 196px;
 }
 .litematica-card:hover{
   box-shadow: 2px 2px 5px #000000;
@@ -49,4 +50,8 @@
   box-shadow: 0px 0px 5px #66ccff;
   cursor: pointer;
   color:#fff
+}
+
+.all-layout {
+  // overflow: hidden;
 }

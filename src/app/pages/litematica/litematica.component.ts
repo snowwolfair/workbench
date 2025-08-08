@@ -8,13 +8,22 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { LitematicaCreateComponent } from './litematica-create/litematica-create.component';
-
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-litematica',
-  imports: [NzDividerModule, NzCardModule, NzPaginationComponent, NzPageHeaderModule, NzTagModule, NzGridModule, NzTypographyModule],
-
-
+  imports: [
+    NzDividerModule,
+    NzCardModule, 
+    NzPaginationComponent, 
+    NzPageHeaderModule, 
+    NzTagModule, 
+    NzGridModule, 
+    NzTypographyModule, 
+    NzInputModule,
+    NzIconModule
+  ],
   templateUrl: './litematica.component.html',
   styleUrl: './litematica.component.less'
 })
@@ -29,19 +38,24 @@ export class LitematicaComponent {
 
   dragImages: HTMLImageElement[] = [];
 
+  height = 500;
+
   constructor(
     private modalService: NzModalService,
   ) {}
 
 
   ngOnInit(): void {
+    this.height = window.innerHeight - 280;
+
+
     this.listOfData = [
       {
         title: 'Title 1',
         author: 'Author 1',
         size: 100,
         tags: [{'name': 'Tag 1', 'color': 'red'}],
-        description: 'Description 1',
+        description: '这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers 1',
         img: 'assets/logo.svg'
       },
       {
@@ -49,8 +63,23 @@ export class LitematicaComponent {
         author: 'Dragon_Flight',
         size: 200,
         tags: [{'name': 'Tag 2', 'color': 'green'}, {'name': 'Tag 3', 'color': 'blue'}],
-        description: 'Description 2'
-      }
+        description: '这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers 2'
+      },
+      {
+        title: 'Title 3',
+        author: 'Author 3',
+        size: 300,
+        tags: [{'name': 'Tag 3', 'color': 'blue'}],
+        description: '这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers 3'
+      },
+      {
+        title: 'Title 4',
+        author: 'Author 4',
+        size: 400,
+        tags: [{'name': 'Tag 4', 'color': 'orange'}],
+        description: 'Description 4'
+      },
+
     ];
 
     this.dragImages = this.listOfData.map(data => {
@@ -74,6 +103,12 @@ export class LitematicaComponent {
     const isLongTag = tag.length > 20;
     return isLongTag ? `${tag.slice(0, 20)}...` : tag;
   }
+
+  @HostListener('window:scroll', ['$event'])
+  onResize(event: any) {
+    this.height = window.innerHeight - 280;
+  }
+
 
   @HostListener('dragstart', ['$event'])
   onDragStart(event: DragEvent) {
@@ -114,6 +149,7 @@ export class LitematicaComponent {
 
   showmodel(){
     this.addModal = this.modalService.create({
+      nzWidth: 800,
       nzTitle: '上传模型',
       nzContent: LitematicaCreateComponent,
       nzOkText: '确定',
