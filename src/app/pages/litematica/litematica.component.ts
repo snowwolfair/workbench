@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, ElementRef, ViewChild, ViewChildren,} from '@angular/core';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzPaginationComponent } from "ng-zorro-antd/pagination";
@@ -10,6 +10,12 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { LitematicaCreateComponent } from './litematica-create/litematica-create.component';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
+import { _HttpClient } from '@delon/theme';
+
+// import { MessageService } from 'src/app/core/services/message.service';
+
+
 
 @Component({
   selector: 'app-litematica',
@@ -35,20 +41,26 @@ export class LitematicaComponent {
   ];
 
   listOfData: any[] = [];
-
   dragImages: HTMLImageElement[] = [];
-
   height = 500;
+  pageIndex = 1;
+  pageSize = 10;
+  total = 0;
+  loading = false;
+  ftion: number;
 
   constructor(
     private modalService: NzModalService,
+    private http: _HttpClient,
+    // public msg: MessageService,
   ) {}
 
+  onEnter(event: any) {
+    console.log(event.target.value);
+  }
 
   ngOnInit(): void {
     this.height = window.innerHeight - 280;
-
-
     this.listOfData = [
       {
         title: 'Title 1',
@@ -87,6 +99,10 @@ export class LitematicaComponent {
       img.src = data.img || 'assets/rgba.png';
       return img;
     });
+    // this.getListofData();
+    console.log(this.loading);
+    this.getListofData();
+
   }
 
   showtagcolor = 'red';
@@ -105,9 +121,6 @@ export class LitematicaComponent {
   }
 
   @HostListener('window:scroll', ['$event'])
-  onResize(event: any) {
-    this.height = window.innerHeight - 280;
-  }
 
 
   @HostListener('dragstart', ['$event'])
@@ -162,6 +175,59 @@ export class LitematicaComponent {
 
       }
     });
+  }
+
+  getListofData(){
+    this.loading = true;
+    console.log(this.loading)
+
+    this.http
+      .get('/litematica/data', {
+          page: this.pageIndex,
+          limit: this.pageSize
+      })
+      .subscribe((res: any) => {
+        console.log(res);
+        if (res.success) {
+           setTimeout(() => {
+            if(this.ftion === 1){
+              this.listOfData = [...this.listOfData, ...res.data];
+              this.total = res.count;
+              this.loading = false;
+              this.ftion = 0;
+            }else{
+              this.listOfData = res.data;
+              this.total = res.count;
+              this.loading = false;
+            }
+          }, 1000);
+
+          
+        } else {
+          console.log(res.message);
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000);
+
+          // this.msg.error(res.message);
+        }
+      });
+  }
+
+  @ViewChild('tableContainer') scrollContainer!: ElementRef;
+
+
+  onScroll(event: Event){
+    const scrollTop = (event.target as HTMLElement).scrollTop;
+    const scrollHeight = (event.target as HTMLElement).scrollHeight;
+    const clientHeight = (event.target as HTMLElement).clientHeight;
+    if (scrollTop + clientHeight >= scrollHeight && !this.loading && this.total > this.listOfData.length) {
+
+      this.pageIndex++;
+      this.ftion = 1;
+      
+      this.getListofData();
+    }
   }
 
 

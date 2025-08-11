@@ -40,7 +40,14 @@
               "src/theme.less",
               "src/styles.less"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "ajv",
+              "ajv-formats",
+              "mockjs",
+              "file-saver",
+              "extend"
+            ]
           },
           "configurations": {
             "production": {

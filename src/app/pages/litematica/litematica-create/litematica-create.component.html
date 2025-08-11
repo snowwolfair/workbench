@@ -7,15 +7,15 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-label nzRequired nzFor="description" nzSpan="4">tag选择</nz-form-label>
-    <nz-form-control nzHasFeedback nzSpan="20">
+    <nz-form-label nzFor="description" nzSpan="4">tag选择</nz-form-label>
+    <nz-form-control nzHasFeedback nzSpan="16">
       <app-tag-pool ></app-tag-pool>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-label nzRequired nzFor="description" nzSpan="4">描述</nz-form-label>
-    <nz-form-control nzHasFeedback nzSpan="8">
-      <input class="input-setting" nz-input id="title" name="title" />
+    <nz-form-label nzFor="description" nzSpan="4">描述</nz-form-label>
+    <nz-form-control nzHasFeedback nzSpan="16">
+      <textarea rows="4" class="input-setting" nz-input [(ngModel)]="inputValue" ></textarea>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>

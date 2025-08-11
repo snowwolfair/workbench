@@ -2,7 +2,7 @@
 
   <div class="titile">
     <nz-input-group [nzSuffix]="suffix">
-      <input type="text" nz-input placeholder="input search text" />
+      <input type="text" (keyup.enter)="onEnter($event)" nz-input placeholder="input search text" />
     </nz-input-group>
 
     <ng-template #suffix>
@@ -10,7 +10,7 @@
     </ng-template>
   </div>
   <nz-divider/>
-  <div class="litematica-layout">
+  <div class="litematica-layout" #tableContainer (scroll)="onScroll($event)">
     @for(data of listOfData; track data;let i = $index){
       <div class="litematica-card" (click)="loding()" draggable="true" display="true" [attr.data-index]="i">
         <nz-page-header>
@@ -19,7 +19,6 @@
 
           <nz-page-header-subtitle>
             <div class="sizeable">by : {{data.author}}</div>
-
           </nz-page-header-subtitle>
 
           <nz-page-header-extra>
@@ -85,7 +84,12 @@
         </nz-page-header-content>
       </nz-page-header>
     </div>
-    <nz-pagination [nzPageIndex]="2" [nzTotal]="50" nzSimple></nz-pagination>
+    <nz-pagination [nzPageIndex]="pageIndex" [nzTotal]="total" nzSimple (nzPageIndexChange)="getListofData()"></nz-pagination>
+
+    @if(loading){
+      <div class="loading-indicator">加载中...</div>
+    }
+    
   </div>
   <nz-divider/>
   <div class="titile">

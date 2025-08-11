@@ -1,5 +1,12 @@
-import { Component, AfterViewInit, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
+import { FormsModule } from '@angular/forms';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+
+
+
 
 interface Tag {
   id: number;
@@ -9,21 +16,28 @@ interface Tag {
   vx: number;
   vy: number;
   color: string;
+  width: number;
+  height: number;
 }
 
 @Component({
   selector: 'app-tag-pool',
-  imports: [CommonModule],
+  imports: [CommonModule, NzCollapseModule, FormsModule, NzIconModule],
   templateUrl: './tag-pool.component.html',
   styleUrl: './tag-pool.component.less'
 }) 
 export class TagPoolComponent implements OnInit, AfterViewInit {
   @ViewChild('tagPool') tagPool!: ElementRef;
+  @ViewChildren('tagRef') tagElements!: QueryList<ElementRef>;
   availableTags: Tag[] = [];
   selectedTags: Tag[] = [];
   poolWidth = 0;
   poolHeight = 0;
   animationId: number | null = null;
+  error = false;
+  showTagsPool = true;
+
+
 
   ngOnInit() {
     // 初始化标签数据
@@ -31,23 +45,27 @@ export class TagPoolComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // 获取容器尺寸
-    this.poolWidth = this.tagPool.nativeElement.offsetWidth;
-    this.poolHeight = this.tagPool.nativeElement.offsetHeight;
+    if (this.showTagsPool && this.tagPool) {
+      // 获取容器尺寸
+      this.poolWidth = this.tagPool.nativeElement.offsetWidth;
+      this.poolHeight = this.tagPool.nativeElement.offsetHeight;
 
-    console.log(this.poolWidth, this.poolHeight);
+      this.tagElements.forEach((el, index) => {
+        const rect = el.nativeElement.getBoundingClientRect();
+        this.availableTags[index].width = rect.width;
+        this.availableTags[index].height = rect.height;
+      });
 
-
-    // 开始动画
-    this.animate();
+      this.animate();
+    }
   }
 
   initializeTags() {
     const tagNames = [
-      {'name':'JavaScript','color':'#4CAF50'},
-      {'name':'TypeScript','color':'#2196F3'},
-      {'name':'Angular','color':'#FF9800'},
-      {'name':'React','color':'#9C27B0'},
+      {'name':'农业','color':'#fff1f0'},
+      {'name':'科技','color':'#2196F3'},
+      {'name':'工业','color':'#FF9800'},
+      {'name':'实用','color':'#9C27B0'},
       {'name':'Vue','color':'#3F51B5'},
       {'name':'HTML','color':'#00BCD4'},
       {'name':'CSS','color':'#FF5722'}
@@ -60,7 +78,9 @@ export class TagPoolComponent implements OnInit, AfterViewInit {
       y: Math.random() * 100,
       vx: (Math.random() - 0.5) * 2,
       vy: (Math.random() - 0.5) * 2,
-      color: tag.color
+      color: tag.color,
+      width: 0,
+      height: 0
     }));
   }
 
@@ -75,23 +95,28 @@ export class TagPoolComponent implements OnInit, AfterViewInit {
       tag.x += tag.vx;
       tag.y += tag.vy;
 
-      // 边界检测和反弹
-      const tagWidth = 10; // 估计值，实际应用中可能需要动态获取
-      const tagHeight = 10; // 估计值
+      console.log(tag.x, tag.y);
 
-      if (tag.x < 0 || tag.x + tagWidth > this.poolWidth) {
+
+      // 边界检测和反弹
+      if (tag.x <= 0 || tag.x + tag.width >= this.poolWidth) {
         tag.vx = -tag.vx;
-        tag.x = tag.x < 0 ? 0 : this.poolWidth - tagWidth;
+        tag.x = tag.x < 0 ? 0 : this.poolWidth - tag.width;
       }
 
-      if (tag.y < 0 || tag.y + tagHeight > this.poolHeight) {
+      if (tag.y <= 0 || tag.y + tag.height >= this.poolHeight) {
         tag.vy = -tag.vy;
-        tag.y = tag.y < 0 ? 0 : this.poolHeight - tagHeight;
+        tag.y = tag.y < 0 ? 0 : this.poolHeight - tag.height;
       }
     });
   }
 
   selectTag(tag: Tag) {
+    if (this.selectedTags.length >= 3) {
+      this.error = true;
+      return;
+    }
+
     // 从可用标签中移除
     this.availableTags = this.availableTags.filter(t => t.id !== tag.id);
     // 添加到选中标签
@@ -105,6 +130,7 @@ export class TagPoolComponent implements OnInit, AfterViewInit {
     tag.x = Math.random() * (this.poolWidth - 100);
     tag.y = Math.random() * (this.poolHeight - 30);
     this.availableTags.push(tag);
+    this.error = false;
   }
 
   ngOnDestroy() {
@@ -112,4 +138,12 @@ export class TagPoolComponent implements OnInit, AfterViewInit {
       cancelAnimationFrame(this.animationId);
     }
   }
+
+  showTagPool() {
+    this.showTagsPool = !this.showTagsPool;
+    this.initializeTags();
+    this.ngAfterViewInit();
+    console.log(this.poolWidth, this.poolHeight);
+  }
+
 }

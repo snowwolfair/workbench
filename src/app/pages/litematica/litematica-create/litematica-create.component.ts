@@ -1,13 +1,23 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzUploadChangeParam, NzUploadFile, NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { TagPoolComponent } from '../../tag-pool/tag-pool.component';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 @Component({
   selector: 'app-litematica-create',
-  imports: [NzFormModule, NzUploadModule, NzIconModule, NzButtonModule, TagPoolComponent],
+  imports: [
+    NzFormModule, 
+    NzInputModule,
+    FormsModule,
+    NzUploadModule, 
+    NzIconModule, 
+    NzButtonModule, 
+    TagPoolComponent
+  ],
 
 
   templateUrl: './litematica-create.component.html',
@@ -32,6 +42,7 @@ export class LitematicaCreateComponent {
 
   fileSize = 1024 * 10;
 
+  inputValue: string;
 
 
   handleChange(info: NzUploadChangeParam): void {

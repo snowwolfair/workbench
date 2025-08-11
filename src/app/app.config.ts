@@ -1,4 +1,6 @@
 import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
+import { provideMockConfig } from '@delon/mock';
+import * as MOCKDATA from '@_mock';
 import {
   provideRouter,
   withComponentInputBinding,
@@ -14,13 +16,16 @@ import { registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ALAIN_CONFIG } from '@delon/util';
 import { ALAIN_SETTING_KEYS } from '@delon/theme';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { environment } from '@env/environment';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { MockRequest } from '@delon/mock';
+import { authSimpleInterceptor, provideAuth } from '@delon/auth';
+import { I18NService, defaultInterceptor, provideBindAuthRefresh, provideStartup } from '@core';
 
 registerLocaleData(zh);
 
@@ -32,9 +37,9 @@ const routerFeatures: RouterFeatures[] = [
 if (environment.useHash) routerFeatures.push(withHashLocation());
 
 export const appConfig: ApplicationConfig = {
-  
 
   providers: [
+    provideMockConfig({ data: MOCKDATA }),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, ...routerFeatures),
     provideClientHydration(withEventReplay()),
@@ -42,7 +47,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(FormsModule),
     importProvidersFrom(NzModalModule),
     provideAnimationsAsync(),
-    
+    provideHttpClient(withInterceptors([...(environment.interceptorFns ?? []), authSimpleInterceptor, defaultInterceptor])),
     provideHttpClient(),
     {
       provide: ALAIN_CONFIG,
