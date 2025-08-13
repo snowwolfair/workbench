@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
     selector: 'app-users',
     imports: [CommonModule],
     templateUrl: './users.component.html',
-    styleUrls: ['./users.component.css']
+    styleUrls: ['./users.component.less']
 })
 export class UsersComponent {
   users = [

@@ -1,12 +1,9 @@
-import { Component, AfterViewInit, ViewChild, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, OnInit, QueryList, ViewChildren, Output, EventEmitter} from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { FormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-
-
-
 
 interface Tag {
   id: number;
@@ -37,7 +34,8 @@ export class TagPoolComponent implements OnInit, AfterViewInit {
   error = false;
   showTagsPool = true;
 
-
+  
+  @Output() getTag = new EventEmitter<Tag[]>();
 
   ngOnInit() {
     // 初始化标签数据
@@ -95,9 +93,6 @@ export class TagPoolComponent implements OnInit, AfterViewInit {
       tag.x += tag.vx;
       tag.y += tag.vy;
 
-      console.log(tag.x, tag.y);
-
-
       // 边界检测和反弹
       if (tag.x <= 0 || tag.x + tag.width >= this.poolWidth) {
         tag.vx = -tag.vx;
@@ -121,6 +116,9 @@ export class TagPoolComponent implements OnInit, AfterViewInit {
     this.availableTags = this.availableTags.filter(t => t.id !== tag.id);
     // 添加到选中标签
     this.selectedTags.push(tag);
+    console.log(this.selectedTags);
+    this.getTag.emit(this.selectedTags);
+
   }
 
   deselectTag(tag: Tag) {
@@ -131,6 +129,7 @@ export class TagPoolComponent implements OnInit, AfterViewInit {
     tag.y = Math.random() * (this.poolHeight - 30);
     this.availableTags.push(tag);
     this.error = false;
+    this.getTag.emit(this.selectedTags);
   }
 
   ngOnDestroy() {

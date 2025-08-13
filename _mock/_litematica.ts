@@ -5,13 +5,13 @@ function getRule(params: any): any {
   // 提取分页参数
   const page = params.page || 1;
   const pageSize = params.limit || 10;
-  const totalCount = 100; // 模拟总数据量
+  const totalCount = 114; // 模拟总数据量
   
   // 计算起始索引
   const startIndex = (page - 1) * pageSize;
   
   // 生成模拟数据
-  const data = [];
+  let data = [];
   for (let i = 0; i < pageSize && startIndex + i < totalCount; i++) {
     data.push({
       id: startIndex + i + 1,
@@ -23,6 +23,10 @@ function getRule(params: any): any {
       img: 'assets/logo.svg',
     });
   }
+  // 模拟搜索
+  if (params.key) {
+    data = data.filter(item => item.title.includes(params.key) || item.description.includes(params.key) || item.tags.some((tag: any) => tag.name.includes(params.key)));
+  }
   
   // 返回标准格式的响应
   return {
@@ -33,11 +37,22 @@ function getRule(params: any): any {
 
 }
 
-// function saveRule(description: string): void {
-// }
+function saveRule(data: any): void {
+  const title = data.title || '无标题';
+  const author = data.author || '匿名';
+  const description = data.description || '无描述';
+  const size = data.file.size || 0;
+  const file = data.file || '无文件';
+  const tags = data.tags || [];
+  tags.forEach((tag: any) => {
+    tag.name = tag.name || '无标签';
+    tag.color = tag.color || 'red';
+  });
+  console.log(data);
+}
 
 export const LITEMATICA = {
-  'GET /litematica/data': (req: MockRequest) => getRule(req.queryString)
+  'GET /litematica/getData': (req: MockRequest) => getRule(req.queryString),
   // 'DELETE /litematica': (req: MockRequest) => removeRule(req.queryString.nos),
-  // 'POST /litematica': (req: MockRequest) => saveRule(req.body.description)
+  'POST /litematica/saveData': (req: MockRequest) => saveRule(req.queryString)
 };

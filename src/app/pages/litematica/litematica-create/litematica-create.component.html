@@ -1,36 +1,54 @@
  
-<form nz-form nzLabelAlign="left">
+<form nz-form [formGroup]="validateForm" nzLabelAlign="left">
   <nz-form-item>
     <nz-form-label nzRequired nzFor="description" nzSpan="4">名称</nz-form-label>
-    <nz-form-control nzHasFeedback nzSpan="8">
-      <input class="input-setting" nz-input id="title" name="title" />
+    <nz-form-control nzSpan="8">
+      <input class="input-setting" nz-input formControlName="name" id="title" name="title" />
+      @if(visible){
+        <p style="color: red;margin:0">* 请输入名称</p>
+      }
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
     <nz-form-label nzFor="description" nzSpan="4">tag选择</nz-form-label>
     <nz-form-control nzHasFeedback nzSpan="16">
-      <app-tag-pool ></app-tag-pool>
+      <app-tag-pool (getTag)="getTag($event)"></app-tag-pool>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
     <nz-form-label nzFor="description" nzSpan="4">描述</nz-form-label>
     <nz-form-control nzHasFeedback nzSpan="16">
-      <textarea rows="4" class="input-setting" nz-input [(ngModel)]="inputValue" ></textarea>
+      <textarea rows="4" class="input-setting" nz-input formControlName="description" [(ngModel)]="inputValue" ></textarea>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
     <nz-form-label nzRequired nzFor="description" nzSpan="4">模型文件</nz-form-label>
-    <nz-form-control nzHasFeedback nzSpan="16">
+    <nz-form-control nzHasFeedback nzSpan="16" nzErrorTip="The input is not valid E-mail!">
       <nz-upload
-        nzAction="http://localhost:3000/upload"
         [(nzFileList)]="fileList"
-        (nzChange)="handleChange($event)"
         [nzShowUploadList]="showUploadList"
-        [nzSize]="fileSize"
+        [nzBeforeUpload]="beforeUpload"
+        nzLimit="1"
         [nzDisabled]="fileList.length == 1"
       >
-        <button type="button" nz-button [disabled]="fileList.length == 1">+</button>
+        <button nz-button [disabled]="fileList.length == 1">
+          <span nz-icon nzType="upload"></span>
+          Select File
+        </button>
       </nz-upload>
+      @if(filevisible){
+        <i style="color: red;">*请上传文件，格式必须为litematica</i>
+        <i style="color: red;">*文件大小不能超过10MB</i>
+      }
+      
     </nz-form-control>
   </nz-form-item>
 </form>
+<ng-container *nzModalFooter>
+  <button nz-button (click)="handleCancel()">
+    取消
+  </button>
+  <button nz-button [nzType]="'primary'" (click)="submitImport()">
+    确认
+  </button>
+</ng-container>

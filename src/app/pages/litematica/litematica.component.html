@@ -11,8 +11,9 @@
   </div>
   <nz-divider/>
   <div class="litematica-layout" #tableContainer (scroll)="onScroll($event)">
-    @for(data of listOfData; track data;let i = $index){
-      <div class="litematica-card" (click)="loding()" draggable="true" display="true" [attr.data-index]="i">
+    <nz-pagination class="pagination" [(nzPageIndex)]="pageIndex" [nzTotal]="total" nzSimple (nzPageIndexChange)="getListofData()"></nz-pagination>
+    @for(data of listOfData; track data.id;let i = $index){
+      <div class="litematica-card" (click)="loding(data)" draggable="true" display="true" [attr.data-index]="i">
         <nz-page-header>
 
           <nz-page-header-title>{{data.title}}</nz-page-header-title>
@@ -27,7 +28,7 @@
 
           <nz-page-header-content>
             <nz-row>
-              @for (tag of data.tags; track tag) {
+              @for (tag of data.tags; track tag.name) {
                 <nz-tag [nzColor]="tag.color">
                   {{ sliceTagName(tag.name) }}
                 </nz-tag>
@@ -48,7 +49,8 @@
         </nz-page-header>
       </div>
     }
-    <div class="litematica-card" (click)="loding()" draggable="true" display="true">
+    <div class="litematica-card" (click)="loding($event)" draggable="true" display="true">
+
       <nz-page-header>
 
         <nz-page-header-title>Title</nz-page-header-title>
@@ -84,7 +86,7 @@
         </nz-page-header-content>
       </nz-page-header>
     </div>
-    <nz-pagination [nzPageIndex]="pageIndex" [nzTotal]="total" nzSimple (nzPageIndexChange)="getListofData()"></nz-pagination>
+    
 
     @if(loading){
       <div class="loading-indicator">加载中...</div>
