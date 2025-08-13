@@ -13,3 +13,5 @@
 ![bluemap-screenshot](./img/bluemap-screenshot.png)
 
 准备更改这个区域为现代都市区域
+
+![image-20250813181159172](C:\Users\16229\AppData\Roaming\Typora\typora-user-images\image-20250813181159172.png)
