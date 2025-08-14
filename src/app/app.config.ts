@@ -46,6 +46,8 @@ export const appConfig: ApplicationConfig = {
     provideNzI18n(zh_CN),
     importProvidersFrom(FormsModule),
     importProvidersFrom(NzModalModule),
+    importProvidersFrom(NzIconModule),
+
     provideAnimationsAsync(),
     provideHttpClient(withInterceptors([...(environment.interceptorFns ?? []), authSimpleInterceptor, defaultInterceptor])),
     provideHttpClient(),

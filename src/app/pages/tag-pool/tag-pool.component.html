@@ -25,7 +25,9 @@
            (click)="selectTag(tag)" 
            [style.left.px]="tag.x" 
            [style.top.px]="tag.y" 
-           [style.backgroundColor]="tag.color" 
+           [style.backgroundColor]="tag.background" 
+           [style.borderColor]="tag.border"
+           [style.color]="tag.color"
            [attr.data-index]="tag.id">
           {{tag.name}}
         </div>

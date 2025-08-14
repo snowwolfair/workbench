@@ -19,7 +19,7 @@ function getRule(params: any): any {
       author: '曲丽丽',
       description: `这是任务 ${startIndex + i + 1} 的详细描述内容。`,
       size: Math.ceil(Math.random() * 100),
-      tags: [{"name": 'Tag ' + (i % 5 + 1), "color": ['red', 'blue', 'green', 'yellow', 'purple'][i % 5]}],
+      tags: [{"name": 'Tag ' + (i % 5 + 1), "color": ['#08979c', '#7cb305', '#1890ff', '#d48806', '#531dab'][i % 5], "background": ['#e6fffb', '#fcffe6', '#e6f7ff', '#fffbe6', '#f9f0ff'][i % 5], "border": ['#87e8de', '#eaff8f', '#91d5ff', '#ffe58f', '#d3adf7'][i % 5]}],
       img: 'assets/logo.svg',
     });
   }

@@ -13,6 +13,8 @@ interface Tag {
   vx: number;
   vy: number;
   color: string;
+  background: string;
+  border: string;
   width: number;
   height: number;
 }
@@ -60,13 +62,13 @@ export class TagPoolComponent implements OnInit, AfterViewInit {
 
   initializeTags() {
     const tagNames = [
-      {'name':'农业','color':'#fff1f0'},
-      {'name':'科技','color':'#2196F3'},
-      {'name':'工业','color':'#FF9800'},
-      {'name':'实用','color':'#9C27B0'},
-      {'name':'Vue','color':'#3F51B5'},
-      {'name':'HTML','color':'#00BCD4'},
-      {'name':'CSS','color':'#FF5722'}
+      {'name':'农业','color':'#389e0d','backgroundcolor':'#f6ffed','bordercolor':'#b7eb8f'},
+      {'name':'科技','color':'#1890ff','backgroundcolor':'#e6f7ff','bordercolor':'#91d5ff'},
+      {'name':'工业','color':'#d48806','backgroundcolor':'#fffbe6','bordercolor':'#ffe58f'},
+      {'name':'实用','color':'#08979c','backgroundcolor':'#e6fffb','bordercolor':'#87e8de'},
+      {'name':'Vue','color':'#3F51B5','backgroundcolor':'#e6e6ff','bordercolor':'#b3b3ff'},
+      {'name':'HTML','color':'#00BCD4','backgroundcolor':'#d6f5ff','bordercolor':'#99e6ff'},
+      {'name':'CSS','color':'#FF5722','backgroundcolor':'#ffd6ff','bordercolor':'#ff9999'}
     ];
 
     this.availableTags = tagNames.map((tag, index) => ({
@@ -77,6 +79,8 @@ export class TagPoolComponent implements OnInit, AfterViewInit {
       vx: (Math.random() - 0.5) * 2,
       vy: (Math.random() - 0.5) * 2,
       color: tag.color,
+      background: tag.backgroundcolor,
+      border: tag.bordercolor,
       width: 0,
       height: 0
     }));

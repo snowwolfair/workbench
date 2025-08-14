@@ -5,7 +5,7 @@
     <nz-form-control nzSpan="8">
       <input class="input-setting" nz-input formControlName="name" id="title" name="title" />
       @if(visible){
-        <p style="color: red;margin:0">* 请输入名称</p>
+        <span style="color: red;margin:0">* 请输入名称</span>
       }
     </nz-form-control>
   </nz-form-item>
@@ -37,8 +37,8 @@
         </button>
       </nz-upload>
       @if(filevisible){
-        <i style="color: red;">*请上传文件，格式必须为litematica</i>
-        <i style="color: red;">*文件大小不能超过10MB</i>
+        <span style="color: red;">*请上传文件，格式必须为litematica</span>
+        <span style="color: red;">*文件大小不能超过10MB</span>
       }
       
     </nz-form-control>

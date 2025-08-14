@@ -14,6 +14,7 @@ import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { _HttpClient } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { LitematicaDetailComponent } from './litematica-detail/litematica-detail.component';
+import { ScrollDispatcher } from '@angular/cdk/scrolling';
 
 // import { MessageService } from 'src/app/core/services/message.service';
 
@@ -30,7 +31,8 @@ import { LitematicaDetailComponent } from './litematica-detail/litematica-detail
     NzGridModule, 
     NzTypographyModule, 
     NzInputModule,
-    NzIconModule
+    NzIconModule,
+
   ],
   templateUrl: './litematica.component.html',
   styleUrl: './litematica.component.less'
@@ -215,7 +217,7 @@ export class LitematicaComponent {
   getListofData(){
     this.loading = true;
     console.log(this.loading)
-
+    
     this.http
       .get('/litematica/getData', {
           key: this.key,

@@ -1,2 +1,16 @@
 <h1>Dashboard</h1>
 <p>这里是仪表盘首页，后续可扩展更多功能。</p>
+<div>
+  <h2>热门标签：</h2>
+  <div class="hot-tags">
+    <g2-tag-cloud 
+      #tagCloud
+
+      [data]="data"
+      height="200"
+      width="200"
+
+      (clickItem)="handleClick($event)"
+    />
+  </div>
+</div>
