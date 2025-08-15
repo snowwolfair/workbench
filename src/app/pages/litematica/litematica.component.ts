@@ -14,7 +14,10 @@ import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { _HttpClient } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { LitematicaDetailComponent } from './litematica-detail/litematica-detail.component';
-import { ScrollDispatcher } from '@angular/cdk/scrolling';
+import { ScrollDispatcher, CdkVirtualScrollViewport, CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
+
+
+
 
 // import { MessageService } from 'src/app/core/services/message.service';
 
@@ -32,7 +35,9 @@ import { ScrollDispatcher } from '@angular/cdk/scrolling';
     NzTypographyModule, 
     NzInputModule,
     NzIconModule,
-
+    CdkVirtualScrollViewport,
+    CdkVirtualForOf,
+    ScrollingModule
   ],
   templateUrl: './litematica.component.html',
   styleUrl: './litematica.component.less'
