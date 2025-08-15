@@ -35,10 +35,10 @@ export class DashboardComponent {
       this.msg.success(params.name + '被点击了');
     });
 
-    this.myChart.on('mouseover', (params: any) => {
-      console.log(params);
-      // this.msg.success(params.name + '被鼠标悬停了');
-    });
+    // this.myChart.on('mouseover', (params: any) => {
+    //   console.log(params);
+    //   // this.msg.success(params.name + '被鼠标悬停了');
+    // });
 
   }
 
@@ -56,23 +56,26 @@ export class DashboardComponent {
 
 
   keywords =[
-      {"name":"有人..游戏..","value":100},
       {"name":"怪猎","value":80},
       {"name":"上班","value":100},
       {"name":"抽象","value":30},
       {"name":"早上好","value":100},
-      {"name":"牛逼","value":150},
       {'name':'我的世界',"value":50},
       {'name':'科技',"value":90},
       {'name':'模组',"value":10},
       {'name':'实用',"value":20},
       {'name':'cnm',"value":30},
-      {'name':'woc',"value":200},
-      {'name':'游戏',"value":100}
   ]
   option = {
+    tooltip: {
+      show: true,
+      trigger: 'item',
+      formatter: '{b} : {c}'
+    },
     series: [{
       type: 'wordCloud',
+      // // 自定义词云的形状
+      // maskImage: require('@/assets/images/mask.png'),
       // sizeRange: 词的大小，最小12px，最大60px，可以在这个范围调整词的大小
       sizeRange: [10, 60],
       rotationRange: [-90, 90],
@@ -81,12 +84,17 @@ export class DashboardComponent {
       //gridSize:词间距，数值越小，间距越小，这里间距太小的话，会出现大词把小词套住的情况，比如一个大的口字，中间会有比较大的空隙，这时候他会把一些很小的字放在口字里面，这样的话，鼠标就无法选中里面的那个小字，这里可以用函数根据词云的数量动态返回间距
       gridSize:5,
       // shape这个属性虽然可配置，但是在词的数量不太多的时候，效果不明显，它会趋向于画一个椭圆
-      shape: 'pentagon',
+      shape: 'circle',
       width: '100%',
       height: '100%',
-      drawOutOfBound: true,
+      //如果字体大小太大而无法显示文本，是否缩小文本
+      shrinkToFit:false,
+      //允许词云超出画布范围限制
+      drawOutOfBound: false,
+      //布局的时候是否有动画
       layoutAnimation: true,
       textStyle: {
+        //字体
         fontFamily: 'Tahoma',
         fontWeight: 'bold',
         // 颜色可以用一个函数来返回字符串，这里是随机色
