@@ -1,0 +1,23 @@
+.water-drop {
+    position: relative;
+    width: 50px;
+    height: 70px;
+    background: #0F4C81;
+    border-radius: 50% 50% 50% 50%/60% 60% 40% 40%;
+    animation: dropFall 2s 1; /* 动画名称，持续时间，循环次数 */
+  }
+
+  @keyframes dropFall {
+    0% {
+      top: 0;
+      opacity: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      top: 300px; /* 下落距离 */
+      opacity: 0; /* 透明度变为0，模拟水滴消失 */
+      transform: scale(0.5); /* 水滴在底部时缩小 */
+    }
+  }

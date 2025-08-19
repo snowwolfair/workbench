@@ -29,6 +29,9 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
             <a routerLink="/tag-pool">标签池</a>
           </li>
           <li nz-menu-item nzMatchRouter>
+            <a routerLink="/3d-view">3D视野</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
             <a routerLink="/about">关于</a>
           </li>
           <li nz-menu-item nzMatchRouter>

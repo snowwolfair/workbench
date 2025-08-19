@@ -1,0 +1,123 @@
+<div class="three-view">
+  <h1>3D视野</h1>
+  <div class="three-view-content">
+    <div nz-row [nzGutter]="8" nzJustify="space-around">
+      <div nz-col [nzSpan]="7">
+        <nz-card nzTitle="Cube Position">
+          <div nz-row nzAlign="middle" [nzGutter]="8">
+            <div nz-col nzSpan="1">
+              <span>x:</span>
+            </div>
+            <nz-col nzSpan="16">
+              <nz-slider [(ngModel)]="cubeValue.x" [nzMax]="500" [nzMin]="-500" [nzIncluded]="false" (ngModelChange)="updateScene()"></nz-slider>
+
+            </nz-col>
+            <div nz-col nzOffset="2" nzSpan="4">
+              <nz-input-number [nzMin]="-500" [nzMax]="500" [(ngModel)]="cubeValue.x"></nz-input-number>
+            </div> 
+          </div>
+          <div nz-row nzAlign="middle" [nzGutter]="8">
+            <div nz-col nzSpan="1">
+              <span>y:</span>
+            </div>
+            <nz-col nzSpan="16">
+              <nz-slider [(ngModel)]="cubeValue.y" [nzMax]="500" [nzMin]="-500" [nzIncluded]="false" (ngModelChange)="updateScene()"></nz-slider>
+            </nz-col>
+            <div nz-col nzOffset="2" nzSpan="4">
+              <nz-input-number [nzMin]="-500" [nzMax]="500" [(ngModel)]="cubeValue.y"></nz-input-number>
+            </div> 
+          </div>
+          <div nz-row nzAlign="middle" [nzGutter]="8">
+            <div nz-col nzSpan="1">
+              <span>z:</span>
+            </div>
+            <nz-col nzSpan="16">
+              <nz-slider [(ngModel)]="cubeValue.z" [nzMax]="500" [nzMin]="-500" [nzIncluded]="false" (ngModelChange)="updateScene()"></nz-slider>
+            </nz-col>
+            <div nz-col nzOffset="2" nzSpan="4">
+              <nz-input-number [nzMin]="-500" [nzMax]="500" [(ngModel)]="cubeValue.z"></nz-input-number>
+            </div> 
+          </div>
+        </nz-card>
+      </div>
+      <div nz-col [nzSpan]="7">
+        <nz-card nzTitle="Camera Position">
+          <div nz-row nzAlign="middle" [nzGutter]="8">
+            <div nz-col nzSpan="1">
+              <span>x:</span>
+            </div>
+            <nz-col nzSpan="16">
+              <nz-slider [(ngModel)]="cameraValue.x" [nzMax]="500" [nzMin]="-500" [nzIncluded]="false" (ngModelChange)="updateScene()"></nz-slider>
+            </nz-col>
+            <div nz-col nzOffset="2" nzSpan="4">
+              <nz-input-number [nzMin]="-500" [nzMax]="500" [(ngModel)]="cameraValue.x"></nz-input-number>
+            </div> 
+          </div>
+          <div nz-row nzAlign="middle" [nzGutter]="8">
+            <div nz-col nzSpan="1">
+              <span>y:</span>
+            </div>
+            <nz-col nzSpan="16">
+              <nz-slider [(ngModel)]="cameraValue.y" [nzMax]="500" [nzMin]="-500" [nzIncluded]="false" (ngModelChange)="updateScene()"></nz-slider>
+            </nz-col>
+            <div nz-col nzOffset="2" nzSpan="4">
+              <nz-input-number [nzMin]="-500" [nzMax]="500" [(ngModel)]="cameraValue.y"></nz-input-number>
+            </div> 
+          </div>
+          <div nz-row nzAlign="middle" [nzGutter]="8">
+            <div nz-col nzSpan="1">
+              <span>z:</span>
+            </div>
+            <nz-col nzSpan="16">
+              <nz-slider [(ngModel)]="cameraValue.z" [nzMax]="500" [nzMin]="-500" [nzIncluded]="false" (ngModelChange)="updateScene()"></nz-slider>
+            </nz-col>
+            <div nz-col nzOffset="2" nzSpan="4">
+              <nz-input-number [nzMin]="-500" [nzMax]="500" [(ngModel)]="cameraValue.z"></nz-input-number>
+            </div> 
+          </div>
+        </nz-card>
+      </div>
+      <div nz-col [nzSpan]="7">
+        <nz-card nzTitle="Camera Perspective">
+          <div nz-row nzAlign="middle" [nzGutter]="8">
+            <div nz-col nzSpan="2">
+              <span>fov:</span>
+            </div>
+            <nz-col nzSpan="16">
+              <nz-slider [(ngModel)]="cameraPerspective.fov" [nzMax]="90" [nzMin]="0" [nzIncluded]="false" (ngModelChange)="updateScene()"></nz-slider>
+            </nz-col>
+            <div nz-col nzOffset="1" nzSpan="4">
+              <nz-input-number [nzMin]="0" [nzMax]="90" [(ngModel)]="cameraPerspective.fov"></nz-input-number>
+            </div> 
+          </div>
+          <div nz-row nzAlign="middle" [nzGutter]="8">
+            <div nz-col nzSpan="2">
+              <span>near:</span>
+            </div>
+            <nz-col nzSpan="16">
+              <nz-slider [(ngModel)]="cameraPerspective.near" [nzMax]="500" [nzMin]="-500" [nzIncluded]="false" (ngModelChange)="updateScene()"></nz-slider>
+            </nz-col>
+            <div nz-col nzOffset="1" nzSpan="4">
+              <nz-input-number [nzMin]="-500" [nzMax]="500" [(ngModel)]="cameraPerspective.near"></nz-input-number>
+            </div> 
+          </div>
+          <div nz-row nzAlign="middle" [nzGutter]="8">
+            <div nz-col nzSpan="2">
+              <span>far:</span>
+            </div>
+            <nz-col nzSpan="16">
+              <nz-slider [(ngModel)]="cameraPerspective.far" [nzMax]="3500" [nzMin]="-3500" [nzIncluded]="false" (ngModelChange)="updateScene()"></nz-slider>
+            </nz-col>
+            <div nz-col nzOffset="1" nzSpan="4">
+              <nz-input-number [nzMin]="-3500" [nzMax]="3500" [(ngModel)]="cameraPerspective.far"></nz-input-number>
+            </div> 
+          </div>
+        </nz-card>
+      </div>
+    </div>
+  </div>
+
+  <div #threeView>
+
+  </div>
+</div>

@@ -7,6 +7,8 @@ import { MapViewComponent } from './map-view/map-view.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 import { LayoutBlankComponent } from '../layout/blank/blank.component';
 import { TagPoolComponent } from './tag-pool/tag-pool.component';
+import { ThreeViewComponent } from './threeview/3d-view.component';
+
 
 export const routes: Routes = [
   // { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -22,9 +24,10 @@ export const routes: Routes = [
           breadcrumb: '首页',
         }
       },
-      { path: 'tag-pool', component: TagPoolComponent,
+      { path: '3d-view',
+        loadComponent: () => import('./threeview/3d-view.component').then((m) => m.ThreeViewComponent),
         data: {
-          breadcrumb: '标签池',
+          breadcrumb: '3D视野',
         }
       },
       { path: 'about',
