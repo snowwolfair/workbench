@@ -27,6 +27,7 @@
     "@delon/mock": "^19.2.0",
     "@delon/theme": "^19.2.0",
     "@delon/util": "^19.2.0",
+    "aplayer": "^1.10.1",
     "echarts": "^5.6.0",
     "echarts-wordcloud": "^2.1.0",
     "ng-zorro-antd": "^19.2.1",

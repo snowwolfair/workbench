@@ -5,7 +5,7 @@ function getRule(params: any): any {
   // 提取分页参数
   const page = params.page || 1;
   const pageSize = params.limit || 10;
-  const totalCount = 114; // 模拟总数据量
+  const totalCount = 436; // 模拟总数据量
   
   // 计算起始索引
   const startIndex = (page - 1) * pageSize;

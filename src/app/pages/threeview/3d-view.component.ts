@@ -7,7 +7,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import * as THREE from 'three';
 // 引入轨道控制器扩展库OrbitControls.js
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
 
 @Component({
@@ -51,7 +51,7 @@ export class ThreeViewComponent {
   private renderer!: THREE.WebGLRenderer;
   private cube!: THREE.Mesh
 
-  defaultTitle = document.title;
+ 
 
 
   // 定义相机输出画布的尺寸(单位:像素px)
@@ -62,16 +62,7 @@ export class ThreeViewComponent {
 
   }
   ngOnInit() {
-    document.addEventListener('visibilitychange',()=>{
-      if(document.visibilityState == 'hidden'){
-        document.title = '(TAT):D'
-      }else{
-        document.title = '(*V*)'
-        setTimeout(()=>{
-          document.title = this.defaultTitle
-        },1000)
-      }
-    })
+    
   }
 
   ngAfterViewInit() {

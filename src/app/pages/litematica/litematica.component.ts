@@ -10,11 +10,10 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { LitematicaCreateComponent } from './litematica-create/litematica-create.component';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { _HttpClient } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { LitematicaDetailComponent } from './litematica-detail/litematica-detail.component';
-import { ScrollDispatcher, CdkVirtualScrollViewport, CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
+import { ScrollDispatcher, ScrollingModule } from '@angular/cdk/scrolling';
 
 
 
@@ -35,8 +34,6 @@ import { ScrollDispatcher, CdkVirtualScrollViewport, CdkVirtualForOf, ScrollingM
     NzTypographyModule, 
     NzInputModule,
     NzIconModule,
-    CdkVirtualScrollViewport,
-    CdkVirtualForOf,
     ScrollingModule
   ],
   templateUrl: './litematica.component.html',
@@ -100,18 +97,8 @@ export class LitematicaComponent {
       //   size: 300,
       //   tags: [{'name': 'Tag 3', 'color': 'blue'}],
       //   description: '这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers 3'
-      // },
-      // {
-      //   id: 4,
-      //   title: 'Title 4',
-      //   author: 'Author 4',
-      //   size: 400,
-      //   tags: [{'name': 'Tag 4', 'color': 'orange'}],
-      //   description: 'Description 4'
-      // },
+      // }
     ];
-
-    // this.getListofData();
     console.log(this.loading);
     this.getListofData();
     
@@ -261,10 +248,15 @@ export class LitematicaComponent {
 
 
   onScroll(event: Event){
+    
     const scrollTop = (event.target as HTMLElement).scrollTop;
     const scrollHeight = (event.target as HTMLElement).scrollHeight;
     const clientHeight = (event.target as HTMLElement).clientHeight;
-    if (scrollTop + clientHeight >= scrollHeight && !this.loading && this.total / this.pageSize > this.pageIndex) {
+
+    console.log(scrollTop + clientHeight,scrollHeight);
+    console.log(this.loading);
+
+    if (scrollTop + clientHeight + 5 >= scrollHeight && !this.loading && this.total / this.pageSize > this.pageIndex) {
 
       console.log(this.total / this.pageSize,this.pageIndex);
 

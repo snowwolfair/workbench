@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -8,6 +8,7 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { SettingsService, User } from '@delon/theme';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 
 // rgba(24, 144, 255, 1);
@@ -21,29 +22,31 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
             <img class="logimg" src="/assets/flower.svg" alt="Logo"/>
           </a>
         </div>
-        <ul nz-menu nzMode="horizontal" nzTheme="dark">
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/dashboard">Dashboard</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/tag-pool">标签池</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/3d-view">3D视野</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/about">关于</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/users">用户列表</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/map">地图</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/workspace">工作区</a> 
-          </li>
-        </ul>
+        @if(isSmallScreen){
+          <ul nz-menu nzMode="horizontal" nzTheme="dark">
+            <li nz-menu-item nzMatchRouter>
+              <a routerLink="/dashboard">Dashboard</a>
+            </li>
+            <li nz-menu-item nzMatchRouter>
+              <a routerLink="/tag-pool">标签池</a>
+            </li>
+            <li nz-menu-item nzMatchRouter>
+              <a routerLink="/3d-view">3D视野</a>
+            </li>
+            <li nz-menu-item nzMatchRouter>
+              <a routerLink="/about">关于</a>
+            </li>
+            <li nz-menu-item nzMatchRouter>
+              <a routerLink="/users">用户列表</a>
+            </li>
+            <li nz-menu-item nzMatchRouter>
+              <a routerLink="/map">地图</a>
+            </li>
+            <li nz-menu-item nzMatchRouter>
+              <a routerLink="/workspace">工作区</a> 
+            </li>
+          </ul>
+        }
         <div class="avator">
           <div class="alain-default__nav-item d-flex align-items-center px-sm" nz-dropdown nzPlacement="bottomRight" [nzDropdownMenu]="userMenu">
             <nz-avatar [nzSrc]="user.avatar" nzSize="small" class="mr-sm"/>
@@ -145,9 +148,19 @@ export class LayoutBlankComponent {
   private readonly settings = inject(SettingsService);
   private readonly tokenService = inject(DA_SERVICE_TOKEN);
   private readonly router = inject(Router);
+  private readonly breakpointObserver = inject(BreakpointObserver);
+  private cdr = inject(ChangeDetectorRef);
+
+  isSmallScreen = true;
 
   get user(): User {
     return this.settings.user;
+  }
+  ngOnInit(): void {
+    this.breakpointObserver.observe(['(max-width: 800px)']).subscribe(result => {
+      this.isSmallScreen = !result.matches;
+      this.cdr.detectChanges();
+    })
   }
 
   logout(): void {

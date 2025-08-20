@@ -16,12 +16,22 @@ export class DashboardComponent {
   @ViewChild('hotTags') hotTags!: ElementRef;
   myChart: any;
 
-
+  defaultTitle = document.title;
   constructor(
     private msg: NzMessageService
   ) {}
 
   ngOnInit(): void {
+    document.addEventListener('visibilitychange',()=>{
+      if(document.visibilityState == 'hidden'){
+        document.title = '(TAT):D'
+      }else{
+        document.title = '(*V*)'
+        setTimeout(()=>{
+          document.title = this.defaultTitle
+        },1000)
+      }
+    })
     this.getKeywords();
   }
 

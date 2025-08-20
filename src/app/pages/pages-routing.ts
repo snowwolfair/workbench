@@ -8,6 +8,7 @@ import { WorkspaceComponent } from './workspace/workspace.component';
 import { LayoutBlankComponent } from '../layout/blank/blank.component';
 import { TagPoolComponent } from './tag-pool/tag-pool.component';
 import { ThreeViewComponent } from './threeview/3d-view.component';
+import { HomeComponent } from './home/home.component';
 
 
 export const routes: Routes = [
@@ -56,5 +57,6 @@ export const routes: Routes = [
       },
     ]
   },
+  { path: 'home', component: HomeComponent },
   { path: '**', component: DashboardComponent }
 ];
