@@ -51,7 +51,7 @@ export class ThreeViewComponent {
   private renderer!: THREE.WebGLRenderer;
   private cube!: THREE.Mesh
 
-  
+  defaultTitle = document.title;
 
 
   // 定义相机输出画布的尺寸(单位:像素px)
@@ -62,7 +62,16 @@ export class ThreeViewComponent {
 
   }
   ngOnInit() {
-    
+    document.addEventListener('visibilitychange',()=>{
+      if(document.visibilityState == 'hidden'){
+        document.title = '(TAT):D'
+      }else{
+        document.title = '(*V*)'
+        setTimeout(()=>{
+          document.title = this.defaultTitle
+        },1000)
+      }
+    })
   }
 
   ngAfterViewInit() {
