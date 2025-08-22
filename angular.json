@@ -63,7 +63,8 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "outputPath": "dist/production"
             },
             "development": {
               "optimization": false,
