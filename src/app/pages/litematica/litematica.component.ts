@@ -253,9 +253,6 @@ export class LitematicaComponent {
     const scrollHeight = (event.target as HTMLElement).scrollHeight;
     const clientHeight = (event.target as HTMLElement).clientHeight;
 
-    console.log(scrollTop + clientHeight,scrollHeight);
-    console.log(this.loading);
-
     if (scrollTop + clientHeight + 5 >= scrollHeight && !this.loading && this.total / this.pageSize > this.pageIndex) {
 
       console.log(this.total / this.pageSize,this.pageIndex);

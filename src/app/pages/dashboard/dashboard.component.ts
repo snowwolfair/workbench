@@ -1,4 +1,5 @@
-import { Component, ViewChild, inject, ElementRef, AfterViewInit} from '@angular/core';
+import { Component, ViewChild, inject, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -21,19 +22,27 @@ export class DashboardComponent {
     private msg: NzMessageService
   ) {}
 
+  timeoutID: any;
+
+
   ngOnInit(): void {
     document.addEventListener('visibilitychange',()=>{
       if(document.visibilityState == 'hidden'){
         document.title = '(TAT):D'
       }else{
         document.title = '(*V*)'
-        setTimeout(()=>{
+        this.timeoutID = setTimeout(()=>{
           document.title = this.defaultTitle
         },1000)
       }
     })
     this.getKeywords();
   }
+
+  ngOnDestroy () {
+    clearTimeout(this.timeoutID);
+  }
+
 
   ngAfterViewInit(): void {
     this.myChart = echarts.init(this.hotTags.nativeElement);

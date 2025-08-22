@@ -51,6 +51,8 @@ export class ThreeViewComponent {
   private renderer!: THREE.WebGLRenderer;
   private cube!: THREE.Mesh
 
+  gui = new GUI();
+
  
 
 
@@ -62,7 +64,10 @@ export class ThreeViewComponent {
 
   }
   ngOnInit() {
-    
+    this.gui.add(this.geometryValue, 'x', 10, 200).onChange(() => this.updateScene());
+    this.gui.add(this.geometryValue, 'y', 10, 200).onChange(() => this.updateScene());
+    this.gui.add(this.geometryValue, 'z', 10, 200).onChange(() => this.updateScene());
+
   }
 
   ngAfterViewInit() {
