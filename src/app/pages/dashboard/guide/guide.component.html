@@ -1,0 +1,135 @@
+
+<nz-steps nzType="navigation"  [nzCurrent]="index" (nzIndexChange)="onIndexChange($event)" nzSize="small">
+  <nz-step nzTitle="主菜单介绍" nzIcon="user"></nz-step>
+  <nz-step nzTitle="逆变器详情" nzIcon="user"></nz-step>
+  <nz-step nzTitle="默认值" nzIcon="user"></nz-step>
+  <nz-step nzTitle="工单处理" nzIcon="user"></nz-step>
+  <nz-step nzTitle="全屏模式" nzIcon="user"></nz-step>
+  <nz-step nzTitle="语言切换" nzIcon="user"></nz-step>
+  <nz-step nzTitle="用户信息" nzIcon="user"></nz-step>
+</nz-steps>
+
+<div class="steps-content">
+  @switch (index) {
+    @case (0) {
+      上部按钮介绍：
+      <div class="title-bar">
+        <!-- <button>展开和收起侧边栏</button> -->
+
+        <img src="assets/guide/title-bar.png" alt="菜单栏">
+      </div>
+      <p>
+        1. 展开和收起侧边栏
+      </p>
+      <p>
+        2. 搜索栏
+      </p>
+      <p>
+        3. 通知栏
+      </p>
+      <p>
+        <a class="guide-link" (click)="onIndexChange(3)">4. 工单处理</a>
+      </p>
+      <p>
+        5. 全屏模式
+      </p>
+      <p>
+        6. 语言切换
+      </p>
+      <p>
+        7. 用户信息
+      </p>
+    }
+    @case (1) {
+      
+      <img src="assets/guide/dashboard.png" alt="逆变器详情">
+      <p>
+        1. 逆变器详情
+      </p>
+    }
+    @case (2) {
+      默认值
+    }
+    @case (3) {
+      逆变器详情
+    }
+    @case (4) {
+      逆变器详情
+    }
+    @case (5) {
+      逆变器详情
+    }
+    @case (6) {
+      逆变器详情
+    }
+    @default {
+      Default case.
+    }
+  }
+</div>
+<div class="steps-action">
+  @if (index > 0) {
+    <button nz-button nzType="default" (click)="pre()">
+      <span>Previous</span>
+    </button>
+  }
+  @if (index < maxIndex) {
+    <button nz-button nzType="default" (click)="next()">
+      <span>Next</span>
+    </button>
+  }
+  @if (index === maxIndex) {
+    <button nz-button nzType="primary" routerLink="/dashboard/home">
+      <span>Done</span>
+    </button>
+  }
+</div>
+<!-- <div class="slider" id="slider" [style.height.px]="height">
+  <div class="left-box" id="left-box">
+    <div class="test-item">
+
+      <h2>123
+           这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for 
+
+      </h2>
+
+    </div>
+    <div class="test-item">
+        这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for 
+
+    </div>
+    <div class="test-item">
+        这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for 
+
+    </div>
+    <div class="test-item">
+       这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for 
+
+    </div>
+    <div class="test-item">
+       这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for 
+    </div>
+    <div class="test-item">
+       这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for 
+    </div>
+    <div class="test-item">
+       这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for 
+    </div>
+    <div class="test-item">
+       这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for 
+    </div>
+    <div class="test-item">
+       这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for 
+    </div>
+    <div class="test-item">
+       这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for 
+    </div>
+    <div class="test-item">
+       这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for 
+    </div>
+    
+  </div>
+  <div class="right-box">
+    <nz-slider nzVertical nzReverse [nzMin]="0" [nzMax]="10" [ngModel]="nowstep" (nzOnAfterChange)="setstep($event)"></nz-slider>
+  </div>
+</div> -->

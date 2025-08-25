@@ -1,5 +1,5 @@
 import { Component, ViewChild, inject, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-
+import { RouterLink } from '@angular/router';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -9,7 +9,8 @@ import * as echarts from 'echarts';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [NzButtonModule],
+  imports: [NzButtonModule,RouterLink],
+
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.less'
 })

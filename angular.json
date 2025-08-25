@@ -40,7 +40,9 @@
               "src/theme.less",
               "src/styles.less"
             ],
-            "scripts": [],
+            "scripts": [
+              
+            ],
             "allowedCommonJsDependencies": [
               "ajv",
               "ajv-formats",

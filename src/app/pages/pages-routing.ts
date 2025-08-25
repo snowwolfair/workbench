@@ -20,7 +20,7 @@ export const routes: Routes = [
     },
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent,
+      { path: 'dashboard', loadChildren: () => import('./dashboard/routes').then(m => m.routes),
         data: {
           breadcrumb: '首页',
         }
