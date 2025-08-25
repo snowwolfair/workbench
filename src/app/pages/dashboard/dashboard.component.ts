@@ -1,6 +1,11 @@
 import { Component, ViewChild, inject, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { tap, timer } from 'rxjs';
+
+import { OnboardingConfig, OnboardingService } from '@delon/abc/onboarding';
+import { _HttpClient } from '@delon/theme';
+
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import "echarts-wordcloud";
@@ -15,6 +20,68 @@ import * as echarts from 'echarts';
   styleUrl: './dashboard.component.less'
 })
 export class DashboardComponent {
+  private readonly Obsrv = inject(OnboardingService);
+  private readonly http = inject(_HttpClient);
+
+
+  start() {
+    this.Obsrv.start({
+      items:[
+        {
+          selectors: '.hot-tags-title',
+          content: 'first step',
+          next: 'next',
+          width: 300,
+          url: '/dashboard/home',
+          before: timer(0).pipe(
+            tap(() => {
+              document.querySelector('.hot-tags-title')?.classList.add('guide-highlight');
+            })
+          ),
+          after: timer(0).pipe(
+            tap(() => {
+              document.querySelector('.hot-tags-title')?.classList.add('guide-highlight');
+            })
+          )
+        },
+        {
+          selectors: '.title-bar',
+          content: 'second step',
+          next: 'next',
+          width: 300,
+          url: '/dashboard/guide',
+          before: timer(0).pipe(
+            tap(() => {
+              document.querySelector('.title-bar')?.classList.add('guide-highlight');
+            })
+          ),
+          after: timer(0).pipe(
+            tap(() => {
+              document.querySelector('.title-bar')?.classList.add('guide-highlight');
+            })
+          )
+        },
+        {
+          selectors: '.workspace-main',
+          content: 'mian work',
+          width: 300,
+          url: '/workspace',
+          before: timer(0).pipe(
+            tap(() => {
+              document.querySelector('.workspace-main')?.classList.add('guide-highlight');
+            })
+          ),
+          after: timer(0).pipe(
+            tap(() => {
+              document.querySelector('.workspace-main')?.classList.add('guide-highlight');
+            })
+          )
+        }
+      ]
+    });
+  }
+
+
   @ViewChild('hotTags') hotTags!: ElementRef;
   myChart: any;
 
@@ -77,14 +144,12 @@ export class DashboardComponent {
 
   keywords =[
       {"name":"怪猎","value":80},
-      {"name":"上班","value":100},
       {"name":"抽象","value":30},
       {"name":"早上好","value":100},
       {'name':'我的世界',"value":50},
       {'name':'科技',"value":90},
       {'name':'模组',"value":10},
       {'name':'实用',"value":20},
-      {'name':'cnm',"value":30},
   ]
   option = {
     tooltip: {
@@ -147,5 +212,6 @@ export class DashboardComponent {
       data:this.keywords
     }]
   };
+
 
 }

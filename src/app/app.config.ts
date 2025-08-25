@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ALAIN_CONFIG } from '@delon/util';
-import { ALAIN_SETTING_KEYS } from '@delon/theme';
+import { ALAIN_SETTING_KEYS, provideAlain } from '@delon/theme';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { environment } from '@env/environment';
@@ -26,6 +26,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { MockRequest } from '@delon/mock';
 import { authSimpleInterceptor, provideAuth } from '@delon/auth';
 import { I18NService, defaultInterceptor, provideBindAuthRefresh, provideStartup } from '@core';
+
 
 registerLocaleData(zh);
 
@@ -47,6 +48,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(FormsModule),
     importProvidersFrom(NzModalModule),
     importProvidersFrom(NzIconModule),
+    provideAlain({}),
 
     provideAnimationsAsync(),
     provideHttpClient(withInterceptors([...(environment.interceptorFns ?? []), authSimpleInterceptor, defaultInterceptor])),

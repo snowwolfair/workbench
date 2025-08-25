@@ -123,7 +123,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
     .ant-layout-header {
       height: 64px;
       padding: 0 5px;
-      color: rgba(255, 255, 255, 0.85);
+      color: rgba(255, 255, 255, 1);
       line-height: 64px;
       background: rgba(0, 0, 0, 1);
       display: flex;
