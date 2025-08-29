@@ -109,7 +109,10 @@
               }
             ],
             "styles": [
-              "src/styles.less"
+              "src/styles.less",
+              {
+                "input": "node_modules/@delon/theme/theme-default.less"
+              }
             ],
             "scripts": []
           }
