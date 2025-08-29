@@ -6,7 +6,7 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-login',
   imports: [TopNavBarComponent, RouterOutlet],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.less'
 })
 export class LoginComponent {
 
