@@ -40,6 +40,11 @@
               "src/theme.less",
               "src/styles.less"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules"
+              ]
+            },
             "scripts": [
               
             ],
