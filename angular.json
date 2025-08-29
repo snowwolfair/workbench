@@ -114,6 +114,11 @@
                 "input": "node_modules/@delon/theme/theme-default.less"
               }
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules"
+              ]
+            },
             "scripts": []
           }
         }
