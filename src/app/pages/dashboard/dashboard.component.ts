@@ -11,7 +11,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import "echarts-wordcloud";
 import * as echarts from 'echarts';
 
-// import APlayer from 'APlayer';
+import APlayer from 'aplayer';
 
 
 @Component({
@@ -19,7 +19,7 @@ import * as echarts from 'echarts';
   imports: [NzButtonModule,RouterLink],
 
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.less'
+  styleUrls: ['./dashboard.component.less']
 })
 export class DashboardComponent {
   private readonly Obsrv = inject(OnboardingService);
@@ -94,7 +94,7 @@ export class DashboardComponent {
 
   timeoutID: any;
 
-
+  ap: any;
   ngOnInit(): void {
     document.addEventListener('visibilitychange',()=>{
       if(document.visibilityState == 'hidden'){
@@ -128,6 +128,19 @@ export class DashboardComponent {
     //   console.log(params);
     //   // this.msg.success(params.name + '被鼠标悬停了');
     // });
+
+    this.ap = new APlayer({
+
+      container: document.getElementById('aplayer'),
+      audio: [
+        {
+          name: '你好',
+          artist: '周杰伦',
+          url: 'https://music.163.com/song/media/outer/url?id=347230.mp3',
+          cover: 'https://p1.music.126.net/64t8y9hU2Yj3R3Y9hU2YjQ==/109951163235222221.jpg',
+        },
+      ],
+    });
 
   }
 
@@ -215,16 +228,5 @@ export class DashboardComponent {
     }]
   };
 
-  // ap = new APlayer({
-  //   container: document.getElementById('aplayer'),
-  //   fixed: true,
-  //   audio: [
-  //     {
-  //       name: '你好',
-  //       artist: '周杰伦',
-  //       url: 'https://music.163.com/song/media/outer/url?id=347230.mp3',
-  //       cover: 'https://p1.music.126.net/64t8y9hU2Yj3R3Y9hU2YjQ==/109951163235222221.jpg',
-  //     },
-  //   ],
-  // });
+
 }
