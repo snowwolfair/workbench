@@ -5,8 +5,10 @@ import { DA_SERVICE_TOKEN } from '@delon/auth';
 import { ThemeBtnComponent } from '@delon/theme/theme-btn';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
+
 @Component({
   selector: 'layout-passport',
+  templateUrl: './passport.component.html',
   template: `
     <div class="container">
       <div class="wrap">

@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AboutComponent } from './about/about.component';
 import { UsersComponent } from './users/users.component';
@@ -57,6 +56,7 @@ export const routes: Routes = [
       },
     ]
   },
-  { path: 'home', component: HomeComponent },
-  { path: '**', component: DashboardComponent }
+  // passport
+  { path: '', loadChildren: () => import('./passport/routes').then(m => m.routes) },
+  { path: '**', redirectTo: 'exception/404' }
 ];
