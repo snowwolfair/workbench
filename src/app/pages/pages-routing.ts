@@ -56,6 +56,8 @@ export const routes: Routes = [
       },
     ]
   },
+  //先导页
+  { path: 'home', loadChildren: () => import('./home/home.component').then(m => m.HomeComponent) },
   // passport
   { path: '', loadChildren: () => import('./passport/routes').then(m => m.routes) },
   { path: '**', redirectTo: 'exception/404' }

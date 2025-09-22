@@ -1,0 +1,26 @@
+@keyframes sticky-parallax-header-move-and-size {
+	from {
+		background-position: 50% 0;
+		height: 100vh;
+		font-size: calc(4vw + 1em);
+	}
+	to {
+		background-position: 50% 100%;
+		background-color: #0b1584;
+		height: 10vh;
+		font-size: 2em;
+	}
+}
+
+#sticky-parallax-header {
+	position: fixed;
+	top: 0;
+
+	animation: sticky-parallax-header-move-and-size linear forwards;
+	animation-timeline: scroll();
+	animation-range: 0vh 90vh;
+}
+
+body {
+	padding-top: 100vh;
+}

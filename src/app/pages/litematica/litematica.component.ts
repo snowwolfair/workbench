@@ -14,6 +14,8 @@ import { _HttpClient } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { LitematicaDetailComponent } from './litematica-detail/litematica-detail.component';
 import { ScrollDispatcher, ScrollingModule } from '@angular/cdk/scrolling';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 
 
 
@@ -216,8 +218,12 @@ export class LitematicaComponent {
           page: this.pageIndex,
           limit: this.pageSize
       })
+      .pipe(
+        tap((res: any) => {
+          console.log(res);
+        })
+      )
       .subscribe((res: any) => {
-        console.log(res);
         if (res.success) {
             if(this.ftion === 1){
               this.listOfData = [...this.listOfData, ...res.data];
