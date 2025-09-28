@@ -8,12 +8,17 @@ import { LayoutBlankComponent } from '../layout/blank/blank.component';
 import { TagPoolComponent } from './tag-pool/tag-pool.component';
 import { ThreeViewComponent } from './threeview/3d-view.component';
 import { HomeComponent } from './home/home.component';
-
+import { authSimpleCanActivate, authSimpleCanActivateChild } from '@delon/auth';
+import { startPageGuard } from '@core';
 
 export const routes: Routes = [
-  // { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: '',
+  { path: '', component: HomeComponent },
+  // passport
+  { path: '', loadChildren: () => import('./passport/routes').then(m => m.routes) },
+  { path: 'workbench',
     component: LayoutBlankComponent,
+    canActivate: [startPageGuard, authSimpleCanActivate],
+    canActivateChild: [authSimpleCanActivateChild],
     data: {
       breadcrumb: '首页',
     },
@@ -56,9 +61,7 @@ export const routes: Routes = [
       },
     ]
   },
+  
   //先导页
-  { path: 'home', loadChildren: () => import('./home/home.component').then(m => m.HomeComponent) },
-  // passport
-  { path: '', loadChildren: () => import('./passport/routes').then(m => m.routes) },
   { path: '**', redirectTo: 'exception/404' }
 ];

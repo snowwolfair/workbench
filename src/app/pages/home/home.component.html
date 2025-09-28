@@ -1,23 +1,66 @@
-<h1 id="sticky-parallax-header">欢迎来到首页</h1>
-<p>这是一个使用Angular路由的示例应用。</p>
-<div class="left-box">
+<div id="sticky-parallax-header" class="title cant-select">
+    <span>欢迎来到首页</span>
+    <span class="title-desc mb-20">
+      TEST
+      <a href="https://github.com/snowwolfair" target="_blank"><i nz-icon nzType="github" nzTheme="outline"></i>{{`@Snowwolf`}}</a>
+      TEST</span>
+    <button (click)="joinUs()" style="cursor: pointer;">加入我们</button>
+</div>
+<div class="container">
+  <div class="left-box"> 
+    <nz-affix [nzOffsetTop]="vhInPx" #affixLeftBox>
+
+      <div class="g-bg">
+        <div class="g-polygon g-polygon-1"></div>
+        <div class="g-polygon g-polygon-2"></div>
+        <div class="g-polygon g-polygon-3"></div>
+      </div>
+
+      <div class="affix-self" style="margin: 0px 15px 15px 15px;">
+        <div class="avatar">
+          <img src="assets/rgba.png" alt="" class="mb-20 cant-select" style="width: 80px; margin-top: 10px;">
+          <span>test: Dragon_Flight</span>
+        </div>
+        <nz-divider nzText="称&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号" class="cant-select"></nz-divider>
+        <div class="tag-label">
+          <div class="shiny-tag cant-select" style="background: linear-gradient(45deg, #3eee09, #198622);">
+            测试
+          </div>
+          <div class="shiny-tag cant-select" style="background: linear-gradient(45deg, #c6eff7, #0cd9fd);">
+            测试
+          </div>
+          <div class="shiny-tag cant-select" style="background: linear-gradient(45deg, #FFD700, #FFA500);">
+            <img src="assets/kingicon.png" alt="" style="width: 20px;">
+             测试tag
+          </div>
+        </div>
+        <nz-divider nzText="测试&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;精选" class="cant-select"></nz-divider>
+        <div class="aplayers">
+          <div id="aplayer"></div>
+        </div>
+        <nz-divider nzText="目&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录" class="cant-select"></nz-divider>
+        <a href="#sticky-parallax-header">返回顶部</a>
+        <a href="#hot-tags">热门标签</a>
+      </div>
+      
+    
+    </nz-affix>
+  </div>
+  <div class="right-box">
+    <div class="right-box-1 label-box">
+      <h2>最新动态</h2>
+      <img src="assets/kingicon.png" alt="" style="width: 20px;">
+    </div>
+    <div class="right-box-2 label-box">
+      <h2>最新动态</h2>
+    </div>
+    <div class="right-box-3 label-box">
+      <h2>最新动态</h2>
+      <div>
+      <button nz-button (click)="gotoLogin()">加入我们</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
-</div>
-<div class="right-box">
-    <div class="right-box-1">
-        <h2>最新动态</h2>
-    </div>
-    <div class="right-box-2">
-        <h2>最新动态</h2>
-    </div>
-    <div class="right-box-3">
-        <h2>最新动态</h2>
-    </div>
-</div>
-
-<div>
-    <div>
-        <button nz-button>加入我们</button>
-    </div>
-</div>

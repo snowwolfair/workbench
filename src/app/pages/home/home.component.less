@@ -15,12 +15,203 @@
 #sticky-parallax-header {
 	position: fixed;
 	top: 0;
+	width: 100%;
+	color: aliceblue;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: rgb(196, 176, 158);
+	background-size: cover;
+	background-position: 50% 0;
 
 	animation: sticky-parallax-header-move-and-size linear forwards;
 	animation-timeline: scroll();
 	animation-range: 0vh 90vh;
 }
 
-body {
+
+@keyframes sticky-text {
+	from {
+		font-size: 25px;
+	}
+	to {
+		font-size: 14px;
+		opacity: 0;
+	}
+}
+
+.title {
+	&-desc {
+		animation: sticky-text linear forwards;
+		animation-timeline: scroll();
+		animation-range: 0vh 90vh;
+	}
+}
+
+.title button {
+	font-size: 12px;
+	border-radius: 20px;
+	background-color: #0b1584;
+	color: aliceblue;
+	opacity: 0.2;
+}
+.container {
 	padding-top: 100vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.left-box {
+  // flex: 1;
+  width: 384px;
+  position: relative
+}
+
+.right-box {
+  flex: 1;
+	height: 200vh;
+  padding-top: 2px;
+  margin: 0 auto 0;
+}
+.affix-self {
+	border-radius: 15px;
+  display: flex;
+	flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, .7);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  opacity: 0.8;
+}
+
+.affix-self img {
+	border-radius: 50%;
+}
+
+.mb-20 {
+	margin-bottom: 20px;
+}
+
+.label-box {
+  padding: 10px;
+  width: 100%;
+  height: 600px;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+}
+
+
+.g-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.g-bg::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        backdrop-filter: blur(150px);
+        z-index: 1;
+    }
+
+.g-polygon {
+  position: absolute;
+  opacity: .5;
+  width: 100%;
+  height: 100%;
+}
+.g-polygon-1 {
+  // 定位代码，容器高宽随意
+  background: #ffee55;
+  clip-path: polygon(0 10%, 30% 0, 100% 40%, 70% 100%, 20% 90%);
+}
+
+.g-polygon-2 {
+    // 定位代码，容器高宽随意
+    top: 30%;
+    background: #E950D1;
+    clip-path: polygon(10% 0, 100% 70%, 100% 100%, 20% 90%);
+}
+
+.g-polygon-3 {
+    // 定位代码，容器高宽随意
+    top: 70%;
+    background: rgba(87, 80, 233);
+    clip-path: polygon(80% 0, 100% 70%, 100% 100%, 20% 90%);
+}
+
+.avatar {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+}
+
+.shiny-tag {
+  position: relative;
+  display: inline-block;
+  margin: 10px 10px;
+  padding: 1px 10px;
+  color: #2c3e50;
+  font-weight: bold;
+  border-radius: 8px; /* 圆润 */
+  font-size: 16px;
+  letter-spacing: 1px;
+  overflow: hidden; /* 隐藏闪光溢出 */
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); /* 发光阴影 */
+  z-index: 1; /* 确保层级 */
+}
+
+.shiny-tag::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.8), /* 闪光线颜色 */
+    transparent
+  );
+  transform: rotate(30deg); /* 闪光角度 */
+  animation: shine 2s infinite ease-in-out; /* 动画 */
+  z-index: 2; /* 在文字上方，但低于伪元素自身可能的遮挡 */
+}
+
+@keyframes shine {
+  0% {
+    left: -60%;
+  }
+  40%, 60% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.tag-label {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  align-items: center;
+  padding: 10px;
+}
+
+.cant-select {
+  -webkit-user-select: none;
+  -ms-user-select: none; 
+  user-select: none;
 }
