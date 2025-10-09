@@ -7,7 +7,7 @@ import {
   withInMemoryScrolling,
   withHashLocation,
   RouterFeatures,
-  withViewTransitions
+  withViewTransitions,
 } from '@angular/router';
 import { routes } from './pages/pages-routing';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
@@ -56,7 +56,7 @@ const alainConfig: AlainConfig = {
 const routerFeatures: RouterFeatures[] = [
   withComponentInputBinding(),
   withViewTransitions(),
-  withInMemoryScrolling({ scrollPositionRestoration: 'top' })
+  withInMemoryScrolling({ scrollPositionRestoration: 'top'})
 ];
 if (environment.useHash) routerFeatures.push(withHashLocation());
 
@@ -79,4 +79,5 @@ export const appConfig: ApplicationConfig = {
     provideStartup(),
     ...(environment.providers || [])
   ]
+  
 };

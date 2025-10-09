@@ -25,25 +25,25 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
         @if(isSmallScreen){
           <ul nz-menu nzMode="horizontal" nzTheme="dark">
             <li nz-menu-item nzMatchRouter>
-              <a routerLink="/dashboard">Dashboard</a>
+              <a routerLink="/workbench/dashboard">Dashboard</a>
             </li>
             <li nz-menu-item nzMatchRouter>
-              <a routerLink="/tag-pool">标签池</a>
+              <a routerLink="/workbench/tag-pool">标签池</a>
             </li>
             <li nz-menu-item nzMatchRouter>
-              <a routerLink="/3d-view">3D视野</a>
+              <a routerLink="/workbench/3d-view">3D视野</a>
             </li>
             <li nz-menu-item nzMatchRouter>
-              <a routerLink="/about">关于</a>
+              <a routerLink="/workbench/about">关于</a>
             </li>
             <li nz-menu-item nzMatchRouter>
-              <a routerLink="/users">用户列表</a>
+              <a routerLink="/workbench/users">用户列表</a>
             </li>
             <li nz-menu-item nzMatchRouter>
-              <a routerLink="/map">地图</a>
+              <a routerLink="/workbench/map">地图</a>
             </li>
             <li nz-menu-item nzMatchRouter>
-              <a routerLink="/workspace">工作区</a> 
+              <a routerLink="/workbench/workspace">工作区</a> 
             </li>
           </ul>
         }
