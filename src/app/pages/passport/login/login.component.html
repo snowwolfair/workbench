@@ -58,7 +58,7 @@
       <label nz-checkbox formControlName="remember">{{ 'app.login.remember-me' | i18n }}</label>
     </nz-col>
     <nz-col [nzSpan]="12" class="text-right">
-      <a class="forgot" routerLink="/passport/register">{{ 'app.login.forgot-password' | i18n }}</a>
+      <a class="forgot" routerLink="/passport/passport/register">{{ 'app.login.forgot-password' | i18n }}</a>
     </nz-col>
   </nz-form-item>
   <nz-form-item>
@@ -72,5 +72,5 @@
   <i nz-tooltip nzTooltipTitle="in fact Auth0 via window" (click)="open('auth0', 'window')" nz-icon nzType="alipay-circle" class="icon"></i>
   <i nz-tooltip nzTooltipTitle="in fact Github via redirect" (click)="open('github')" nz-icon nzType="taobao-circle" class="icon"></i>
   <i (click)="open('weibo', 'window')" nz-icon nzType="weibo-circle" class="icon"></i>
-  <a class="register" routerLink="/passport/register">{{ 'app.login.signup' | i18n }}</a>
+  <a class="register" routerLink="/passport/passport/register">{{ 'app.login.signup' | i18n }}</a>
 </div>

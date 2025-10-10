@@ -1,0 +1,44 @@
+.colorful-tag {
+  position: relative;
+  display: inline-block;
+  margin: 10px 10px;
+  padding: 1px 10px;
+  color: #2c3e50;
+  font-weight: bold;
+  border-radius: 8px; /* 圆润 */
+  font-size: 16px;
+  letter-spacing: 1px;
+  overflow: hidden; /* 隐藏闪光溢出 */
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); /* 发光阴影 */
+  z-index: 1; /* 确保层级 */
+}
+
+.colorful-tag::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.8), /* 闪光线颜色 */
+    transparent
+  );
+  transform: rotate(30deg); /* 闪光角度 */
+  animation: shine 2s infinite ease-in-out; /* 动画 */
+  z-index: 2; /* 在文字上方，但低于伪元素自身可能的遮挡 */
+}
+
+@keyframes shine {
+  0% {
+    left: -60%;
+  }
+  40%, 60% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}

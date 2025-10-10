@@ -1,12 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { Router } from '@angular/router';
+import { Router, InMemoryScrollingOptions, withInMemoryScrolling, InMemoryScrollingFeature } from '@angular/router';
 import { NzAffixModule } from 'ng-zorro-antd/affix';
 import { NzDividerComponent } from "ng-zorro-antd/divider";
 import { ElementRef, ViewChild, HostListener } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { CommonModule } from '@angular/common';
+import { _HttpClient } from '@delon/theme';
+import { ColorfulTagComponent } from '../../components/home/colorful-tag.component';
+import { HttpContext } from '@angular/common/http';
+import { ALLOW_ANONYMOUS } from '@delon/auth';
+
 
 import APlayer from 'aplayer';
 
@@ -16,14 +21,16 @@ import APlayer from 'aplayer';
     NzButtonModule,
     NzAffixModule,
     NzDividerComponent,
-    CommonModule
+    CommonModule,
+    ColorfulTagComponent
 ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.less'
 })
 export class HomeComponent {
   @ViewChild('stickyParallaxHeader') stickyParallaxHeader!: ElementRef;
-  @ViewChild('affixLeftBox') affixLeftBox;
+
+  private readonly http = inject(_HttpClient);
 
   constructor( 
     public router:Router,
@@ -31,9 +38,38 @@ export class HomeComponent {
   ){}
 
   ap: any;
-  array = [1, 2, 3, 4];
+  tagData: any[] = [];
+
+  scrollConfig: InMemoryScrollingOptions = {
+    anchorScrolling: 'enabled'
+  };
+
+  inMemoryScrollingFeature: InMemoryScrollingFeature = withInMemoryScrolling(this.scrollConfig);
+
+  ngOnInit(): void {
+    
+    //  获取用户tag信息
+    //  type = 1 : 获取用户tag信息
+    //  type = 2 : 获取可用的所有tag
+    //  id : 用户id
+    this.http.get('/cssser/getData',
+      {
+          type: 1,
+          id: 1,
+      },
+      {
+        context: new HttpContext().set(ALLOW_ANONYMOUS, true)
+      }
+    ).subscribe((res: any) => {
+        this.tagData = res.data;
+        console.log(this.tagData[0].name);
+    });
+
+  }
 
   ngAfterViewInit(): void {
+
+    // 初始化aplayer
     this.ap = new APlayer({
 
       container: document.getElementById('aplayer'),
@@ -57,12 +93,19 @@ export class HomeComponent {
   
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
+
+    // 监听窗口变化，更新固钉的位置
     this.vhInPx = window.innerHeight * 0.1;
     this.vwInPx = window.innerWidth * 0.2;
   }
 
   gotoLogin() {
-    this.router.navigateByUrl('/passport/login');
+    this.router.navigateByUrl('/passport/passport/login');
+  }
+
+
+  scrollTo(id: string) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   }
 
   joinUs() {
@@ -70,13 +113,32 @@ export class HomeComponent {
     // this.router.navigateByUrl('/passport/register');
   }
 
-  onChange(status: boolean) {
-    if(status){
-      
-      this.affixLeftBox.affixStyle.width = this.vwInPx + 'px';
-      
-    }else{
-    }
-  }
-  
+  // minArraySum(nums: number[], k: number): number {
+  //   let changed = true;
+  //   while (changed && nums.length > 0) {
+  //     changed = false;
+  //     for (let j = 0; j < nums.length; j++) {
+  //       let sum = 0;
+  //       let h = 0;
+  //       for (let i = j; i < nums.length; i++) {
+  //           sum += nums[i];
+  //           h++;
+  //           console.log(sum);
+  //           console.log(h);
+  //           console.log(i);
+  //           if (sum % k == 0) {
+  //               nums.splice(j, h)
+  //               console.log(nums);
+  //               changed = true;
+  //               break;
+  //           }
+  //       }
+  //       if (changed) {
+  //         break;
+  //       }
+  //     }
+  //   };
+  //   console.log(nums.reduce((a, b) => a + b, 0));
+  //   return nums.reduce((a, b) => a + b, 0);
+  // }
 }

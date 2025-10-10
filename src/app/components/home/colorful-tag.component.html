@@ -1,0 +1,11 @@
+<div class="colorful-tag" [style.background]="gradientStyle">
+  <div style="display: flex; align-items: center;">
+     @if (data?.icon) {
+      <img [src]="data.icon" alt="Icon" style="width: 20px; margin-right: 5px;">
+    }
+
+    <span class="tag-text">
+      {{data?.name || '无名称'}}
+    </span>
+  </div>
+</div>
