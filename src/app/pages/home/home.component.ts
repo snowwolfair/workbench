@@ -113,32 +113,35 @@ export class HomeComponent {
     // this.router.navigateByUrl('/passport/register');
   }
 
-  // minArraySum(nums: number[], k: number): number {
-  //   let changed = true;
-  //   while (changed && nums.length > 0) {
-  //     changed = false;
-  //     for (let j = 0; j < nums.length; j++) {
-  //       let sum = 0;
-  //       let h = 0;
-  //       for (let i = j; i < nums.length; i++) {
-  //           sum += nums[i];
-  //           h++;
-  //           console.log(sum);
-  //           console.log(h);
-  //           console.log(i);
-  //           if (sum % k == 0) {
-  //               nums.splice(j, h)
-  //               console.log(nums);
-  //               changed = true;
-  //               break;
-  //           }
-  //       }
-  //       if (changed) {
-  //         break;
-  //       }
-  //     }
-  //   };
-  //   console.log(nums.reduce((a, b) => a + b, 0));
-  //   return nums.reduce((a, b) => a + b, 0);
-  // }
+  isPalindrome(x: number){
+    let rev = 0
+    let max = (2 ** 31 - 1) / 10, min = ((-2) ** 31) / 10;
+    console.log(max,min);
+
+    while(true){
+        let temp = 0;
+        temp = x % 10;
+        console.log(rev);
+        console.log(rev < max,rev > min);
+        if(rev < max && rev > min){
+          if(x < 0){
+            rev = rev * 10 + temp;
+            x = Math.ceil(x / 10);
+            console.log(rev,x);
+          }else if (x > 0){
+            rev = rev * 10 + temp;
+            x = Math.floor(x / 10);
+            console.log(rev,x);
+          }
+            if(x == 0){
+                break;
+            }
+        }else{
+          console.log(rev,x);
+            return 0;
+        }
+    }
+    console.log(rev);
+    return rev;
+  };
 }

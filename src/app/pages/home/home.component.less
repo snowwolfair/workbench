@@ -1,10 +1,10 @@
 @keyframes sticky-parallax-header-move-and-size {
-	from {
+	0% {
 		background-position: 50% 0;
 		height: 100vh;
 		font-size: calc(4vw + 1em);
 	}
-	to {
+	100% {
 		background-position: 50% 100%;
 		background-color: #0b1584;
 		height: 10vh;
@@ -32,12 +32,18 @@
 
 
 @keyframes sticky-text {
-	from {
+	0% {
 		font-size: 25px;
 	}
-	to {
-		font-size: 14px;
+  60% {
+    position: absolute;
 		opacity: 0;
+  }
+	100% {
+		font-size: 14px;
+    position: absolute;
+		opacity: 0;
+    pointer-events: none
 	}
 }
 
@@ -49,12 +55,27 @@
 	}
 }
 
+@keyframes sticky-text-button {
+	from {
+		font-size: 12px;
+	}
+	to {
+		font-size: 4px;
+    position: absolute;
+		opacity: 0;
+    pointer-events: none
+	}
+}
+
 .title button {
 	font-size: 12px;
 	border-radius: 20px;
 	background-color: #0b1584;
 	color: aliceblue;
 	opacity: 0.2;
+  animation: sticky-text-button linear forwards;
+	animation-timeline: scroll();
+	animation-range: 0vh 90vh;
 }
 .container {
 	padding-top: 100vh;
@@ -211,11 +232,11 @@
   padding: 10px;
 }
 
-.cant-select {
-  -webkit-user-select: none;
-  -ms-user-select: none; 
-  user-select: none;
-}
+// .cant-select {
+//   -webkit-user-select: none;
+//   -ms-user-select: none; 
+//   user-select: none;
+// }
 
 html {
   scroll-behavior: smooth;
