@@ -16,6 +16,9 @@ import { LitematicaDetailComponent } from './litematica-detail/litematica-detail
 import { ScrollDispatcher, ScrollingModule } from '@angular/cdk/scrolling';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+
+
 
 
 
@@ -36,7 +39,8 @@ import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
     NzTypographyModule, 
     NzInputModule,
     NzIconModule,
-    ScrollingModule
+    ScrollingModule,
+    NzSpinModule
   ],
   templateUrl: './litematica.component.html',
   styleUrl: './litematica.component.less'
