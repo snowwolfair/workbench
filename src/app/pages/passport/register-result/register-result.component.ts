@@ -13,4 +13,6 @@ import { NzResultModule } from 'ng-zorro-antd/result';
 export class UserRegisterResultComponent {
   readonly msg = inject(NzMessageService);
   @Input() email = '';
+
+  
 }
