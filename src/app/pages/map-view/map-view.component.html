@@ -22,6 +22,10 @@
         </div>
       }
     </div>
+    <div class="control-extra">
+      <button (click)="switchRole()">菜单</button>
+      <button (click)="switchRole()">游戏日志</button>
+    </div>
     @if(showControl){
       <div class="control">
         @for(option of controlOptions; track $index) {

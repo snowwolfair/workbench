@@ -71,20 +71,20 @@ export class MapViewComponent {
     this.roles = [];
     this.playerList = [];
     if(this.radioValue === '12') {
-      this.roles = ['wolf', 'wolf', 'wolf', 'wolf', 'person', 'person', 'person', 'person', 'witch', 'hunter', 'garder', 'prophet'];
+      this.roles = ['wolf', 'wolf', 'wolf', 'wolf', 'villager', 'villager', 'villager', 'villager', 'witch', 'psychic', 'garder', 'prophet'];
       for(let i = 0; i < 12; i++) {
         this.playerList[i] = {
-          id: i+1,
+          id: i,
           name: 'player' + (i + 1),
           role: this.roles[i],
           isAlive: true,
         }
       }
     } else if(this.radioValue === '9') {
-      this.roles = ['wolf', 'wolf', 'wolf', 'person', 'person', 'person', 'witch', 'hunter', 'prophet'];
+      this.roles = ['wolf', 'wolf', 'wolf', 'villager', 'villager', 'villager', 'witch', 'psychic', 'prophet'];
       for(let i = 0; i < 9; i++) {
         this.playerList[i] = {
-          id: i+1,
+          id: i,
           name: 'player' + (i + 1),
           role: this.roles[i],
           isAlive: true,
@@ -119,22 +119,66 @@ export class MapViewComponent {
   //控制台选项
   controlOptions = [
     {
-      label: '显示玩家角色',
-      value: () => this.showPlayerRole = !this.showPlayerRole,
+      label: '谈话',
+      value: 1,
     },
     {
-      label: '显示控制选项',
-      value: () => this.showPlayerRole = !this.showPlayerRole,
+      label: '指定预言',
+      value: 2,
     },
     {
-      label: '显示对话框',
-      value: () => this.showPlayerRole = !this.showPlayerRole,
+      label: '指定守卫',
+      value: 3,
+    },
+    {
+      label: '指定通灵',
+      value: 4,
+    },
+    {
+      label: '女巫行动',
+      value: 5,
+    },
+    {
+      label: '强制投票',
+      value: 6,
+    },
+    {
+      label: '自由投票',
+      value: 7,
+    },
+    {
+      label: '下一日',
+      value: 8,
     },
   ]
 
   // 控制台选项点击事件
   onControlClick(option: any) {
-    option.value();
+    if(option.value === 1) {
+      this.showPlayerRole = !this.showPlayerRole;
+    } else if(option.value === 2) {
+      this.showControl = !this.showControl;
+    } else if(option.value === 3) {
+      this.showModel = !this.showModel;
+    }
+  }
+
+
+
+  freeVote(votes: number[]) {
+    // 自由投票实现
+    // 统计投票结果
+    const voteCount = votes.reduce((acc, vote) => {
+      acc[vote] = (acc[vote] || 0) + 1;
+      return acc;
+    }, {} as Record<number, number>);
+    // 找到投票最多的玩家
+    const maxVotes = Math.max(...Object.values(voteCount));
+    const candidates = Object.keys(voteCount)
+      .filter(key => voteCount[Number(key)] === maxVotes)
+      .map(Number);
+    // 如果有多个玩家获得最多投票，随机选择一个
+    return candidates[Math.floor(Math.random() * candidates.length)];
   }
 
 }
