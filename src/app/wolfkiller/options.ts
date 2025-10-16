@@ -20,10 +20,12 @@ export interface NightAction {
   type: 'kill' | 'see' | 'heal' | 'guard' | 'poison';
   targetId: number;
   actorId: number;
+  result?: boolean; // 刀人结果（成功/失败）
 }
 
 export interface Speech {
   playerId: number;
+  say: NightAction[];
   content: string; // 可简化为关键词或标签，如 ['claim_seer', 'accuse_3']
   day: number;
 }

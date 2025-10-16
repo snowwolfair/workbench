@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { I18nPipe, SettingsService, _HttpClient } from '@delon/theme';
 import { ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, inject } from '@angular/core';
+import { GameState } from '../../wolfkiller/options';
+import { WolflogicService } from '../../wolfkiller/wolf-logic.service';
 
 
 
@@ -23,8 +25,15 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, inject } from '@
 export class MapViewComponent {
   // 这里只保留地图相关逻辑，如需扩展可在此添加
   private readonly http = inject(_HttpClient);
+  constructor(
+    private wolflogicService: WolflogicService
+  ) { }
 
   radioValue = '12'
+
+
+  today = 0;
+  state: GameState[] = [];
 
   wolf = {
 
@@ -59,6 +68,7 @@ export class MapViewComponent {
     this.shuffledRoles = this.shuffle([...this.roles]);
     console.log(this.shuffledRoles);
     this.switchRole();
+    this.gamelink();
   }
 
   //初始化角色和玩家列表
@@ -91,6 +101,13 @@ export class MapViewComponent {
         }
       }
     }
+    // 初始化游戏状态
+    this.state.push({
+      players: this.playerList,
+      nightActions: [],    // 夜晚行为记录（谁被刀、谁被验等）
+      daySpeeches: [],         // 白天发言记录
+      currentDay: 1,
+    });
     console.log(this.roles);
   }
   //洗牌算法
@@ -110,7 +127,7 @@ export class MapViewComponent {
   }
 
 
-  showPlayerRole = false;
+  showPlayerRole = true;
 
   //对话框和控制台切换
   showControl = true;
@@ -154,12 +171,41 @@ export class MapViewComponent {
 
   // 控制台选项点击事件
   onControlClick(option: any) {
-    if(option.value === 1) {
-      this.showPlayerRole = !this.showPlayerRole;
-    } else if(option.value === 2) {
-      this.showControl = !this.showControl;
-    } else if(option.value === 3) {
-      this.showModel = !this.showModel;
+    switch(option.value) {
+      case 1:
+        this.showPlayerRole = !this.showPlayerRole;
+        break;
+      case 2:
+        this.showControl = !this.showControl;
+        break;
+      case 3:
+        this.showModel = !this.showModel;
+        break;
+      case 4:
+        this.showControl = !this.showControl;
+        break;
+      case 5:
+        this.showModel = !this.showModel;
+        break;
+      case 6:
+        this.showControl = !this.showControl;
+        break;
+      case 7:
+        this.showModel = !this.showModel;
+        break;
+      case 8:
+        // 下一日
+        this.today++;
+        // 初始化下一日游戏状态
+        this.state.push({
+          players: this.playerList,
+          nightActions: [],    // 夜晚行为记录（谁被刀、谁被验等）
+          daySpeeches: [],         // 白天发言记录
+          currentDay: this.today + 1,
+        });
+        // 游戏进行
+        this.gamelink();
+        break;
     }
   }
 
@@ -181,4 +227,51 @@ export class MapViewComponent {
     return candidates[Math.floor(Math.random() * candidates.length)];
   }
 
+
+  gamelink(){
+    this.gameNight();
+    this.gameDay();
+
+  }
+
+  gameNight(){
+    for(let i = 0; i < this.playerList.length; i++) {
+      if(!this.playerList[i].isAlive) {
+        continue;
+      }
+      switch(this.playerList[i].role) {
+        case 'wolf':
+          this.state[this.today] = this.wolflogicService.night(this.playerList[i], this.state[this.today]);
+          console.log(this.state);
+          break;
+        case 'villager':
+          this.person[i] = this.playerList[i];
+          break;
+        case 'witch':
+          this.witch[i] = this.playerList[i];
+          break;
+        case 'psychic':
+          this.hunter[i] = this.playerList[i];
+          break;
+        case 'garder':
+          this.garder[i] = this.playerList[i];
+          break;
+        case 'prophet':
+          this.prophet[i] = this.playerList[i];
+          break;
+      }
+
+
+
+      this.state[this.today].nightActions.forEach(action => {
+        if(action.type === 'kill') {
+          this.state[this.today].players[action.targetId].isAlive = false;
+        }
+      });
+    } 
+  }
+
+  gameDay(){
+    
+  }
 }

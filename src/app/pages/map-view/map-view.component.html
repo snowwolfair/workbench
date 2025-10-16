@@ -16,7 +16,7 @@
           </div>
           @if(showPlayerRole){
             <div class="player-role" [ngClass]="{'player-role-red': player.role === 'red', 'player-role-blue': player.role === 'blue'}">
-              {{player.role | i18n}}
+              {{player.role | i18n}} | {{player?.jumpRole | i18n}}
             </div>
           }
         </div>
@@ -25,6 +25,7 @@
     <div class="control-extra">
       <button (click)="switchRole()">菜单</button>
       <button (click)="switchRole()">游戏日志</button>
+      <button (click)="switchRole()">系统日志</button>
     </div>
     @if(showControl){
       <div class="control">

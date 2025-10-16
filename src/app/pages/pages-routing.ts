@@ -12,13 +12,13 @@ import { authSimpleCanActivate, authSimpleCanActivateChild } from '@delon/auth';
 import { startPageGuard } from '@core';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: HomeComponent, title: '首页' },
   // passport
-  { path: '', loadChildren: () => import('./passport/routes').then(m => m.routes) },
+  { path: 'passport', loadChildren: () => import('./passport/routes').then(m => m.routes) },
   { path: 'workbench',
     component: LayoutBlankComponent,
-    canActivate: [startPageGuard, authSimpleCanActivate],
-    canActivateChild: [authSimpleCanActivateChild],
+    // canActivate: [startPageGuard, authSimpleCanActivate],
+    // canActivateChild: [authSimpleCanActivateChild],
     data: {
       breadcrumb: '首页',
     },

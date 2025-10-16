@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Player, GameState } from './options.service';
+import { Player, GameState } from './options';
 import { SuspicionService } from './suspicion.service';
 
 
