@@ -21,7 +21,7 @@ export interface GameState {
 }
 
 export interface NightAction {
-  type: 'kill' | 'see' | 'heal' | 'guard' | 'poison' | 'null';
+  type: 'kill' | 'see' | 'heal' | 'guard' | 'poison' | 'psychic' | 'null';
   targetId: number;
   actorId: number;
   result?: boolean; // 刀人结果（成功/失败）

@@ -33,7 +33,7 @@ export class SuspicionService {
       }
 
       // 神职不被怀疑
-      if (player.jumpRole !== 'villager') {
+      if (player.jumpRole === 'witch' || player.jumpRole === 'prophet' || player.jumpRole === 'garder' || player.jumpRole === 'psychic') {
         score -= 20;
       }
 
@@ -44,7 +44,8 @@ export class SuspicionService {
           .includes(player.id)
       ) {
         score += 20;
-      } else if (
+      }
+      if (
         state.daySpeeches
           .filter(s => s.say.type === 'see' && !s.say.result)
           .map(s => s.say.targetId)

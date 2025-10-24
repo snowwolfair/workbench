@@ -40,6 +40,8 @@ export class MapViewComponent {
   forceVote = false;
   // 指定预言标识
   prophecySign = false;
+  // 指定守卫标识
+  guardSign = false;
 
   // 选择玩家标识
   choosePlayer = false;
@@ -233,6 +235,9 @@ export class MapViewComponent {
           nightActions: [], // 夜晚行为记录（谁被刀、谁被验等）
           daySpeeches: [], // 白天发言记录
           currentDay: this.today + 1,
+          targetProphecy: this.targetProphecy,
+          targetGuard: undefined,
+          vote: this.playerList[this.voted],
           log: this.systemLogs // 系统日志
         });
         // 游戏进行
@@ -252,6 +257,9 @@ export class MapViewComponent {
     return false;
   }
 
+  targetProphecy: any;
+  targetGuard: any;
+
   // 在指定预言，指定守卫，强制投票中
   // 获取鼠标点击的对应玩家
   getPlayer(id: number) {
@@ -260,6 +268,7 @@ export class MapViewComponent {
       this.voteSign = true;
       this.votedSign = false;
       this.target = this.playerList[id];
+      this.state[this.today].log.push(`${this.target.name} 被强制投票`);
       console.log(this.target);
       this.gameVote();
       // 清除选择玩家状态
@@ -274,12 +283,22 @@ export class MapViewComponent {
     }
 
     // 选择玩家后，点击玩家进行预言
+
     if (this.choosePlayer && this.prophecySign) {
-      this.state[this.today].targetProphecy = this.playerList[id];
-      console.log(this.state[this.today].targetProphecy);
+      this.targetProphecy = this.playerList[id];
+      this.state[this.today].log.push(`${this.targetProphecy.name} 被指定预言`);
       // 清除选择玩家状态
       this.choosePlayer = false;
       this.prophecySign = false;
+    }
+
+    // 选择玩家后，点击玩家进行守卫
+    if (this.choosePlayer && this.guardSign) {
+      this.targetGuard = this.playerList[id];
+      this.state[this.today].log.push(`${this.targetGuard.name} 被指定守卫`);
+      // 清除选择玩家状态
+      this.choosePlayer = false;
+      this.guardSign = false;
     }
   }
 
@@ -345,7 +364,6 @@ export class MapViewComponent {
 
   gameDay() {
     this.state[this.today].log.push(`---第${this.today + 1}日早---`);
-    let currentState = this.state[this.today];
     for (let i = 0; i < this.playerList.length; i++) {
       if (!this.playerList[i].isAlive) {
         continue;
@@ -369,6 +387,10 @@ export class MapViewComponent {
       }
     }
 
+    this.targetProphecy = undefined;
+    this.targetGuard = undefined;
+    this.voted = undefined;
+
     // 添加游戏日志
     this.addGameLogDay(this.state[this.today]);
 
@@ -384,11 +406,13 @@ export class MapViewComponent {
     // this.addGameLogVote(this.state[this.today]);
   }
 
+  voted: any;
+
   gameVote() {
-    let vote = this.startVote();
-    this.state[this.today].log.push(`玩家${vote + 1} 被投票出局`);
-    this.playerList[vote].isAlive = false;
-    this.state[this.today].vote = this.playerList[vote];
+    this.voted = this.startVote();
+    this.state[this.today].log.push(`玩家${this.voted + 1} 被投票出局`);
+    this.playerList[this.voted].isAlive = false;
+    this.state[this.today].vote = this.playerList[this.voted];
 
     this.addGameLogVote(this.state[this.today]);
   }

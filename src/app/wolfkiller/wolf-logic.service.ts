@@ -130,19 +130,131 @@ export class WolflogicService {
           state.daySpeeches.push({
             playerId: currentPlayer.id,
             say: {
-              type: 'see',
-              targetId: state.players.filter(p => p.isAlive && p.id !== currentPlayer.id)[
-                Math.floor(Math.random() * state.players.filter(p => p.isAlive && p.id !== currentPlayer.id).length)
-              ].id,
+              type: 'psychic',
+              targetId: state.vote.id,
               actorId: currentPlayer.id,
               result: false
             },
-            content: '金水',
+            content: `我是psychic，${state.players[state.vote.id].name} 是 村民`,
+            day: state.currentDay
+          });
+        } else {
+          // 低概率第二天发 预言
+          state.daySpeeches.push({
+            playerId: currentPlayer.id,
+            say: {
+              type: 'psychic',
+              targetId: state.vote.id,
+              actorId: currentPlayer.id,
+              result: true
+            },
+            content: `我是psychic，${state.players[state.vote.id].name} 是 狼人`,
             day: state.currentDay
           });
         }
       }
     }
+
+    if (state.currentDay >= 3) {
+      // 狼队预言家行动
+      if (currentPlayer.jumpRole === 'prophet') {
+        const targetPlayer = nonWolfPlayers[Math.floor(Math.random() * nonWolfPlayers.length)].id;
+        // 预言家发言
+        if (!!state.targetProphecy) {
+          // 狼队如果测到狼人，高概率测对
+          if (state.targetProphecy.role === 'wolf') {
+            if (Math.random() < 0.7) {
+              state.daySpeeches.push({
+                playerId: currentPlayer.id,
+                say: {
+                  type: 'see',
+                  targetId: state.targetProphecy.id,
+                  actorId: currentPlayer.id,
+                  result: true
+                },
+                content: `昨天预言的${state.players[state.targetProphecy.id].name} 是 狼人`,
+                day: state.currentDay
+              });
+            } else {
+              // 低概率测错
+              state.daySpeeches.push({
+                playerId: currentPlayer.id,
+                say: {
+                  type: 'see',
+                  targetId: state.targetProphecy.id,
+                  actorId: currentPlayer.id,
+                  result: false
+                },
+                content: `昨天预言的${state.players[state.targetProphecy.id].name} 是 村民`,
+                day: state.currentDay
+              });
+            }
+          }
+        } else {
+          // 狼队如果测到村民，高概率测对
+          if (Math.random() < 0.4) {
+            state.daySpeeches.push({
+              playerId: currentPlayer.id,
+              say: {
+                type: 'see',
+                targetId: targetPlayer,
+                actorId: currentPlayer.id,
+                result: true
+              },
+              content: `昨天预言的${state.players[targetPlayer].name} 是 狼人`,
+              day: state.currentDay
+            });
+          } else {
+            // 低概率测错
+            state.daySpeeches.push({
+              playerId: currentPlayer.id,
+              say: {
+                type: 'see',
+                targetId: state.players.filter(p => p.isAlive && p.id !== currentPlayer.id)[
+                  Math.floor(Math.random() * state.players.filter(p => p.isAlive && p.id !== currentPlayer.id).length)
+                ].id,
+                actorId: currentPlayer.id,
+                result: false
+              },
+              content: `昨天预言的${state.players[state.daySpeeches[state.daySpeeches.length - 1]?.say.targetId].name} 是 村民`,
+              day: state.currentDay
+            });
+          }
+        }
+      }
+
+      // 狼队通灵人行动
+      if (currentPlayer.jumpRole === 'psychic') {
+        // 通灵人发言
+        if (Math.random() < 0.4) {
+          state.daySpeeches.push({
+            playerId: currentPlayer.id,
+            say: {
+              type: 'psychic',
+              targetId: state.vote.id,
+              actorId: currentPlayer.id,
+              result: false
+            },
+            content: `昨天白天吊死的${state.players[state.vote.id].name} 是 村民`,
+            day: state.currentDay
+          });
+        } else {
+          // 低概率第二天发 预言
+          state.daySpeeches.push({
+            playerId: currentPlayer.id,
+            say: {
+              type: 'psychic',
+              targetId: state.vote.id,
+              actorId: currentPlayer.id,
+              result: true
+            },
+            content: `昨天白天吊死的${state.players[state.vote.id].name} 是 狼人`,
+            day: state.currentDay
+          });
+        }
+      }
+    }
+
     // console.log(JSON.parse(JSON.stringify(state)));
     return state;
   }
