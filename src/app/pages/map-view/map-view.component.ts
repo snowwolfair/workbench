@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import * as THREE from 'three'
+import * as THREE from 'three';
 import { OrbitControls } from 'three-orbitcontrols-ts';
 import { FormsModule } from '@angular/forms';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
@@ -8,56 +8,33 @@ import { I18nPipe, SettingsService, _HttpClient } from '@delon/theme';
 import { ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, inject } from '@angular/core';
 import { GameState } from '../../wolfkiller/options';
 import { WolflogicService } from '../../wolfkiller/wolf-logic.service';
-
-
+import { ProphetLogicService } from '../../wolfkiller/prophet-logic.service';
+import { SuspicionService } from '../../wolfkiller/suspicion.service';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { Player } from '../../wolfkiller/options';
 
 @Component({
-    selector: 'app-map-view',
-    imports: [
-      CommonModule,
-      I18nPipe,
-      FormsModule,
-      NzRadioModule
-    ],
-    templateUrl: './map-view.component.html',
-    styleUrls: ['./map-view.component.less']
+  selector: 'app-map-view',
+  imports: [CommonModule, I18nPipe, FormsModule, NzRadioModule, NzModalModule],
+  templateUrl: './map-view.component.html',
+  styleUrls: ['./map-view.component.less']
 })
 export class MapViewComponent {
   // 这里只保留地图相关逻辑，如需扩展可在此添加
   private readonly http = inject(_HttpClient);
   constructor(
-    private wolflogicService: WolflogicService
-  ) { }
+    private wolflogicService: WolflogicService,
+    private prophetlogicService: ProphetLogicService,
+    private suspicionService: SuspicionService,
+    private msg: NzMessageService
+  ) {}
 
-  radioValue = '12'
+  radioValue = '12';
 
-
+  target?: Player;
   today = 0;
   state: GameState[] = [];
-
-  wolf = {
-
-  }
-
-  person = {
-
-  }
-
-  witch = {
-
-  }
-
-  hunter = {
-
-  }
-  
-  garder = {
-
-  }
-
-  prophet = {
-
-  }
 
   ngOnInit() {
     this.switchGameMode();
@@ -67,6 +44,9 @@ export class MapViewComponent {
   startGame() {
     this.shuffledRoles = this.shuffle([...this.roles]);
     console.log(this.shuffledRoles);
+    for (let i = 0; i < this.playerList.length; i++) {
+      this.voteList.set(this.playerList[i].id, 0);
+    }
     this.switchRole();
     this.gamelink();
   }
@@ -75,38 +55,52 @@ export class MapViewComponent {
   roles = [];
   playerList = [];
   shuffledRoles = [];
-  
+
   // 切换游戏模式 9人场/12人场
   switchGameMode() {
     this.roles = [];
     this.playerList = [];
-    if(this.radioValue === '12') {
-      this.roles = ['wolf', 'wolf', 'wolf', 'wolf', 'villager', 'villager', 'villager', 'villager', 'witch', 'psychic', 'garder', 'prophet'];
-      for(let i = 0; i < 12; i++) {
+    if (this.radioValue === '12') {
+      this.roles = [
+        'wolf',
+        'wolf',
+        'wolf',
+        'wolf',
+        'villager',
+        'villager',
+        'villager',
+        'villager',
+        'hunter',
+        'psychic',
+        'garder',
+        'prophet'
+      ];
+      for (let i = 0; i < 12; i++) {
         this.playerList[i] = {
           id: i,
           name: 'player' + (i + 1),
           role: this.roles[i],
-          isAlive: true,
-        }
+          isAlive: true
+        };
       }
-    } else if(this.radioValue === '9') {
-      this.roles = ['wolf', 'wolf', 'wolf', 'villager', 'villager', 'villager', 'witch', 'psychic', 'prophet'];
-      for(let i = 0; i < 9; i++) {
+    } else if (this.radioValue === '9') {
+      this.roles = ['wolf', 'wolf', 'wolf', 'villager', 'villager', 'villager', 'hunter', 'psychic', 'prophet'];
+      for (let i = 0; i < 9; i++) {
         this.playerList[i] = {
           id: i,
           name: 'player' + (i + 1),
           role: this.roles[i],
-          isAlive: true,
-        }
+          isAlive: true
+        };
       }
     }
     // 初始化游戏状态
     this.state.push({
       players: this.playerList,
-      nightActions: [],    // 夜晚行为记录（谁被刀、谁被验等）
-      daySpeeches: [],         // 白天发言记录
+      nightActions: [], // 夜晚行为记录（谁被刀、谁被验等）
+      daySpeeches: [], // 白天发言记录
       currentDay: 1,
+      log: [] // 游戏日志
     });
     console.log(this.roles);
   }
@@ -126,7 +120,6 @@ export class MapViewComponent {
     console.log(this.playerList);
   }
 
-
   showPlayerRole = true;
 
   //对话框和控制台切换
@@ -137,71 +130,76 @@ export class MapViewComponent {
   controlOptions = [
     {
       label: '谈话',
-      value: 1,
+      value: 1
     },
     {
       label: '指定预言',
-      value: 2,
+      value: 2
     },
     {
       label: '指定守卫',
-      value: 3,
+      value: 3
     },
     {
-      label: '指定通灵',
-      value: 4,
+      label: '询问通灵',
+      value: 4
     },
     {
       label: '女巫行动',
-      value: 5,
+      value: 5
     },
     {
       label: '强制投票',
-      value: 6,
+      value: 6
     },
     {
       label: '自由投票',
-      value: 7,
+      value: 7
     },
     {
       label: '下一日',
-      value: 8,
-    },
-  ]
+      value: 8
+    }
+  ];
 
   // 控制台选项点击事件
   onControlClick(option: any) {
-    switch(option.value) {
+    switch (option.value) {
       case 1:
-        this.showPlayerRole = !this.showPlayerRole;
+        this.talk();
         break;
       case 2:
-        this.showControl = !this.showControl;
+        this.resetGame();
         break;
       case 3:
-        this.showModel = !this.showModel;
+        this.gameOver(false);
         break;
       case 4:
-        this.showControl = !this.showControl;
+        this.showPlayerRole = !this.showPlayerRole;
         break;
       case 5:
         this.showModel = !this.showModel;
         break;
       case 6:
-        this.showControl = !this.showControl;
+        // this.forceVote = true;
+        // this.forceVoteId = option.value;
         break;
       case 7:
-        this.showModel = !this.showModel;
+        this.target = option.value;
         break;
       case 8:
+        this.systemLogs = this.state[this.today].log;
+        console.log(JSON.parse(JSON.stringify(this.systemLogs)));
         // 下一日
         this.today++;
+
         // 初始化下一日游戏状态
         this.state.push({
           players: this.playerList,
-          nightActions: [],    // 夜晚行为记录（谁被刀、谁被验等）
-          daySpeeches: [],         // 白天发言记录
+          nightActions: [], // 夜晚行为记录（谁被刀、谁被验等）
+          daySpeeches: [], // 白天发言记录
           currentDay: this.today + 1,
+          log: this.systemLogs // 系统日志
         });
         // 游戏进行
         this.gamelink();
@@ -209,69 +207,231 @@ export class MapViewComponent {
     }
   }
 
-
-
-  freeVote(votes: number[]) {
-    // 自由投票实现
-    // 统计投票结果
-    const voteCount = votes.reduce((acc, vote) => {
-      acc[vote] = (acc[vote] || 0) + 1;
-      return acc;
-    }, {} as Record<number, number>);
-    // 找到投票最多的玩家
-    const maxVotes = Math.max(...Object.values(voteCount));
-    const candidates = Object.keys(voteCount)
-      .filter(key => voteCount[Number(key)] === maxVotes)
-      .map(Number);
-    // 如果有多个玩家获得最多投票，随机选择一个
-    return candidates[Math.floor(Math.random() * candidates.length)];
-  }
-
-
-  gamelink(){
+  gamelink() {
     this.gameNight();
+    if (this.gameResult) {
+      return;
+    }
     this.gameDay();
 
+    if (this.playerList.filter(p => p.isAlive && p.role == 'wolf').length == 0) {
+      this.state[this.today].log.push(`---游戏结束，村民胜利---`);
+      this.gameOver(true);
+    }
   }
 
-  gameNight(){
-    for(let i = 0; i < this.playerList.length; i++) {
-      if(!this.playerList[i].isAlive) {
+  gameNight() {
+    this.state[this.today].log.push(`---第${this.today}日夜---`);
+    let currentState = this.state[this.today];
+    console.log(JSON.parse(JSON.stringify(this.state)));
+    for (let i = 0; i < this.playerList.length; i++) {
+      if (!this.playerList[i].isAlive) {
         continue;
       }
-      switch(this.playerList[i].role) {
+      switch (this.playerList[i].role) {
         case 'wolf':
           this.state[this.today] = this.wolflogicService.night(this.playerList[i], this.state[this.today]);
-          console.log(this.state);
+          console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'villager':
-          this.person[i] = this.playerList[i];
           break;
-        case 'witch':
-          this.witch[i] = this.playerList[i];
+        case 'hunter':
           break;
         case 'psychic':
-          this.hunter[i] = this.playerList[i];
           break;
         case 'garder':
-          this.garder[i] = this.playerList[i];
           break;
         case 'prophet':
-          this.prophet[i] = this.playerList[i];
+          this.state[this.today] = this.prophetlogicService.night(this.playerList[i], this.state[this.today]);
+          console.log(JSON.parse(JSON.stringify(this.state)));
           break;
       }
+    }
+    currentState.nightActions.forEach(action => {
+      if (action.type === 'kill') {
+        currentState.players[action.targetId].isAlive = false;
+      }
+    });
+    // 添加游戏日志
+    this.addGameLogNight(this.state[this.today]);
 
+    console.log(currentState);
 
-
-      this.state[this.today].nightActions.forEach(action => {
-        if(action.type === 'kill') {
-          this.state[this.today].players[action.targetId].isAlive = false;
-        }
-      });
-    } 
+    // 如果狼人数量大于其他人数量，狼人胜利
+    if (
+      currentState.players.filter(p => p.isAlive && p.role !== 'wolf').length <
+      currentState.players.filter(p => p.isAlive && p.role === 'wolf').length
+    ) {
+      this.state[this.today].log.push(`---游戏结束，狼人胜利---`);
+      this.gameOver(false);
+    }
   }
 
-  gameDay(){
-    
+  gameDay() {
+    this.state[this.today].log.push(`---第${this.today + 1}日早---`);
+    let currentState = this.state[this.today];
+    for (let i = 0; i < this.playerList.length; i++) {
+      if (!this.playerList[i].isAlive) {
+        continue;
+      }
+      switch (this.playerList[i].role) {
+        case 'wolf':
+          this.state[this.today] = this.wolflogicService.day(this.playerList[i], this.state[this.today]);
+          break;
+        case 'villager':
+          break;
+        case 'hunter':
+          break;
+        case 'psychic':
+          break;
+        case 'garder':
+          break;
+        case 'prophet':
+          this.state[this.today] = this.prophetlogicService.day(this.playerList[i], this.state[this.today]);
+          console.log(JSON.parse(JSON.stringify(this.state)));
+          break;
+      }
+    }
+
+    // 添加游戏日志
+    this.addGameLogDay(this.state[this.today]);
+
+    let vote = this.startVote();
+    this.state[this.today].log.push(`玩家${vote + 1} 被投票出局`);
+    this.playerList[vote].isAlive = false;
+    this.state[this.today].vote = this.playerList[vote];
+    // if(forceVote == true){
+    //   currentState.players[vote.targetId].isAlive = false;
+    // }
+    // // currentState.players[vote.targetId].isAlive = false;
+
+    this.addGameLogVote(this.state[this.today]);
+  }
+
+  // 玩家发言
+  talk() {
+    this.showModel = !this.showModel;
+  }
+
+  // 投票系统
+  voteList: Map<number, number> = new Map();
+
+  startVote() {
+    this.state[this.today].log.push(`---第${this.today + 1}日投票---`);
+    for (let i = 0; i < this.playerList.length; i++) {
+      if (!this.playerList[i].isAlive) {
+        continue;
+      }
+      const sortedKeys = Array.from(this.suspicionService.calculateSuspicion(this.playerList[i], this.state[this.today]).entries())
+        .sort((a, b) => b[1] - a[1]) // 按 value 降序：b[1] - a[1]
+        .map(entry => entry[0]); // 提取 key
+      console.log(sortedKeys);
+      if (Math.random() < 0.8) {
+        if (sortedKeys[0] === this.playerList[i].id) {
+          this.voteList.set(sortedKeys[1], (this.voteList.get(sortedKeys[1]) || 0) + 1);
+          this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${sortedKeys[1] + 1}`);
+        } else {
+          this.voteList.set(sortedKeys[0], (this.voteList.get(sortedKeys[0]) || 0) + 1);
+          this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${sortedKeys[0] + 1}`);
+        }
+      } else {
+        if (sortedKeys[1] === this.playerList[i].id) {
+          this.voteList.set(sortedKeys[2], (this.voteList.get(sortedKeys[2]) || 0) + 1);
+          this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${sortedKeys[2] + 1}`);
+        } else {
+          this.voteList.set(sortedKeys[1], (this.voteList.get(sortedKeys[1]) || 0) + 1);
+          this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${sortedKeys[1] + 1}`);
+        }
+      }
+    }
+    // 找到投票最多的玩家
+    const maxVotes = Math.max(...this.voteList.values());
+    const candidates = Array.from(this.voteList.entries())
+      .filter(([key, votes]) => votes === maxVotes)
+      .map(([key, votes]) => key);
+    // 如果有多个玩家获得最多投票，随机选择一个
+    console.log(candidates);
+    const voteTarget = candidates[Math.floor(Math.random() * candidates.length)];
+
+    return voteTarget;
+  }
+
+  gameResult: string;
+  gameOver(isWin: boolean) {
+    if (isWin) {
+      this.gameResult = '村民胜利';
+      this.msg.success(this.gameResult);
+    } else {
+      this.gameResult = '狼人胜利';
+      this.msg.error(this.gameResult);
+    }
+    console.log(this.gameResult);
+  }
+
+  //重新初始化游戏
+  resetGame() {
+    this.today = 0;
+    this.state = [];
+    this.gameResult = '';
+    this.gameLogs = [];
+    this.voteList.clear();
+    this.switchGameMode();
+  }
+
+  // 游戏日志
+  gameLogs: string[] = [];
+  gameLogVisible: boolean = false;
+  // 显示游戏日志
+  showGameLog(): void {
+    this.gameLogVisible = true;
+  }
+  // 添加游戏日志
+  addGameLogNight(state: GameState): void {
+    console.log(state);
+    this.gameLogs.push(`第 ${state.currentDay - 1} 日夜`);
+    state.nightActions.forEach(action => {
+      if (action.type === 'kill') {
+        this.gameLogs.push(`玩家${action.targetId + 1} 被残忍地杀害了`);
+      }
+    });
+    if (state.nightActions.filter(a => a.type === 'kill').length == 0) {
+      this.gameLogs.push(`昨夜是平安夜`);
+    }
+  }
+
+  addGameLogDay(state: GameState): void {
+    console.log(state);
+    this.gameLogs.push(`第 ${state.currentDay - 1} 日白天`);
+    state.daySpeeches.forEach(speech => {
+      this.gameLogs.push(`玩家${speech.playerId + 1} 说: ${speech.content}`);
+    });
+  }
+
+  addGameLogVote(state: GameState): void {
+    console.log(state);
+    this.gameLogs.push(`第 ${state.currentDay - 1} 日投票结果`);
+    this.voteList.forEach((vote, playerId) => {
+      this.gameLogs.push(`玩家${playerId + 1} : ${vote} 票`);
+    });
+    this.gameLogs.push(`玩家${state.vote.id + 1} 被投票出局`);
+    this.voteList.clear();
+  }
+
+  // 关闭游戏日志
+  handleCancelGameLog(): void {
+    this.gameLogVisible = false;
+  }
+
+  // 系统日志
+  systemLogVisible: boolean = false;
+  systemLogs: string[] = [];
+  // 显示系统日志
+  showSystemLog(): void {
+    this.systemLogVisible = true;
+    this.systemLogs = this.state[this.today]?.log;
+  }
+  // 关闭系统日志
+  handleCancelSystemLog(): void {
+    this.systemLogVisible = false;
   }
 }

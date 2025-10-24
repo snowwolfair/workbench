@@ -1,6 +1,6 @@
 <div class="map-container">
   <!-- <iframe src="http://118.25.113.92:1514/" width="100%" height="100%"></iframe> -->
-  <div style="width: 100%;">
+  <div style="width: 100%">
     <nz-radio-group [(ngModel)]="radioValue" (ngModelChange)="switchGameMode()">
       <label nz-radio-button nzValue="12">12人场</label>
       <label nz-radio-button nzValue="9">9人场</label>
@@ -9,14 +9,17 @@
       <button (click)="startGame()">开始游戏</button>
     </div>
     <div class="player-container">
-      @for(player of playerList; track player.id) {
+      @for (player of playerList; track player.id) {
         <div class="player">
-          <div class="player-img" [ngStyle]="{ height: showPlayerRole ? '80%' : '100%', 'border-color': player.isAlive ? '#ffffff' : '#ff0000' }">
-            {{player.name}}
+          <div
+            class="player-img"
+            [ngStyle]="{ height: showPlayerRole ? '80%' : '100%', 'border-color': player.isAlive ? '#ffffff' : '#ff0000' }"
+          >
+            {{ player.name }}
           </div>
-          @if(showPlayerRole){
-            <div class="player-role" [ngClass]="{'player-role-red': player.role === 'red', 'player-role-blue': player.role === 'blue'}">
-              {{player.role | i18n}} | {{player?.jumpRole | i18n}}
+          @if (showPlayerRole) {
+            <div class="player-role" [ngClass]="{ 'player-role-red': player.role === 'red', 'player-role-blue': player.role === 'blue' }">
+              {{ player.role | i18n }} | {{ player?.jumpRole | i18n }}
             </div>
           }
         </div>
@@ -24,21 +27,56 @@
     </div>
     <div class="control-extra">
       <button (click)="switchRole()">菜单</button>
-      <button (click)="switchRole()">游戏日志</button>
-      <button (click)="switchRole()">系统日志</button>
+      <button (click)="showGameLog()">游戏日志</button>
+      <button (click)="showSystemLog()">系统日志</button>
     </div>
-    @if(showControl){
+    @if (showControl) {
       <div class="control">
-        @for(option of controlOptions; track $index) {
-          <button (click)="onControlClick(option)">{{option.label}}</button>
+        @for (option of controlOptions; track $index) {
+          <button (click)="onControlClick(option)">{{ option.label }}</button>
         }
       </div>
     }
-    @if(showModel){
-      <div class="model">
-        
-      </div>
+    @if (showModel) {
+      <div class="model"> </div>
     }
-
   </div>
 </div>
+
+<nz-modal
+  [nzVisible]="gameLogVisible"
+  [nzContent]="gameLogContent"
+  nzTitle="{{ '游戏日志' | i18n }}"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCancelGameLog()"
+  nzClosable="true"
+  [nzWidth]="800"
+>
+</nz-modal>
+
+<ng-template #gameLogContent>
+  <div style="overflow: auto; height: 400px">
+    @for (log of gameLogs; track $index) {
+      <div>{{ log }}</div>
+    }
+  </div>
+</ng-template>
+
+<nz-modal
+  [nzVisible]="systemLogVisible"
+  [nzContent]="systemLogContent"
+  nzTitle="{{ '系统日志' | i18n }}"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCancelSystemLog()"
+  nzClosable="true"
+  [nzWidth]="800"
+>
+</nz-modal>
+
+<ng-template #systemLogContent>
+  <div style="overflow: auto; height: 400px">
+    @for (log of systemLogs; track $index) {
+      <div>{{ log }}</div>
+    }
+  </div>
+</ng-template>

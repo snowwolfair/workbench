@@ -11,13 +11,16 @@ export interface Player {
 
 export interface GameState {
   players: Player[];
-  nightActions: NightAction[];     // 夜晚行为记录（谁被刀、谁被验等）
-  daySpeeches: Speech[];           // 白天发言记录
+  nightActions: NightAction[]; // 夜晚行为记录（谁被刀、谁被验等）
+  daySpeeches: Speech[]; // 白天发言记录
   currentDay: number;
+  targetProphecy?: Player;
+  vote?: Player;
+  log: string[]; // 游戏日志
 }
 
 export interface NightAction {
-  type: 'kill' | 'see' | 'heal' | 'guard' | 'poison';
+  type: 'kill' | 'see' | 'heal' | 'guard' | 'poison' | 'null';
   targetId: number;
   actorId: number;
   result?: boolean; // 刀人结果（成功/失败）
@@ -25,7 +28,7 @@ export interface NightAction {
 
 export interface Speech {
   playerId: number;
-  say: NightAction[];
+  say: NightAction;
   content: string; // 可简化为关键词或标签，如 ['claim_seer', 'accuse_3']
   day: number;
 }

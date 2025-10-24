@@ -1,35 +1,58 @@
 import { Injectable } from '@angular/core';
-import { Player, GameState } from './options';
+import { Player, GameState, NightAction } from './options';
 import { SuspicionService } from './suspicion.service';
 
-
 @Injectable({ providedIn: 'root' })
-export class WolflogicService {
+export class ProphetLogicService {
+  constructor(private suspicionService: SuspicionService) {}
 
-  constructor(
-    private suspicionService: SuspicionService
-  ) { }
+  lastNightAction: NightAction | null = null;
 
+  night(currentPlayer: Player, state: GameState) {
+    const allPlayers = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id);
 
+    let role = currentPlayer.role;
+    let name = currentPlayer.name;
 
-  wolfVote(votes: number[]) {
-    const voteCount = votes.reduce((acc, vote) => {
-      acc[vote] = (acc[vote] || 0) + 1;
-      return acc;
-    }, {} as Record<number, number>);
-    const maxVotes = Math.max(...Object.values(voteCount));
-    const candidates = Object.keys(voteCount)
-      .filter(key => voteCount[Number(key)] === maxVotes)
-      .map(Number);
-    return candidates[Math.floor(Math.random() * candidates.length)];
+    let targetPlayer: Player;
+    targetPlayer = allPlayers[Math.floor(Math.random() * allPlayers.length)];
+
+    if (!!state.targetProphecy) {
+      targetPlayer = state.targetProphecy;
+    }
+
+    this.lastNightAction = {
+      type: 'see',
+      targetId: targetPlayer.id,
+      actorId: currentPlayer.id,
+      result: targetPlayer.role === 'wolf'
+    };
+
+    state.nightActions.push(this.lastNightAction);
+
+    console.log(JSON.parse(JSON.stringify(state)));
+    state.log.push(`(${role})${name} 预言了 ${targetPlayer.name} 是 ${targetPlayer.role === 'wolf' ? '狼人' : '村民'}`);
+    return state;
   }
 
-  night(state: GameState){
-    const prophetGroup = state.players.filter(p => p.role === 'prophet' && p.isAlive || p.jumpRole === 'prophet' && p.isAlive);
-    // 计算每个玩家的怀疑度
+  day(currentPlayer: Player, state: GameState) {
+    const allPlayers = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id);
 
-    
-    
+    let role = currentPlayer.role;
+    let name = currentPlayer.name;
+
+    currentPlayer.jumpRole = currentPlayer.role;
+    state.log.push(`(${role})${name} 说明他的身份是 ${currentPlayer.jumpRole}`);
+
+    state.daySpeeches.push({
+      playerId: currentPlayer.id,
+      say: this.lastNightAction,
+      content: `我是${currentPlayer.role}，${state.players[this.lastNightAction.targetId].name} 是 ${this.lastNightAction.result ? '狼人' : '村民'}`,
+      day: state.currentDay
+    });
+    state.log.push(
+      `(${role})${name} 说 ${state.players[this.lastNightAction.targetId].name} 是 ${this.lastNightAction.result ? '狼人' : '村民'}`
+    );
     return state;
   }
 }

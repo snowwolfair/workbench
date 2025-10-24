@@ -46,6 +46,23 @@ function saveData(id: number, value: any): { msg: string } {
   return { msg: 'ok' };
 }
 
+
+function getUser(data: any): any {
+  if (!(data.userName === 'admin' || data.userName === 'user') || data.password !== '123456') {
+      return { msg: `Invalid username or password（admin/123456）` };
+    }
+    return {
+      msg: 'ok',
+      user: {
+        token: '123456789',
+        name: data.userName,
+        email: `${data.userName}@qq.com`,
+        id: 10000,
+        time: +new Date()
+      }
+    };
+}
+
 export const USERS = {
   '/user': (req: MockRequest) => genData(req.queryString),
   '/user/:id': (req: MockRequest) => list.find(w => w.id === +req.params.id),
@@ -100,22 +117,7 @@ export const USERS = {
     phone: '你猜-你猜你猜猜猜'
   },
   'POST /user/avatar': 'ok',
-  'POST /login/account': (req: MockRequest) => {
-    const data = req.body;
-    if (!(data.userName === 'admin' || data.userName === 'user') || data.password !== '123456') {
-      return { msg: `Invalid username or password（admin/123456）` };
-    }
-    return {
-      msg: 'ok',
-      user: {
-        token: '123456789',
-        name: data.userName,
-        email: `${data.userName}@qq.com`,
-        id: 10000,
-        time: +new Date()
-      }
-    };
-  },
+  'POST /login/account': (req: MockRequest) => getUser(req.body),
   'POST /register': {
     msg: 'ok'
   }
