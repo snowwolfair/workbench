@@ -10,7 +10,7 @@
     </div>
     <div class="player-container">
       @for (player of playerList; track player.id) {
-        <div class="player">
+        <div class="player" [ngClass]="{ 'choose-player': choosePlayer === true }" (click)="getPlayer(player.id)">
           <div
             class="player-img"
             [ngStyle]="{ height: showPlayerRole ? '80%' : '100%', 'border-color': player.isAlive ? '#ffffff' : '#ff0000' }"
@@ -32,8 +32,8 @@
     </div>
     @if (showControl) {
       <div class="control">
-        @for (option of controlOptions; track $index) {
-          <button (click)="onControlClick(option)">{{ option.label }}</button>
+        @for (option of controlOptions; track option.value) {
+          <button class="control-cell" (click)="onControlClick(option)" [disabled]="setDisabled(option)">{{ option.label }}</button>
         }
       </div>
     }

@@ -15,6 +15,7 @@ export interface GameState {
   daySpeeches: Speech[]; // 白天发言记录
   currentDay: number;
   targetProphecy?: Player;
+  targetGuard?: Player;
   vote?: Player;
   log: string[]; // 游戏日志
 }

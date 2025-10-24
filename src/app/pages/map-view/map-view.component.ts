@@ -31,6 +31,18 @@ export class MapViewComponent {
   ) {}
 
   radioValue = '12';
+  // 投票中标识
+  voteSign = true;
+  // 投票后标识
+  votedSign = true;
+
+  // 强制投票标识
+  forceVote = false;
+  // 指定预言标识
+  prophecySign = false;
+
+  // 选择玩家标识
+  choosePlayer = false;
 
   target?: Player;
   today = 0;
@@ -129,36 +141,44 @@ export class MapViewComponent {
   //控制台选项
   controlOptions = [
     {
-      label: '谈话',
-      value: 1
+      label: '重置游戏',
+      value: 1,
+      disabled: false
     },
     {
       label: '指定预言',
-      value: 2
+      value: 2,
+      disabled: false
     },
     {
       label: '指定守卫',
-      value: 3
+      value: 3,
+      disabled: false
     },
     {
       label: '询问通灵',
-      value: 4
+      value: 4,
+      disabled: false
     },
     {
-      label: '女巫行动',
-      value: 5
+      label: '显示身份',
+      value: 5,
+      disabled: false
     },
     {
       label: '强制投票',
-      value: 6
+      value: 6,
+      disabled: false
     },
     {
       label: '自由投票',
-      value: 7
+      value: 7,
+      disabled: false
     },
     {
       label: '下一日',
-      value: 8
+      value: 8,
+      disabled: true
     }
   ];
 
@@ -166,10 +186,12 @@ export class MapViewComponent {
   onControlClick(option: any) {
     switch (option.value) {
       case 1:
-        this.talk();
+        this.resetGame();
         break;
       case 2:
-        this.resetGame();
+        this.choosePlayer = true;
+        this.prophecySign = true;
+
         break;
       case 3:
         this.gameOver(false);
@@ -178,14 +200,26 @@ export class MapViewComponent {
         this.showPlayerRole = !this.showPlayerRole;
         break;
       case 5:
-        this.showModel = !this.showModel;
+        this.showPlayerRole = !this.showPlayerRole;
         break;
       case 6:
-        // this.forceVote = true;
+        this.choosePlayer = true;
+        this.forceVote = true;
+
         // this.forceVoteId = option.value;
         break;
       case 7:
-        this.target = option.value;
+        this.target = undefined;
+        this.voteSign = true;
+        this.votedSign = false;
+        this.choosePlayer = false;
+        this.gameVote();
+
+        if (this.playerList.filter(p => p.isAlive && p.role == 'wolf').length == 0) {
+          console.log(this.playerList.filter(p => p.isAlive && p.role == 'villager').length);
+          this.state[this.today].log.push(`---游戏结束，村民胜利---`);
+          this.gameOver(true);
+        }
         break;
       case 8:
         this.systemLogs = this.state[this.today].log;
@@ -207,20 +241,62 @@ export class MapViewComponent {
     }
   }
 
+  // 按钮禁用
+  setDisabled(option: any) {
+    if (option.value === 7 || option.value === 6) {
+      return this.voteSign;
+    }
+    if (option.value === 8) {
+      return this.votedSign;
+    }
+    return false;
+  }
+
+  // 在指定预言，指定守卫，强制投票中
+  // 获取鼠标点击的对应玩家
+  getPlayer(id: number) {
+    // 选择玩家后，点击玩家进行投票
+    if (this.choosePlayer && this.forceVote) {
+      this.voteSign = true;
+      this.votedSign = false;
+      this.target = this.playerList[id];
+      console.log(this.target);
+      this.gameVote();
+      // 清除选择玩家状态
+      this.choosePlayer = false;
+      this.forceVote = false;
+      // 检查是否所有狼人都已死亡，判定胜利
+      if (this.playerList.filter(p => p.isAlive && p.role == 'wolf').length == 0) {
+        console.log(this.playerList.filter(p => p.isAlive && p.role == 'villager').length);
+        this.state[this.today].log.push(`---游戏结束，村民胜利---`);
+        this.gameOver(true);
+      }
+    }
+
+    // 选择玩家后，点击玩家进行预言
+    if (this.choosePlayer && this.prophecySign) {
+      this.state[this.today].targetProphecy = this.playerList[id];
+      console.log(this.state[this.today].targetProphecy);
+      // 清除选择玩家状态
+      this.choosePlayer = false;
+      this.prophecySign = false;
+    }
+  }
+
+  // 游戏链接
   gamelink() {
+    this.voteSign = false;
     this.gameNight();
     if (this.gameResult) {
       return;
     }
     this.gameDay();
-
-    if (this.playerList.filter(p => p.isAlive && p.role == 'wolf').length == 0) {
-      this.state[this.today].log.push(`---游戏结束，村民胜利---`);
-      this.gameOver(true);
-    }
   }
 
   gameNight() {
+    this.voteSign = false;
+    this.votedSign = true;
+
     this.state[this.today].log.push(`---第${this.today}日夜---`);
     let currentState = this.state[this.today];
     console.log(JSON.parse(JSON.stringify(this.state)));
@@ -296,14 +372,23 @@ export class MapViewComponent {
     // 添加游戏日志
     this.addGameLogDay(this.state[this.today]);
 
+    // let vote = this.startVote();
+    // this.state[this.today].log.push(`玩家${vote + 1} 被投票出局`);
+    // this.playerList[vote].isAlive = false;
+    // this.state[this.today].vote = this.playerList[vote];
+    // // if(forceVote == true){
+    // //   currentState.players[vote.targetId].isAlive = false;
+    // // }
+    // // // currentState.players[vote.targetId].isAlive = false;
+
+    // this.addGameLogVote(this.state[this.today]);
+  }
+
+  gameVote() {
     let vote = this.startVote();
     this.state[this.today].log.push(`玩家${vote + 1} 被投票出局`);
     this.playerList[vote].isAlive = false;
     this.state[this.today].vote = this.playerList[vote];
-    // if(forceVote == true){
-    //   currentState.players[vote.targetId].isAlive = false;
-    // }
-    // // currentState.players[vote.targetId].isAlive = false;
 
     this.addGameLogVote(this.state[this.today]);
   }
@@ -325,11 +410,10 @@ export class MapViewComponent {
       const sortedKeys = Array.from(this.suspicionService.calculateSuspicion(this.playerList[i], this.state[this.today]).entries())
         .sort((a, b) => b[1] - a[1]) // 按 value 降序：b[1] - a[1]
         .map(entry => entry[0]); // 提取 key
-      console.log(sortedKeys);
-      if (Math.random() < 0.8) {
-        if (sortedKeys[0] === this.playerList[i].id) {
-          this.voteList.set(sortedKeys[1], (this.voteList.get(sortedKeys[1]) || 0) + 1);
-          this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${sortedKeys[1] + 1}`);
+      if (this.target) {
+        if (this.target !== this.playerList[i]) {
+          this.voteList.set(this.target.id, (this.voteList.get(this.target.id) || 0) + 1);
+          this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${this.target.id + 1}`);
         } else {
           this.voteList.set(sortedKeys[0], (this.voteList.get(sortedKeys[0]) || 0) + 1);
           this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${sortedKeys[0] + 1}`);
@@ -339,8 +423,8 @@ export class MapViewComponent {
           this.voteList.set(sortedKeys[2], (this.voteList.get(sortedKeys[2]) || 0) + 1);
           this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${sortedKeys[2] + 1}`);
         } else {
-          this.voteList.set(sortedKeys[1], (this.voteList.get(sortedKeys[1]) || 0) + 1);
-          this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${sortedKeys[1] + 1}`);
+          this.voteList.set(sortedKeys[0], (this.voteList.get(sortedKeys[0]) || 0) + 1);
+          this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${sortedKeys[0] + 1}`);
         }
       }
     }
@@ -350,7 +434,6 @@ export class MapViewComponent {
       .filter(([key, votes]) => votes === maxVotes)
       .map(([key, votes]) => key);
     // 如果有多个玩家获得最多投票，随机选择一个
-    console.log(candidates);
     const voteTarget = candidates[Math.floor(Math.random() * candidates.length)];
 
     return voteTarget;
@@ -415,6 +498,11 @@ export class MapViewComponent {
     });
     this.gameLogs.push(`玩家${state.vote.id + 1} 被投票出局`);
     this.voteList.clear();
+    for (const player of this.playerList) {
+      if (player.isAlive) {
+        this.voteList.set(player.id, 0);
+      }
+    }
   }
 
   // 关闭游戏日志
