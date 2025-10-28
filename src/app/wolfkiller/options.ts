@@ -1,5 +1,5 @@
 // types.ts
-export type Role = 'villager' | 'wolf' | 'witch' | 'garder' | 'prophet' | 'psychic';
+export type Role = 'villager' | 'wolf' | 'witch' | 'garder' | 'prophet' | 'psychic' | 'hunter';
 
 export interface Player {
   id: number;
@@ -15,15 +15,15 @@ export interface GameState {
   daySpeeches: Speech[]; // 白天发言记录
   currentDay: number;
   targetProphecy?: Player;
-  targetGuard?: Player;
+  targetGuard?: Player[]; // 守卫目标 [{前一晚被守卫的目标}, {当前守卫的目标}]
   vote?: Player;
   log: string[]; // 游戏日志
 }
 
 export interface NightAction {
-  type: 'kill' | 'see' | 'heal' | 'guard' | 'poison' | 'psychic' | 'null';
-  targetId: number;
-  actorId: number;
+  type: 'kill' | 'see' | 'heal' | 'guard' | 'poison' | 'psychic' | 'sleep';
+  targetId?: number;
+  actorId?: number;
   result?: boolean; // 刀人结果（成功/失败）
 }
 

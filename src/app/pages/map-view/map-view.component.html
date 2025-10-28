@@ -7,6 +7,7 @@
     </nz-radio-group>
     <div>
       <button (click)="startGame()">开始游戏</button>
+      <button (click)="resetGame()">重置游戏</button>
     </div>
     <div class="player-container">
       @for (player of playerList; track player.id) {
