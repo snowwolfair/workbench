@@ -12,6 +12,8 @@ import { ProphetLogicService } from '../../wolfkiller/prophet-logic.service';
 import { SuspicionService } from '../../wolfkiller/suspicion.service';
 import { PsychicLogicService } from '../../wolfkiller/psychic-logic.service';
 import { GarderLogicService } from '../../wolfkiller/garder-logic.service';
+import { ReplyService } from '../../speakmodal/replay.service';
+
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Player } from '../../wolfkiller/options';
@@ -31,8 +33,17 @@ export class MapViewComponent {
     private psychiclogicService: PsychicLogicService,
     private garderlogicService: GarderLogicService,
     private suspicionService: SuspicionService,
+    private replyService: ReplyService,
     private msg: NzMessageService
   ) {}
+
+  // 指定映射逻辑
+  // 1： 预言家
+  // 2： 守卫
+  // 3： 猎人
+  // 4： 通灵人
+  // 5： 村民
+  // 6： 狼人
 
   radioValue = '12';
   // 投票中标识
@@ -46,6 +57,8 @@ export class MapViewComponent {
   prophecySign = false;
   // 指定守卫标识
   guardSign = false;
+  // 指定猎人标识
+  hunterSign = false;
 
   // 选择玩家标识
   choosePlayer = false;
@@ -53,6 +66,8 @@ export class MapViewComponent {
   target?: Player;
   today = 0;
   state: GameState[] = [];
+
+  talk: string = '';
 
   ngOnInit() {
     this.switchGameMode();
@@ -124,6 +139,22 @@ export class MapViewComponent {
     ];
     console.log(this.roles);
   }
+
+  // 拆分玩家列表为两行
+  // 顶部玩家行
+  get topRow() {
+    const len = this.playerList.length;
+    if (len === 12) return this.playerList.slice(0, 6);
+    if (len === 9) return this.playerList.slice(0, 5);
+    return this.playerList.slice(0, Math.ceil(len / 2)); // 兜底
+  }
+  // 底部玩家行
+  get bottomRow() {
+    const len = this.playerList.length;
+    if (len === 12) return this.playerList.slice(6);
+    if (len === 9) return this.playerList.slice(5);
+    return this.playerList.slice(Math.ceil(len / 2)); // 兜底
+  }
   //洗牌算法
   shuffle(array: string[]) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -144,7 +175,7 @@ export class MapViewComponent {
 
   //对话框和控制台切换
   showControl = true;
-  showModel = false;
+  showModel = true;
 
   //控制台选项
   controlOptions = [
@@ -194,19 +225,31 @@ export class MapViewComponent {
   onControlClick(option: any) {
     switch (option.value) {
       case 1:
-        this.resetGame();
+        this.choosePlayer = true;
+        this.hunterSign = true;
+        // this.resetGame();
         break;
       case 2:
         this.choosePlayer = true;
         this.prophecySign = true;
 
+        this.talk = '请指定预言';
         break;
       case 3:
         this.choosePlayer = true;
         this.guardSign = true;
+
+        this.talk = '请指定守卫';
         break;
       case 4:
-        this.showPlayerRole = !this.showPlayerRole;
+        let message = '';
+        let context = {
+          name: 'wanjia'
+        };
+        this.replyService.getRandomMessage('jump_role_announce', context).subscribe(msg => {
+          message = msg;
+        });
+        console.log(message);
         break;
       case 5:
         this.showPlayerRole = !this.showPlayerRole;
@@ -215,15 +258,18 @@ export class MapViewComponent {
         this.choosePlayer = true;
         this.forceVote = true;
 
-        // this.forceVoteId = option.value;
+        this.talk = '请指定投票目标';
         break;
       case 7:
         this.target = undefined;
         this.voteSign = true;
         this.votedSign = false;
         this.choosePlayer = false;
-        this.gameVote();
 
+        setTimeout(() => {
+          this.talk = '投票进行中...';
+        }, 1000);
+        this.gameVote();
         if (this.playerList.filter(p => p.isAlive && p.role == 'wolf').length == 0) {
           console.log(this.playerList.filter(p => p.isAlive && p.role == 'villager').length);
           this.state[this.today].log.push(`---游戏结束，村民胜利---`);
@@ -269,6 +315,7 @@ export class MapViewComponent {
 
   targetProphecy: any;
   targetGuard: any;
+  targetHunter: any;
 
   // 在指定预言，指定守卫，强制投票中
   // 获取鼠标点击的对应玩家
@@ -299,11 +346,11 @@ export class MapViewComponent {
     // 选择玩家后，点击玩家进行预言
     if (this.choosePlayer && this.prophecySign) {
       if (!this.targetProphecy) {
+        this.targetProphecy = this.playerList[id];
         this.gameLogs.push(`重新指定${this.targetProphecy.name}为夜晚预言目标`);
-        this.targetProphecy = this.playerList[id];
       } else {
-        this.gameLogs.push(`指定${this.targetProphecy.name}为夜晚预言目标`);
         this.targetProphecy = this.playerList[id];
+        this.gameLogs.push(`指定${this.targetProphecy.name}为夜晚预言目标`);
       }
       this.state[this.today].log.push(`${this.targetProphecy.name} 被指定预言`);
       // 清除选择玩家状态
@@ -314,38 +361,53 @@ export class MapViewComponent {
     // 选择玩家后，点击玩家进行守卫
     if (this.choosePlayer && this.guardSign) {
       if (!this.targetGuard) {
+        this.targetGuard = this.playerList[id];
         this.gameLogs.push(`重新指定${this.targetGuard.name}为夜晚守卫目标`);
-        this.targetGuard = this.playerList[id];
       } else {
-        this.gameLogs.push(`指定${this.targetGuard.name}为夜晚守卫目标`);
         this.targetGuard = this.playerList[id];
+        this.gameLogs.push(`指定${this.targetGuard.name}为夜晚守卫目标`);
       }
       this.state[this.today].log.push(`${this.targetGuard.name} 被指定守卫`);
       // 清除选择玩家状态
       this.choosePlayer = false;
       this.guardSign = false;
     }
+    // 选择玩家后，点击玩家进行猎人
+    if (this.choosePlayer && this.hunterSign) {
+      if (!this.targetHunter) {
+        this.targetHunter = this.playerList[id];
+        this.gameLogs.push(`重新指定${this.targetHunter.name}为夜晚猎人目标`);
+      } else {
+        this.targetHunter = this.playerList[id];
+        this.gameLogs.push(`指定${this.targetHunter.name}为夜晚猎人目标`);
+      }
+      this.state[this.today].log.push(`${this.targetHunter.name} 被指定猎人`);
+      // 清除选择玩家状态
+      this.choosePlayer = false;
+      this.hunterSign = false;
+    }
+    console.log(this.talk);
   }
 
   // 游戏链接
-  gamelink() {
+  async gamelink() {
     this.voteSign = false;
 
-    this.gameNight();
+    await this.gameNight();
     if (this.gameResult) {
       return;
     }
-    this.gameDay();
+    await this.gameDay();
   }
 
-  gameNight() {
+  async gameNight() {
     this.voteSign = false;
     this.votedSign = true;
 
     let forkill: number;
     let forguard: number;
 
-    this.state[this.today].log.push(`---第${this.today}日夜---`);
+    this.state[this.today].log.push(`---第${this.today}日夜晚---`);
 
     let currentState = this.state[this.today];
     console.log(JSON.parse(JSON.stringify(this.state)));
@@ -392,7 +454,7 @@ export class MapViewComponent {
     }
 
     // 添加游戏日志
-    this.addGameLogNight(this.state[this.today], forkill !== forguard);
+    await this.addGameLogNight(this.state[this.today], forkill !== forguard);
 
     console.log(currentState);
 
@@ -406,7 +468,7 @@ export class MapViewComponent {
     }
   }
 
-  gameDay() {
+  async gameDay() {
     this.state[this.today].log.push(`---第${this.today + 1}日早---`);
     for (let i = 0; i < this.playerList.length; i++) {
       if (!this.playerList[i].isAlive) {
@@ -414,7 +476,7 @@ export class MapViewComponent {
       }
       switch (this.playerList[i].role) {
         case 'wolf':
-          this.state[this.today] = this.wolflogicService.day(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = await this.wolflogicService.day(this.playerList[i], this.state[this.today]);
           break;
         case 'villager':
           break;
@@ -429,7 +491,7 @@ export class MapViewComponent {
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'prophet':
-          this.state[this.today] = this.prophetlogicService.day(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = await this.prophetlogicService.day(this.playerList[i], this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
       }
@@ -440,7 +502,7 @@ export class MapViewComponent {
     this.voted = undefined;
 
     // 添加游戏日志
-    this.addGameLogDay(this.state[this.today]);
+    await this.addGameLogDay(this.state[this.today]);
   }
 
   voted: any;
@@ -455,9 +517,6 @@ export class MapViewComponent {
   }
 
   // 玩家发言
-  talk() {
-    this.showModel = !this.showModel;
-  }
 
   // 投票系统
   voteList: Map<number, number> = new Map();
@@ -531,35 +590,55 @@ export class MapViewComponent {
     this.gameLogVisible = true;
   }
   // 添加游戏日志
-  addGameLogNight(state: GameState, isKill: boolean): void {
+  async addGameLogNight(state: GameState, isKill: boolean): Promise<void> {
     console.log(state);
-    this.gameLogs.push(`第 ${state.currentDay - 1} 日夜`);
+    let message = '';
+
+    this.gameLogs.push(`---第 ${state.currentDay - 1} 日夜晚---`);
     if (isKill) {
-      state.nightActions.forEach(action => {
+      for (const action of state.nightActions) {
         if (action.type === 'kill') {
-          this.gameLogs.push(`玩家${action.targetId + 1} 被残忍地杀害了`);
+          let context = {
+            name: `玩家${action.targetId + 1}`
+          };
+          message = await this.replyService.getRandomMessageAsync('death_night', context);
+          this.gameLogs.push(message);
         }
-      });
+      }
     } else {
-      this.gameLogs.push(`昨夜是平安夜`);
+      let context = {};
+      message = await this.replyService.getRandomMessageAsync('safe_night', context);
+      this.gameLogs.push(message);
     }
   }
 
-  addGameLogDay(state: GameState): void {
+  async addGameLogDay(state: GameState): Promise<void> {
+    let message = '';
     console.log(state);
-    this.gameLogs.push(`第 ${state.currentDay} 日白天`);
-    state.daySpeeches.forEach(speech => {
+    this.gameLogs.push(`---第 ${state.currentDay} 日白天---`);
+    for (const speech of state.daySpeeches) {
+      let context = {
+        name: `玩家${speech.playerId + 1}`,
+        content: speech.content
+      };
+      message = await this.replyService.getRandomMessageAsync('day_speech', context);
       this.gameLogs.push(`玩家${speech.playerId + 1} 说: ${speech.content}`);
-    });
+    }
   }
 
-  addGameLogVote(state: GameState): void {
+  async addGameLogVote(state: GameState): Promise<void> {
     console.log(state);
-    this.gameLogs.push(`第 ${state.currentDay} 日投票结果`);
+    let message = '';
+    this.gameLogs.push(`---第 ${state.currentDay} 日投票结果---`);
     this.voteList.forEach((vote, playerId) => {
       this.gameLogs.push(`玩家${playerId + 1} : ${vote} 票`);
     });
-    this.gameLogs.push(`玩家${state.vote.id + 1} 被投票出局`);
+    let context = {
+      name: `玩家${state.vote.id + 1}`
+    };
+    message = await this.replyService.getRandomMessageAsync('death_day', context);
+    this.gameLogs.push(message);
+
     this.voteList.clear();
     for (const player of this.playerList) {
       if (player.isAlive) {

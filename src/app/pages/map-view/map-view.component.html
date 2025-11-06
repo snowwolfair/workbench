@@ -10,17 +10,59 @@
       <button (click)="resetGame()">重置游戏</button>
     </div>
     <div class="player-container">
-      @for (player of playerList; track player.id) {
-        <div class="player" [ngClass]="{ 'choose-player': choosePlayer === true }" (click)="getPlayer(player.id)">
-          <div
-            class="player-img"
-            [ngStyle]="{ height: showPlayerRole ? '80%' : '100%', 'border-color': player.isAlive ? '#ffffff' : '#ff0000' }"
-          >
-            {{ player.name }}
+      <!-- 上排 -->
+      <div class="player-row">
+        @for (player of topRow; track player.id) {
+          <div class="player" [ngClass]="{ 'choose-player': choosePlayer }" (click)="getPlayer(player.id)">
+            <div
+              class="player-img"
+              [ngStyle]="{
+                height: showPlayerRole ? '80%' : '100%',
+                'border-color': player.isAlive ? '#ffffff' : '#ff0000'
+              }"
+            >
+              {{ player.name }}
+            </div>
+            @if (showPlayerRole) {
+              <div
+                class="player-role"
+                [ngClass]="{
+                  'player-role-red': player.role === 'red',
+                  'player-role-blue': player.role === 'blue'
+                }"
+              >
+                {{ player.role | i18n }} | {{ player?.jumpRole | i18n }}
+              </div>
+            }
           </div>
-          @if (showPlayerRole) {
-            <div class="player-role" [ngClass]="{ 'player-role-red': player.role === 'red', 'player-role-blue': player.role === 'blue' }">
-              {{ player.role | i18n }} | {{ player?.jumpRole | i18n }}
+        }
+      </div>
+
+      <!-- 下排 -->
+      @if (bottomRow.length > 0) {
+        <div class="player-row">
+          @for (player of bottomRow; track player.id) {
+            <div class="player" [ngClass]="{ 'choose-player': choosePlayer }" (click)="getPlayer(player.id)">
+              <div
+                class="player-img"
+                [ngStyle]="{
+                  height: showPlayerRole ? '80%' : '100%',
+                  'border-color': player.isAlive ? '#ffffff' : '#ff0000'
+                }"
+              >
+                {{ player.name }}
+              </div>
+              @if (showPlayerRole) {
+                <div
+                  class="player-role"
+                  [ngClass]="{
+                    'player-role-red': player.role === 'red',
+                    'player-role-blue': player.role === 'blue'
+                  }"
+                >
+                  {{ player.role | i18n }} | {{ player?.jumpRole | i18n }}
+                </div>
+              }
             </div>
           }
         </div>
@@ -34,14 +76,21 @@
     @if (showControl) {
       <div class="control">
         @for (option of controlOptions; track option.value) {
-          <button class="control-cell" (click)="onControlClick(option)" [disabled]="setDisabled(option)">{{ option.label }}</button>
+          <button
+            class="control-cell"
+            [ngStyle]="{ 'margin-left': option.value !== 1 ? '0px' : '-10px' }"
+            (click)="onControlClick(option)"
+            [disabled]="setDisabled(option)"
+          >
+            <span class="control-cell-text">{{ option.label }}</span>
+          </button>
         }
       </div>
     }
-    @if (showModel) {
-      <div class="model"> </div>
-    }
   </div>
+  @if (showModel) {
+    <div class="model">{{ talk }}</div>
+  }
 </div>
 
 <nz-modal
