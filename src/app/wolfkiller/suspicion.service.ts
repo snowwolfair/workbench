@@ -18,25 +18,21 @@ export class SuspicionService {
       // 初始化怀疑度
       let score = suspicion.get(player.id) || 50;
       // console.log(player.id,score);
-
       // 自己和死人的怀疑度设为0
       if (player.id === currentPlayer.id || !player.isAlive) {
         suspicion.set(player.id, 0);
         continue;
       }
-
       // 狼人不怀疑其他狼人
       if (currentPlayer.role === 'wolf') {
         if (player.role === 'wolf') {
           score -= 20;
         }
       }
-
       // 神职不被怀疑
       if (player.jumpRole === 'witch' || player.jumpRole === 'prophet' || player.jumpRole === 'garder' || player.jumpRole === 'psychic') {
         score -= 20;
       }
-
       if (
         state.daySpeeches
           .filter(s => s.say.type === 'see' && s.say.result)
@@ -53,10 +49,21 @@ export class SuspicionService {
       ) {
         score -= 20;
       }
-
       //设置怀疑度
       suspicion.set(player.id, score);
     }
+
+    // 预言家根据预言结果调整怀疑度
+    if (currentPlayer.prophecySet && currentPlayer.role === 'prophet') {
+      for (const [targetId, isWolf] of currentPlayer.prophecySet) {
+        if (isWolf) {
+          suspicion.set(Number(targetId), suspicion.get(Number(targetId))! + 20);
+        } else {
+          suspicion.set(Number(targetId), suspicion.get(Number(targetId))! - 20);
+        }
+      }
+    }
+
     //返回怀疑度表
     return suspicion;
   }

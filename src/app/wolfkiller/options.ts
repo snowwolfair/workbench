@@ -7,6 +7,7 @@ export interface Player {
   role: Role;
   jumpRole?: Role; // 跳转到的角色（如预言家跳了）
   isAlive: boolean;
+  prophecySet?: Map<number, boolean>; // 预言家已预言的玩家ID
 }
 
 export interface GameState {
@@ -15,6 +16,7 @@ export interface GameState {
   daySpeeches: Speech[]; // 白天发言记录
   currentDay: number;
   targetProphecy?: Player;
+  targetHunter?: Player;
   targetGuard?: Player[]; // 守卫目标 [{前一晚被守卫的目标}, {当前守卫的目标}]
   vote?: Player;
   log: string[]; // 游戏日志

@@ -22,6 +22,8 @@ export class WolflogicService {
   //   return candidates[Math.floor(Math.random() * candidates.length)];
   // }
 
+  prophecySet = new Map<number, boolean>();
+
   night(currentPlayer: Player, state: GameState) {
     const wolfGroup = state.players.filter(p => p.role === 'wolf' && p.isAlive);
     const prophetGroup = state.players.filter(p => p.jumpRole === 'prophet' && p.isAlive && p.role !== 'wolf');
@@ -34,7 +36,10 @@ export class WolflogicService {
     if (prophetGroup.length > 0) {
       // 狼人投票
       // const wolfVote = this.wolfVote(Array.from(suspicion.keys()));
-      const wolfVote = prophetGroup[0].id;
+      const wolfVote = state.players.filter(p => p.role !== 'wolf' && p.isAlive)[
+        Math.floor(Math.random() * state.players.filter(p => p.role !== 'wolf' && p.isAlive).length)
+      ].id;
+      // const wolfVote = prophetGroup[0].id;
       // console.log(wolfVote);
 
       state.log.push(`(${role})${name} 投票了 (${state.players[wolfVote].role})${state.players[wolfVote].name}`);
@@ -63,7 +68,7 @@ export class WolflogicService {
     return state;
   }
 
-  day(currentPlayer: Player, state: GameState) {
+  async day(currentPlayer: Player, state: GameState) {
     const allPlayers = state.players.filter(p => p.isAlive);
     const wolfGroup = state.players.filter(p => p.role === 'wolf' && p.isAlive);
     const nonWolfPlayers = state.players.filter(p => p.role !== 'wolf' && p.isAlive);
@@ -82,9 +87,12 @@ export class WolflogicService {
       }
       if (currentPlayer.jumpRole === 'prophet') {
         const targetPlayer = nonWolfPlayers[Math.floor(Math.random() * nonWolfPlayers.length)].id;
-        const choosePlayer = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id)[
-          Math.floor(Math.random() * state.players.filter(p => p.isAlive && p.id !== currentPlayer.id).length)
-        ].id;
+        let choosePlayer: number;
+        do {
+          choosePlayer = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id)[
+            Math.floor(Math.random() * state.players.filter(p => p.isAlive && p.id !== currentPlayer.id).length)
+          ].id;
+        } while (this.prophecySet.has(choosePlayer));
         // 预言家发言
         // 高概率第一天发查杀
         if (Math.random() < 0.8) {
@@ -99,6 +107,7 @@ export class WolflogicService {
             content: `我是prophet，${state.players[targetPlayer].name} 是 狼人`,
             day: state.currentDay
           });
+          this.prophecySet.set(targetPlayer, true);
         } else {
           // 低概率第一天发 金水
           state.daySpeeches.push({
@@ -112,7 +121,9 @@ export class WolflogicService {
             content: `我是prophet，${state.players[choosePlayer].name} 是 村民`,
             day: state.currentDay
           });
+          this.prophecySet.set(choosePlayer, false);
         }
+        state.players.find(p => p.id === currentPlayer.id).prophecySet = this.prophecySet;
       } else {
         currentPlayer.jumpRole = 'villager';
         state.daySpeeches.push({
@@ -184,9 +195,12 @@ export class WolflogicService {
     const nonWolfPlayers = state.players.filter(p => p.role !== 'wolf' && p.isAlive);
     if (currentPlayer.jumpRole === 'prophet') {
       const targetPlayer = nonWolfPlayers[Math.floor(Math.random() * nonWolfPlayers.length)].id;
-      const choosePlayer = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id)[
-        Math.floor(Math.random() * state.players.filter(p => p.isAlive && p.id !== currentPlayer.id).length)
-      ].id;
+      let choosePlayer: number;
+      do {
+        choosePlayer = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id)[
+          Math.floor(Math.random() * state.players.filter(p => p.isAlive && p.id !== currentPlayer.id).length)
+        ].id;
+      } while (this.prophecySet.has(choosePlayer));
       // 预言家发言
       if (!!state.targetProphecy) {
         // 狼队如果测到狼人，低概率测对
@@ -276,6 +290,7 @@ export class WolflogicService {
         }
         console.log(state.players[choosePlayer].name);
       }
+      state.players.find(p => p.id === currentPlayer.id).prophecySet = this.prophecySet;
     }
   }
 
