@@ -21,3 +21,82 @@
       transform: scale(0.5); /* 水滴在底部时缩小 */
     }
   }
+
+.ele {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+    offset-path: path("M 350 40 C 1000 1000, -350 1000, 350 1960");
+    background: linear-gradient(270deg, #65d060, #0887ec);
+    animation: move 4s linear;
+    animation-timeline: scroll(root);
+}
+
+@keyframes move {
+    0% {
+        offset-distance: 0%;
+    }
+    50% {
+        transform: scale(2.5);
+    }
+    100% {
+        offset-distance: 100%;
+    }
+}
+
+.g-svg {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 700px;
+    height: 2000px;
+    transform: translate(-50%, 0);
+}
+#svgpath {
+    stroke: #9bc9de;
+    stroke-width: 3px;
+    stroke-dasharray: 2108, 2108;
+    animation: lineMove 4s linear;
+    animation-timeline: scroll(root);
+}
+@keyframes lineMove {
+    0% {
+        stroke-dashoffset: 2108;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+.svg-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 700px;
+    height: 2000px;
+}
+
+// 全局蒙层：覆盖整个视口
+.global-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999; // 蒙层层级
+  pointer-events: auto; // 默认可点击（但我们不处理关闭）
+}
+
+// 已存在的特殊区域：必须高于蒙层
+.special-panel {
+  position: relative; // 或 fixed/absolute，根据布局
+  z-index: 1000; // 必须 > .global-overlay 的 z-index
+  pointer-events: auto; // 确保内部可点击
+  // 其他样式：宽度、位置等按需设置
+  background: white;
+  padding: 16px;
+  border: 1px solid #ddd;
+}

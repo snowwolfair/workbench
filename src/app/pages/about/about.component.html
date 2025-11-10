@@ -8,3 +8,22 @@
   <li>设置默认路由和通配符路由...</li>
 </ul>
 <!-- <div class="water-drop"></div> -->
+<div class="svg-container">
+  <svg class="g-svg" width="400" height="160" xmlns="http://www.w3.org/2000/svg">
+    <path id="svgpath" d="M 350 40 C 1000 1000, -350 1000, 350 1960" stroke="black" fill="transparent" />
+  </svg>
+  <div class="ele"></div>
+</div>
+
+<!-- 触发按钮 -->
+<button (click)="showOverlay = true">启用蒙层模式</button>
+
+<!-- 已存在的固定区域（始终在 DOM 中） -->
+<div class="special-panel" #specialPanel>
+  <p>这是始终可见的操作区域</p>
+</div>
+
+<!-- 蒙层：全屏覆盖，但不影响 .special-panel -->
+@if (showOverlay) {
+  <div class="global-overlay" (click)="onOverlayClick($event)"></div>
+}
