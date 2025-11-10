@@ -1,5 +1,5 @@
 // types.ts
-export type Role = 'villager' | 'wolf' | 'witch' | 'garder' | 'prophet' | 'psychic' | 'hunter';
+export type Role = 'villager' | 'wolf' | 'witch' | 'garder' | 'prophet' | 'psychic' | 'hunter' | 'system';
 
 export interface Player {
   id: number;
@@ -23,7 +23,7 @@ export interface GameState {
 }
 
 export interface NightAction {
-  type: 'kill' | 'see' | 'heal' | 'guard' | 'poison' | 'psychic' | 'sleep';
+  type: 'kill' | 'see' | 'heal' | 'guard' | 'poison' | 'psychic' | 'sleep' | 'hunt';
   targetId?: number;
   actorId?: number;
   result?: boolean; // 刀人结果（成功/失败）

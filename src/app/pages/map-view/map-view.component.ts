@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as THREE from 'three';
 import { OrbitControls } from 'three-orbitcontrols-ts';
@@ -12,6 +12,7 @@ import { ProphetLogicService } from '../../wolfkiller/prophet-logic.service';
 import { SuspicionService } from '../../wolfkiller/suspicion.service';
 import { PsychicLogicService } from '../../wolfkiller/psychic-logic.service';
 import { GarderLogicService } from '../../wolfkiller/garder-logic.service';
+import { HunterLogicService } from '../../wolfkiller/hunter-logic.service';
 import { ReplyService } from '../../speakmodal/replay.service';
 
 import { NzModalModule } from 'ng-zorro-antd/modal';
@@ -32,10 +33,13 @@ export class MapViewComponent {
     private prophetlogicService: ProphetLogicService,
     private psychiclogicService: PsychicLogicService,
     private garderlogicService: GarderLogicService,
+    private hunterlogicService: HunterLogicService,
     private suspicionService: SuspicionService,
     private replyService: ReplyService,
     private msg: NzMessageService
   ) {}
+
+  @ViewChild('player-container-wrapper', { static: false }) specialPanel!: ElementRef;
 
   // 指定映射逻辑
   // 1： 预言家
@@ -66,6 +70,19 @@ export class MapViewComponent {
   target?: Player;
   today = 0;
   state: GameState[] = [];
+
+  system: Player = {
+    id: 999,
+    name: '系统',
+    role: 'system',
+    isAlive: true
+  };
+
+  // 指定时的蒙层
+  showOverlay = false;
+
+  // 当前发言玩家
+  currentPlayer: Player;
 
   talk: string = '';
 
@@ -227,18 +244,26 @@ export class MapViewComponent {
       case 1:
         this.choosePlayer = true;
         this.hunterSign = true;
+        this.showOverlay = true;
         // this.resetGame();
+
+        this.currentPlayer = this.system;
+        this.talk = '请指定猎物';
         break;
       case 2:
         this.choosePlayer = true;
         this.prophecySign = true;
+        this.showOverlay = true;
 
+        this.currentPlayer = this.system;
         this.talk = '请指定预言';
         break;
       case 3:
         this.choosePlayer = true;
         this.guardSign = true;
+        this.showOverlay = true;
 
+        this.currentPlayer = this.system;
         this.talk = '请指定守卫';
         break;
       case 4:
@@ -286,6 +311,7 @@ export class MapViewComponent {
           nightActions: [], // 夜晚行为记录（谁被刀、谁被验等）
           daySpeeches: [], // 白天发言记录
           currentDay: this.today + 1,
+          targetHunter: this.targetHunter,
           targetProphecy: this.targetProphecy,
           targetGuard: this.targetGuard,
           vote: this.playerList[this.voted],
@@ -295,6 +321,16 @@ export class MapViewComponent {
         this.gamelink();
         break;
     }
+  }
+
+  onOverlayClick(event?: MouseEvent) {
+    // event.stopPropagation();
+    this.choosePlayer = false;
+    this.forceVote = false;
+    this.guardSign = false;
+    this.hunterSign = false;
+    this.prophecySign = false;
+    this.showOverlay = false; // 点击蒙层关闭
   }
 
   // 按钮禁用
@@ -345,7 +381,7 @@ export class MapViewComponent {
 
     // 选择玩家后，点击玩家进行预言
     if (this.choosePlayer && this.prophecySign) {
-      if (!this.targetProphecy) {
+      if (this.targetProphecy) {
         this.targetProphecy = this.playerList[id];
         this.gameLogs.push(`重新指定${this.targetProphecy.name}为夜晚预言目标`);
       } else {
@@ -360,7 +396,7 @@ export class MapViewComponent {
 
     // 选择玩家后，点击玩家进行守卫
     if (this.choosePlayer && this.guardSign) {
-      if (!this.targetGuard) {
+      if (this.targetGuard) {
         this.targetGuard = this.playerList[id];
         this.gameLogs.push(`重新指定${this.targetGuard.name}为夜晚守卫目标`);
       } else {
@@ -374,19 +410,20 @@ export class MapViewComponent {
     }
     // 选择玩家后，点击玩家进行猎人
     if (this.choosePlayer && this.hunterSign) {
-      if (!this.targetHunter) {
+      if (this.targetHunter) {
         this.targetHunter = this.playerList[id];
         this.gameLogs.push(`重新指定${this.targetHunter.name}为夜晚猎人目标`);
       } else {
         this.targetHunter = this.playerList[id];
         this.gameLogs.push(`指定${this.targetHunter.name}为夜晚猎人目标`);
       }
-      this.state[this.today].log.push(`${this.targetHunter.name} 被指定猎人`);
+      this.state[this.today].log.push(`${this.targetHunter.name} 被指定猎人猎杀`);
       // 清除选择玩家状态
       this.choosePlayer = false;
       this.hunterSign = false;
     }
     console.log(this.talk);
+    this.onOverlayClick();
   }
 
   // 游戏链接
@@ -423,6 +460,7 @@ export class MapViewComponent {
         case 'villager':
           break;
         case 'hunter':
+          // 猎人无晚上活动
           break;
         case 'psychic':
           this.state[this.today] = this.psychiclogicService.night(this.playerList[i], this.state[this.today]);
@@ -451,6 +489,14 @@ export class MapViewComponent {
     // 刀人结果：如果守卫的目标不是被刀的目标，那么被刀的目标就会死亡
     if (forkill !== forguard) {
       currentState.players[forkill].isAlive = false;
+
+      // 刀到猎人触发猎人防守反击
+      if (forkill === this.playerList.find(p => p.role === 'hunter').id) {
+        this.state[this.today] = this.hunterlogicService.night(
+          this.playerList.find(p => p.role === 'hunter'),
+          this.state[this.today]
+        );
+      }
     }
 
     // 添加游戏日志
@@ -481,6 +527,8 @@ export class MapViewComponent {
         case 'villager':
           break;
         case 'hunter':
+          this.state[this.today] = this.hunterlogicService.day(this.playerList[i], this.state[this.today]);
+          console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'psychic':
           this.state[this.today] = this.psychiclogicService.day(this.playerList[i], this.state[this.today]);
@@ -506,11 +554,18 @@ export class MapViewComponent {
   }
 
   voted: any;
+  hunterDie = false;
 
   gameVote() {
     this.voted = this.startVote();
     this.state[this.today].log.push(`玩家${this.voted + 1} 被投票出局`);
     this.playerList[this.voted].isAlive = false;
+    if (this.playerList[this.voted].role === 'hunter') {
+      if (this.state[this.today].targetHunter && this.state[this.today].targetHunter.id !== this.playerList[this.voted].id) {
+        this.playerList[this.state[this.today].targetHunter.id].isAlive = false;
+        this.hunterDie = true;
+      }
+    }
     this.state[this.today].vote = this.playerList[this.voted];
 
     this.addGameLogVote(this.state[this.today]);
@@ -644,6 +699,16 @@ export class MapViewComponent {
       if (player.isAlive) {
         this.voteList.set(player.id, 0);
       }
+    }
+
+    if (this.hunterDie) {
+      let context = {
+        name: `玩家${state.targetHunter.id + 1}`
+      };
+      message = await this.replyService.getRandomMessageAsync('hunter_death_day', context);
+      this.currentPlayer = state.targetHunter;
+
+      this.gameLogs.push(`玩家${state.targetHunter.id + 1}被猎人开枪带走了`);
     }
   }
 

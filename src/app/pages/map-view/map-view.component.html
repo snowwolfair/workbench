@@ -10,44 +10,16 @@
       <button (click)="resetGame()">重置游戏</button>
     </div>
     <div class="player-container">
-      <!-- 上排 -->
-      <div class="player-row">
-        @for (player of topRow; track player.id) {
-          <div class="player" [ngClass]="{ 'choose-player': choosePlayer }" (click)="getPlayer(player.id)">
-            <div
-              class="player-img"
-              [ngStyle]="{
-                height: showPlayerRole ? '80%' : '100%',
-                'border-color': player.isAlive ? '#ffffff' : '#ff0000'
-              }"
-            >
-              {{ player.name }}
-            </div>
-            @if (showPlayerRole) {
-              <div
-                class="player-role"
-                [ngClass]="{
-                  'player-role-red': player.role === 'red',
-                  'player-role-blue': player.role === 'blue'
-                }"
-              >
-                {{ player.role | i18n }} | {{ player?.jumpRole | i18n }}
-              </div>
-            }
-          </div>
-        }
-      </div>
-
-      <!-- 下排 -->
-      @if (bottomRow.length > 0) {
+      <div class="player-container-wrapper" [ngClass]="{ 'white-background': choosePlayer }">
+        <!-- 上排 -->
         <div class="player-row">
-          @for (player of bottomRow; track player.id) {
+          @for (player of topRow; track player.id) {
             <div class="player" [ngClass]="{ 'choose-player': choosePlayer }" (click)="getPlayer(player.id)">
               <div
                 class="player-img"
                 [ngStyle]="{
                   height: showPlayerRole ? '80%' : '100%',
-                  'border-color': player.isAlive ? '#ffffff' : '#ff0000'
+                  'border-color': player.isAlive ? '#000000' : '#ff0000'
                 }"
               >
                 {{ player.name }}
@@ -66,31 +38,70 @@
             </div>
           }
         </div>
-      }
+
+        <!-- 下排 -->
+        @if (bottomRow.length > 0) {
+          <div class="player-row">
+            @for (player of bottomRow; track player.id) {
+              <div class="player" [ngClass]="{ 'choose-player': choosePlayer }" (click)="getPlayer(player.id)">
+                <div
+                  class="player-img"
+                  [ngStyle]="{
+                    height: showPlayerRole ? '80%' : '100%',
+                    'border-color': player.isAlive ? '#000000' : '#ff0000'
+                  }"
+                >
+                  {{ player.name }}
+                </div>
+                @if (showPlayerRole) {
+                  <div
+                    class="player-role"
+                    [ngClass]="{
+                      'player-role-red': player.role === 'red',
+                      'player-role-blue': player.role === 'blue'
+                    }"
+                  >
+                    {{ player.role | i18n }} | {{ player?.jumpRole | i18n }}
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
     </div>
     <div class="control-extra">
       <button (click)="switchRole()">菜单</button>
       <button (click)="showGameLog()">游戏日志</button>
       <button (click)="showSystemLog()">系统日志</button>
     </div>
-    @if (showControl) {
-      <div class="control">
-        @for (option of controlOptions; track option.value) {
-          <button
-            class="control-cell"
-            [ngStyle]="{ 'margin-left': option.value !== 1 ? '0px' : '-10px' }"
-            (click)="onControlClick(option)"
-            [disabled]="setDisabled(option)"
-          >
-            <span class="control-cell-text">{{ option.label }}</span>
-          </button>
-        }
-      </div>
+    @if (showOverlay) {
+      <div class="global-overlay" (click)="onOverlayClick($event)"></div>
     }
+    <div class="down-part">
+      @if (showControl) {
+        <div class="control">
+          @for (option of controlOptions; track option.value) {
+            <button
+              class="control-cell"
+              [ngStyle]="{ 'margin-left': option.value !== 1 ? '0px' : '-10px' }"
+              (click)="onControlClick(option)"
+              [disabled]="setDisabled(option)"
+            >
+              <span class="control-cell-text">{{ option.label }}</span>
+            </button>
+          }
+          <button class="control-cell mar-right">
+            <span class="control-cell-text" style="margin-right: -10px">{{ currentPlayer?.name }}</span>
+          </button>
+        </div>
+      }
+
+      @if (showModel) {
+        <div class="model">{{ talk }}</div>
+      }
+    </div>
   </div>
-  @if (showModel) {
-    <div class="model">{{ talk }}</div>
-  }
 </div>
 
 <nz-modal

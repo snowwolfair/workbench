@@ -31,5 +31,9 @@
     "{{name}}是{{role}}",
     "{{name}}是{{role}}，我预见到了！我预见到了！",
     "{{name}}是{{role}}，昨晚对{{name}}的预言是，{{result}}"
+  ],
+  "hunter_death_day":[
+    "给我陪葬吧,{{name}}",
+    "一起下地狱吧，{{name}}"
   ]
 }

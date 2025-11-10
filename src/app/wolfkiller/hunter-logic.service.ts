@@ -11,40 +11,28 @@ export class HunterLogicService {
   };
 
   night(currentPlayer: Player, state: GameState) {
-    const allPlayers = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id);
-
     let role = currentPlayer.role;
     let name = currentPlayer.name;
 
     let targetPlayer: Player;
-    targetPlayer = allPlayers[Math.floor(Math.random() * allPlayers.length)];
 
-    if (state.targetGuard) {
-      if (!!state.targetGuard && state.targetGuard.length === 2) {
-        targetPlayer = state.targetGuard[1];
+    if (state.targetHunter) {
+      if (state.targetHunter.id === currentPlayer.id) {
+        state.log.push(`(${role})${name} 指定目标为自己，复仇失败`);
+      } else {
+        targetPlayer = state.targetHunter;
+        state.nightActions.push({
+          type: 'kill',
+          targetId: targetPlayer.id,
+          actorId: currentPlayer.id
+        });
+        state.log.push(`(${role})${name} 复仇猎杀了 (${targetPlayer.role})${targetPlayer.name}`);
       }
     }
-
-    state.targetGuard = [];
-
-    this.lastNightAction = {
-      type: 'guard',
-      targetId: targetPlayer.id,
-      actorId: currentPlayer.id
-    };
-
-    state.nightActions.push(this.lastNightAction);
-
-    state.targetGuard.push(targetPlayer);
-
-    console.log(JSON.parse(JSON.stringify(state)));
-    state.log.push(`(${role})${name} 守卫 ${targetPlayer.name}`);
     return state;
   }
 
   day(currentPlayer: Player, state: GameState) {
-    const allPlayers = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id);
-
     let role = currentPlayer.role;
     let name = currentPlayer.name;
 
@@ -64,4 +52,6 @@ export class HunterLogicService {
 
     return state;
   }
+
+  chat() {}
 }
