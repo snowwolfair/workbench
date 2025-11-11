@@ -60,16 +60,15 @@ export class GarderLogicService {
     if (state.currentDay === 1) {
       currentPlayer.jumpRole = 'villager';
       state.log.push(`(${role})${name} 说明他的身份是 ${currentPlayer.jumpRole}`);
+      state.daySpeeches.push({
+        playerId: currentPlayer.id,
+        say: {
+          type: 'sleep'
+        },
+        content: `我是${currentPlayer.jumpRole}`,
+        day: state.currentDay
+      });
     }
-
-    state.daySpeeches.push({
-      playerId: currentPlayer.id,
-      say: {
-        type: 'sleep'
-      },
-      content: `我是${currentPlayer.jumpRole}`,
-      day: state.currentDay
-    });
 
     return state;
   }

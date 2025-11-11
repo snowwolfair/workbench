@@ -194,15 +194,48 @@ export class WolflogicService {
   wolfProphet(currentPlayer: Player, state: GameState) {
     const nonWolfPlayers = state.players.filter(p => p.role !== 'wolf' && p.isAlive);
     if (currentPlayer.jumpRole === 'prophet') {
-      const targetPlayer = nonWolfPlayers[Math.floor(Math.random() * nonWolfPlayers.length)].id;
+      let count = 0;
       let choosePlayer: number;
       do {
         choosePlayer = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id)[
           Math.floor(Math.random() * state.players.filter(p => p.isAlive && p.id !== currentPlayer.id).length)
         ].id;
-      } while (this.prophecySet.has(choosePlayer));
+        count++;
+      } while (this.prophecySet.has(choosePlayer) && count < 50);
       // 预言家发言
       if (!!state.targetProphecy) {
+        // 如果指定目标预测过，直接根据预测结果发言
+        if (this.prophecySet.has(state.targetProphecy.id)) {
+          // 之前的预言结果为狼
+          if (this.prophecySet.get(state.targetProphecy.id)) {
+            state.daySpeeches.push({
+              playerId: currentPlayer.id,
+              say: {
+                type: 'see',
+                targetId: state.targetProphecy.id,
+                actorId: currentPlayer.id,
+                result: true
+              },
+              content: `昨天预言的${state.players[state.targetProphecy.id].name} 是 狼人`,
+              day: state.currentDay
+            });
+          } else {
+            // 之前的预言结果为村民
+            state.daySpeeches.push({
+              playerId: currentPlayer.id,
+              say: {
+                type: 'see',
+                targetId: state.targetProphecy.id,
+                actorId: currentPlayer.id,
+                result: false
+              },
+              content: `昨天预言的${state.players[state.targetProphecy.id].name} 是 村民`,
+              day: state.currentDay
+            });
+          }
+          return;
+        }
+
         // 狼队如果测到狼人，低概率测对
         if (state.targetProphecy.role === 'wolf') {
           if (Math.random() < 0.4) {
@@ -217,6 +250,7 @@ export class WolflogicService {
               content: `昨天预言的${state.players[state.targetProphecy.id].name} 是 狼人`,
               day: state.currentDay
             });
+            this.prophecySet.set(state.targetProphecy.id, true);
           } else {
             // 高概率测错
             state.daySpeeches.push({
@@ -230,6 +264,7 @@ export class WolflogicService {
               content: `昨天预言的${state.players[state.targetProphecy.id].name} 是 村民`,
               day: state.currentDay
             });
+            this.prophecySet.set(state.targetProphecy.id, false);
           }
         } else {
           // 狼队如果测到村民，高概率测对
@@ -245,6 +280,7 @@ export class WolflogicService {
               content: `昨天预言的${state.players[state.targetProphecy.id].name} 是 狼人`,
               day: state.currentDay
             });
+            this.prophecySet.set(state.targetProphecy.id, true);
           } else {
             // 低概率测错
             state.daySpeeches.push({
@@ -258,22 +294,54 @@ export class WolflogicService {
               content: `昨天预言的${state.players[state.targetProphecy.id].name} 是 村民`,
               day: state.currentDay
             });
+            this.prophecySet.set(state.targetProphecy.id, false);
           }
         }
       } else {
+        if (this.prophecySet.has(choosePlayer)) {
+          // 之前的预言结果为狼
+          if (this.prophecySet.get(choosePlayer)) {
+            state.daySpeeches.push({
+              playerId: currentPlayer.id,
+              say: {
+                type: 'see',
+                targetId: choosePlayer,
+                actorId: currentPlayer.id,
+                result: true
+              },
+              content: `昨天预言的${state.players[choosePlayer].name} 是 狼人`,
+              day: state.currentDay
+            });
+          } else {
+            // 之前的预言结果为村民
+            state.daySpeeches.push({
+              playerId: currentPlayer.id,
+              say: {
+                type: 'see',
+                targetId: choosePlayer,
+                actorId: currentPlayer.id,
+                result: false
+              },
+              content: `昨天预言的${state.players[choosePlayer].name} 是 村民`,
+              day: state.currentDay
+            });
+          }
+          return;
+        }
         // 狼队如果测到村民，高概率测对
         if (Math.random() < 0.4) {
           state.daySpeeches.push({
             playerId: currentPlayer.id,
             say: {
               type: 'see',
-              targetId: targetPlayer,
+              targetId: choosePlayer,
               actorId: currentPlayer.id,
               result: true
             },
-            content: `昨天预言的${state.players[targetPlayer].name} 是 狼人`,
+            content: `昨天预言的${state.players[choosePlayer].name} 是 狼人`,
             day: state.currentDay
           });
+          this.prophecySet.set(choosePlayer, true);
         } else {
           // 低概率测错
           state.daySpeeches.push({
@@ -287,6 +355,7 @@ export class WolflogicService {
             content: `昨天预言的${state.players[choosePlayer].name} 是 村民`,
             day: state.currentDay
           });
+          this.prophecySet.set(choosePlayer, false);
         }
         console.log(state.players[choosePlayer].name);
       }
