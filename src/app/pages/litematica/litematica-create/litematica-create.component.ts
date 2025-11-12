@@ -3,7 +3,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzUploadChangeParam, NzUploadFile, NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { TagPoolComponent } from '../../tag-pool/tag-pool.component';
+import { TagPoolComponent } from '../tag-pool/tag-pool.component';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NZ_MODAL_DATA, NzModalRef, NzModalModule } from 'ng-zorro-antd/modal';
@@ -13,12 +13,12 @@ import { NzAlertModule } from 'ng-zorro-antd/alert';
 @Component({
   selector: 'app-litematica-create',
   imports: [
-    NzFormModule, 
+    NzFormModule,
     NzInputModule,
     FormsModule,
-    NzUploadModule, 
-    NzIconModule, 
-    NzButtonModule, 
+    NzUploadModule,
+    NzIconModule,
+    NzButtonModule,
     NzModalModule,
     ReactiveFormsModule,
     NzAlertModule,
@@ -36,47 +36,43 @@ export class LitematicaCreateComponent {
 
   filevisible = false;
 
-
-
   tags: any[] = [];
 
-  fileList: any[] = []
+  fileList: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     private nzModalRef: NzModalRef,
     private http: _HttpClient
-  ){
+  ) {
     this.validateForm = this.fb.group({
       name: [null, [Validators.required]],
-      description: [''],
+      description: ['']
     });
   }
 
   showUploadList = {
     showPreviewIcon: false,
     showRemoveIcon: true,
-    showDownloadIcon: false,
+    showDownloadIcon: false
   };
 
   fileSize = 1024 * 10 * 1024;
 
   inputValue: string;
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  submitImport(){
+  submitImport() {
     const file = this.fileList[0] || '';
     let formData = new FormData();
 
-    if(!this.validateForm.value.name){
+    if (!this.validateForm.value.name) {
       this.visible = true;
       return;
-    }else{
+    } else {
       this.visible = false;
     }
-
 
     formData.append('name', this.validateForm.value.name);
     const filteredTags = this.tags.map(tag => ({
@@ -86,10 +82,10 @@ export class LitematicaCreateComponent {
     formData.append('tags', JSON.stringify(filteredTags));
     formData.append('description', this.validateForm.value.description);
 
-    if(!file){
+    if (!file) {
       this.filevisible = true;
       return;
-    }else{
+    } else {
       this.filevisible = false;
     }
     formData.append('file', file);
@@ -97,7 +93,7 @@ export class LitematicaCreateComponent {
     this.nzModalRef.close(formData);
   }
 
-  getTag(event: any){
+  getTag(event: any) {
     this.tags = event;
     console.log(this.tags);
   }

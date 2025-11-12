@@ -13,6 +13,8 @@ import { SuspicionService } from '../../wolfkiller/suspicion.service';
 import { PsychicLogicService } from '../../wolfkiller/psychic-logic.service';
 import { GarderLogicService } from '../../wolfkiller/garder-logic.service';
 import { HunterLogicService } from '../../wolfkiller/hunter-logic.service';
+import { VillagerLogicService } from '../../wolfkiller/villager-logic.service';
+
 import { ReplyService } from '../../speakmodal/replay.service';
 
 import { NzModalModule } from 'ng-zorro-antd/modal';
@@ -34,6 +36,7 @@ export class MapViewComponent {
     private psychiclogicService: PsychicLogicService,
     private garderlogicService: GarderLogicService,
     private hunterlogicService: HunterLogicService,
+    private villagerlogicService: VillagerLogicService,
     private suspicionService: SuspicionService,
     private replyService: ReplyService,
     private msg: NzMessageService
@@ -92,6 +95,7 @@ export class MapViewComponent {
 
   // 开始游戏
   startGame() {
+    this.gameResult = '';
     this.shuffledRoles = this.shuffle([...this.roles]);
     console.log(this.shuffledRoles);
     for (let i = 0; i < this.playerList.length; i++) {
@@ -188,7 +192,7 @@ export class MapViewComponent {
     console.log(this.playerList);
   }
 
-  showPlayerRole = true;
+  showPlayerRole = false;
 
   //对话框和控制台切换
   showControl = true;
@@ -197,7 +201,7 @@ export class MapViewComponent {
   //控制台选项
   controlOptions = [
     {
-      label: '重置游戏',
+      label: '指定猎人猎物',
       value: 1,
       disabled: false
     },
@@ -412,12 +416,13 @@ export class MapViewComponent {
     if (this.choosePlayer && this.hunterSign) {
       if (this.targetHunter) {
         this.targetHunter = this.playerList[id];
-        this.gameLogs.push(`重新指定${this.targetHunter.name}为夜晚猎人目标`);
+        this.gameLogs.push(`重新指定${this.targetHunter.name}为猎人目标`);
       } else {
         this.targetHunter = this.playerList[id];
-        this.gameLogs.push(`指定${this.targetHunter.name}为夜晚猎人目标`);
+        this.gameLogs.push(`指定${this.targetHunter.name}为猎人目标`);
       }
-      this.state[this.today].log.push(`${this.targetHunter.name} 被指定猎人猎杀`);
+      this.state[this.today].log.push(`${this.targetHunter.name} 被指定猎人目标`);
+      this.state[this.today].targetHunter = this.targetHunter;
       // 清除选择玩家状态
       this.choosePlayer = false;
       this.hunterSign = false;
@@ -458,6 +463,8 @@ export class MapViewComponent {
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'villager':
+          this.state[this.today] = this.villagerlogicService.night(this.playerList[i], this.state[this.today]);
+          console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'hunter':
           // 猎人无晚上活动
@@ -525,6 +532,7 @@ export class MapViewComponent {
           this.state[this.today] = await this.wolflogicService.day(this.playerList[i], this.state[this.today]);
           break;
         case 'villager':
+          this.state[this.today] = await this.villagerlogicService.day(this.playerList[i], this.state[this.today]);
           break;
         case 'hunter':
           this.state[this.today] = this.hunterlogicService.day(this.playerList[i], this.state[this.today]);
@@ -560,6 +568,7 @@ export class MapViewComponent {
     this.voted = this.startVote();
     this.state[this.today].log.push(`玩家${this.voted + 1} 被投票出局`);
     this.playerList[this.voted].isAlive = false;
+    console.log(this.playerList[this.voted].role);
     if (this.playerList[this.voted].role === 'hunter') {
       if (this.state[this.today].targetHunter && this.state[this.today].targetHunter.id !== this.playerList[this.voted].id) {
         this.playerList[this.state[this.today].targetHunter.id].isAlive = false;
@@ -615,7 +624,7 @@ export class MapViewComponent {
     return voteTarget;
   }
 
-  gameResult: string;
+  gameResult: string = 'true';
   gameOver(isWin: boolean) {
     if (isWin) {
       this.gameResult = '村民胜利';
@@ -624,6 +633,7 @@ export class MapViewComponent {
       this.gameResult = '狼人胜利';
       this.msg.error(this.gameResult);
     }
+    this.showPlayerRole = true;
     console.log(this.gameResult);
   }
 
@@ -631,8 +641,12 @@ export class MapViewComponent {
   resetGame() {
     this.today = 0;
     this.state = [];
-    this.gameResult = '';
+    this.gameResult = 'true';
     this.gameLogs = [];
+    this.showPlayerRole = false;
+    this.voteSign = true;
+    this.votedSign = true;
+    this.hunterDie = false;
     this.voteList.clear();
     this.switchGameMode();
   }

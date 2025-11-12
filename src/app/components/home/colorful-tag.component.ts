@@ -9,27 +9,24 @@ export interface DataModel {
   icon: string;
 }
 
-
 @Component({
   selector: 'colorful-tag',
-  imports: [NgClass],
   templateUrl: './colorful-tag.component.html',
   styleUrl: './colorful-tag.component.less'
 })
-export class ColorfulTagComponent implements OnChanges{
+export class ColorfulTagComponent implements OnChanges {
   @Input()
   data: DataModel = {
     colorLight: '',
     colorDark: '',
     size: '',
     name: '',
-    icon: '',
+    icon: ''
   };
 
   gradientStyle = 'linear-gradient(45deg, #FFD700, #FFA500)';
 
-  constructor(
-  ) { }
+  constructor() {}
 
   ngOnChanges(): void {
     if (!this.data) {
@@ -38,7 +35,7 @@ export class ColorfulTagComponent implements OnChanges{
         colorDark: '',
         size: '',
         name: '',
-        icon: '',
+        icon: ''
       };
     }
     // 验证输入参数
@@ -48,7 +45,7 @@ export class ColorfulTagComponent implements OnChanges{
     if (!this.data.colorDark) {
       this.data.colorDark = '#2E7D32';
     }
-    
+
     if (!['small', 'medium', 'large'].includes(this.data.size)) {
       this.data.size = 'medium';
     }

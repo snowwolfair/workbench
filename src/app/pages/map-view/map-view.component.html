@@ -14,7 +14,11 @@
         <!-- 上排 -->
         <div class="player-row">
           @for (player of topRow; track player.id) {
-            <div class="player" [ngClass]="{ 'choose-player': choosePlayer }" (click)="getPlayer(player.id)">
+            <div
+              class="player"
+              [ngClass]="{ 'choose-player': choosePlayer && player.isAlive, death: !player.isAlive && showOverlay }"
+              (click)="getPlayer(player.id)"
+            >
               <div
                 class="player-img"
                 [ngStyle]="{
@@ -24,16 +28,11 @@
               >
                 {{ player.name }}
               </div>
+              @if (!showPlayerRole) {
+                <div class="player-role" [ngClass]="{}"> {{ player?.jumpRole ? (player.jumpRole | i18n) : '&nbsp;' }} </div>
+              }
               @if (showPlayerRole) {
-                <div
-                  class="player-role"
-                  [ngClass]="{
-                    'player-role-red': player.role === 'red',
-                    'player-role-blue': player.role === 'blue'
-                  }"
-                >
-                  {{ player.role | i18n }} | {{ player?.jumpRole | i18n }}
-                </div>
+                <div class="player-role" [ngClass]="{}"> {{ player.role | i18n }} | {{ player?.jumpRole | i18n }} </div>
               }
             </div>
           }
@@ -43,7 +42,11 @@
         @if (bottomRow.length > 0) {
           <div class="player-row">
             @for (player of bottomRow; track player.id) {
-              <div class="player" [ngClass]="{ 'choose-player': choosePlayer }" (click)="getPlayer(player.id)">
+              <div
+                class="player"
+                [ngClass]="{ 'choose-player': choosePlayer && player.isAlive, death: !player.isAlive && showOverlay }"
+                (click)="getPlayer(player.id)"
+              >
                 <div
                   class="player-img"
                   [ngStyle]="{
@@ -53,16 +56,11 @@
                 >
                   {{ player.name }}
                 </div>
+                @if (!showPlayerRole) {
+                  <div class="player-role" [ngClass]="{}"> {{ player?.jumpRole ? (player.jumpRole | i18n) : '&nbsp;' }} </div>
+                }
                 @if (showPlayerRole) {
-                  <div
-                    class="player-role"
-                    [ngClass]="{
-                      'player-role-red': player.role === 'red',
-                      'player-role-blue': player.role === 'blue'
-                    }"
-                  >
-                    {{ player.role | i18n }} | {{ player?.jumpRole | i18n }}
-                  </div>
+                  <div class="player-role" [ngClass]="{}"> {{ player.role | i18n }} | {{ player?.jumpRole | i18n }} </div>
                 }
               </div>
             }
@@ -81,6 +79,9 @@
     <div class="down-part">
       @if (showControl) {
         <div class="control">
+          <button class="control-cell mar-left">
+            <span class="control-cell-text" style="margin-right: -10px">{{ currentPlayer?.name }}</span>
+          </button>
           @for (option of controlOptions; track option.value) {
             <button
               class="control-cell"
@@ -91,9 +92,6 @@
               <span class="control-cell-text">{{ option.label }}</span>
             </button>
           }
-          <button class="control-cell mar-right">
-            <span class="control-cell-text" style="margin-right: -10px">{{ currentPlayer?.name }}</span>
-          </button>
         </div>
       }
 

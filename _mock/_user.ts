@@ -46,11 +46,8 @@ function saveData(id: number, value: any): { msg: string } {
   return { msg: 'ok' };
 }
 
-
 function getUser(data: any): any {
-  if (!(data.userName === 'admin' || data.userName === 'user') || data.password !== '123456') {
-      return { msg: `Invalid username or password（admin/123456）` };
-    }
+  if (data.userName === 'admin' && data.password === 123456) {
     return {
       msg: 'ok',
       user: {
@@ -61,6 +58,24 @@ function getUser(data: any): any {
         time: +new Date()
       }
     };
+  } else if (data.userName === 'user' && data.password === 'user') {
+    return {
+      msg: 'ok',
+      user: {
+        token: '987654321',
+        name: data.userName,
+        email: `${data.userName}@qq.com`,
+        id: 10001,
+        time: +new Date()
+      }
+    };
+  } else {
+    return { msg: `Invalid username or password（user/user）` };
+  }
+
+  // if (!(data.userName === 'admin' || data.userName === 'user') || data.password !== '123456') {
+  //   return { msg: `Invalid username or password（admin/123456）` };
+  // }
 }
 
 export const USERS = {
