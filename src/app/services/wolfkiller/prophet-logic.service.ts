@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Player, GameState, NightAction } from './options';
 import { SuspicionService } from './suspicion.service';
-import { ReplyService } from '../speakmodal/replay.service';
+import { ReplyService } from '../../services/speakmodal/replay.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProphetLogicService {

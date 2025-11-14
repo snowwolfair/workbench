@@ -6,20 +6,20 @@ import { FormsModule } from '@angular/forms';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { I18nPipe, SettingsService, _HttpClient } from '@delon/theme';
 import { ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, inject } from '@angular/core';
-import { GameState } from '../../wolfkiller/options';
-import { WolflogicService } from '../../wolfkiller/wolf-logic.service';
-import { ProphetLogicService } from '../../wolfkiller/prophet-logic.service';
-import { SuspicionService } from '../../wolfkiller/suspicion.service';
-import { PsychicLogicService } from '../../wolfkiller/psychic-logic.service';
-import { GarderLogicService } from '../../wolfkiller/garder-logic.service';
-import { HunterLogicService } from '../../wolfkiller/hunter-logic.service';
-import { VillagerLogicService } from '../../wolfkiller/villager-logic.service';
+import { GameState } from '../../services/wolfkiller/options';
+import { WolflogicService } from '../../services/wolfkiller/wolf-logic.service';
+import { ProphetLogicService } from '../../services/wolfkiller/prophet-logic.service';
+import { SuspicionService } from '../../services/wolfkiller/suspicion.service';
+import { PsychicLogicService } from '../../services/wolfkiller/psychic-logic.service';
+import { GarderLogicService } from '../../services/wolfkiller/garder-logic.service';
+import { HunterLogicService } from '../../services/wolfkiller/hunter-logic.service';
+import { VillagerLogicService } from '../../services/wolfkiller/villager-logic.service';
 
-import { ReplyService } from '../../speakmodal/replay.service';
+import { ReplyService } from '../../services/speakmodal/replay.service';
 
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { Player } from '../../wolfkiller/options';
+import { Player } from '../../services/wolfkiller/options';
 
 @Component({
   selector: 'app-map-view',
