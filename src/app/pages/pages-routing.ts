@@ -71,5 +71,6 @@ export const routes: Routes = [
   },
 
   //先导页
+  { path: 'exception', loadChildren: () => import('./exception/routes').then(m => m.routes) },
   { path: '**', redirectTo: 'exception/404' }
 ];
