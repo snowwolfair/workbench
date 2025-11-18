@@ -100,3 +100,75 @@
   padding: 16px;
   border: 1px solid #ddd;
 }
+
+p {
+  --color: #000;
+  --shadow-stroke: 2px;
+  --shadow-stroke-gap: 3;
+  --shadow-rotate: -45deg;
+  --shadow-color: #aaa;
+  
+  position: relative;
+  color: transparent;
+  font-size: 100px;
+  line-height: 100px;
+  font-family: "DM Serif Text", serif;
+  background: repeating-linear-gradient(
+      var(--shadow-rotate),
+      var(--shadow-color),
+      var(--shadow-color) var(--shadow-stroke),
+      transparent var(--shadow-stroke),
+      transparent calc(var(--shadow-stroke) * var(--shadow-stroke-gap))
+    );
+   
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 10px;
+}
+
+p::before {
+  content: "这是始终可见的操作区域";
+  position: absolute;
+  color: transparent;
+  background: var(--color);
+  -webkit-text-stroke: 5px;
+  left: -5px;
+  top: -5px;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.card {
+	--r: 30px; /* radius */
+	--s: 40px; /* inner curve size */
+	background-color: #66ccff;
+	padding: 24px;
+	width: 264px;
+  height: 464px;
+	text-align: left;
+	border-radius: 30px;
+	clip-path: shape(
+		from 0 0,
+		hline to calc(100% - var(--s) - 2 * var(--r)),
+		arc by var(--r) var(--r) of var(--r) cw,
+		arc by var(--s) var(--s) of var(--s),
+		arc by var(--r) var(--r) of var(--r) cw,
+		vline to 100%,
+		hline to 0
+	);
+}
+
+.card-circle {
+	width: 60px;
+	height: 60px;
+	background-color: #fff;
+	position: absolute;
+	top: 0;
+	right: 0;
+	border-radius: 50%;
+	font-size: 1.5rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: 700;
+}

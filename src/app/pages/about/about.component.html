@@ -1,6 +1,6 @@
 <h1>关于我们</h1>
-<p>这是一个演示Angular路由功能的示例项目。</p>
-<p>我们展示了如何：</p>
+<h2>这是一个演示Angular路由功能的示例项目。</h2>
+<h2>我们展示了如何：</h2>
 <ul>
   <li>配置路由</li>
   <li>使用路由导航</li>
@@ -16,7 +16,7 @@
 </div>
 
 <!-- 触发按钮 -->
-<button (click)="showOverlay = true">启用蒙层模式</button>
+<button (click)="showOverlay = true" style="background: linear-gradient(to right, #000000, #ffd700); color: #ffffff">启用蒙层模式</button>
 
 <!-- 已存在的固定区域（始终在 DOM 中） -->
 <div class="special-panel" #specialPanel>
@@ -27,3 +27,8 @@
 @if (showOverlay) {
   <div class="global-overlay" (click)="onOverlayClick($event)"></div>
 }
+
+<div style="position: relative">
+  <div class="card-circle">1</div>
+  <div class="card"> </div>
+</div>
