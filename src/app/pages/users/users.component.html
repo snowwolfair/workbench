@@ -1,7 +1,50 @@
 <h1>用户列表</h1>
 <div class="user-list">
   <div class="user-card" *ngFor="let user of users">
-    <h3>{{user.name}}</h3>
-    <p>{{user.email}}</p>
+    <h3>{{ user.name }}</h3>
+    <p>{{ user.email }}</p>
   </div>
+</div>
+<!-- @for (item of timeInfo; track item.appname) {
+  <div>
+    <h3>{{ item.appname | friendlyName }}</h3>
+    <p>总使用时间: {{ item.usetime[0].total | timeFormat }}</p>
+    <div class="daily-list">
+      @for (daily of item.usetime[1]; track daily.date) {
+        <div class="daily-item">
+          <p>{{ daily.date | date: 'yyyy-MM-dd' }} : {{ daily.time | timeFormat }}</p>
+        </div>
+      }
+    </div>
+  </div>
+} -->
+
+<div class="top">
+  <div class="top-title">
+    <span style="font-size: 24px; font-weight: bold">历史使用应用时长前五</span>
+  </div>
+  <nz-skeleton [nzLoading]="loading">
+    <div class="top-use">
+      @for (item of topFiveList; track item.appname) {
+        <div class="top-item">
+          <g2-card
+            [title]="item.appname | friendlyName"
+            [bordered]="true"
+            [total]="item.usetime.total | timeFormat"
+            footer="日访问量 12,423"
+            contentHeight="46"
+          >
+            周同比
+            <trend [flag]="item.usetime.wowrate >= 0 ? 'up' : 'down'" style="margin: 0 16px 0 8px; color: rgba(0, 0, 0, 0.85)"
+              >{{ item.usetime.wowrate || '' }}%</trend
+            >
+            日环比
+            <trend [flag]="item.usetime.dodrate >= 0 ? 'up' : 'down'" style="margin: 0 0 0 8px; color: rgba(0, 0, 0, 0.85)"
+              >{{ item.usetime.dodrate }}%</trend
+            >
+          </g2-card>
+        </div>
+      }
+    </div>
+  </nz-skeleton>
 </div>
