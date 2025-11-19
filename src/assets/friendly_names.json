@@ -23,5 +23,9 @@
     "filezilla.exe": "文件传输工具",
     "typora.exe": "Typora(markdown文档读取工具)",
     "widgets.exe": "Windows小组件",
-    "foxmail.exe": "火狐邮件"
+    "foxmail.exe": "火狐邮件",
+    "wps.exe":"WPS office",
+    "taskmgr.exe":"任务管理器",
+    "test.exe":"视频转音频程序",
+    "mstsc.exe":"远程桌面连接"
 }
