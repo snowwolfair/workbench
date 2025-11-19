@@ -87,14 +87,14 @@ export class UsersComponent {
 
       let dodrate = 0;
       if (todayIndex == -1 && yestodayIndex !== -1) {
-        dodrate = Math.round((-item.usetime.daily[yestodayIndex].time / 60) * 100);
+        dodrate = (-item.usetime.daily[yestodayIndex].time / 60) * 100;
       } else if (todayIndex !== -1 && yestodayIndex == -1) {
-        dodrate = Math.round((item.usetime.daily[todayIndex].time / 60) * 100);
-      } else if (yestodayIndex == -1 && yestodayIndex == -1) {
+        dodrate = (item.usetime.daily[todayIndex].time / 60) * 100;
+      } else if (yestodayIndex == -1 && todayIndex == -1) {
       } else {
-        dodrate = Math.round(
-          ((item.usetime.daily[todayIndex].time - item.usetime.daily[yestodayIndex].time) / item.usetime.daily[yestodayIndex].time) * 100
-        );
+        dodrate =
+          ((item.usetime.daily[todayIndex].time - item.usetime.daily[yestodayIndex].time) / item.usetime.daily[yestodayIndex].time / 60) *
+          100;
       }
       item.usetime = {
         ...item.usetime,
@@ -135,11 +135,14 @@ export class UsersComponent {
         }
         lastweekstart.setDate(lastweekstart.getDate() - 1);
       }
-      let wowrate: number;
-      if (lastweek != 0) {
-        wowrate = Math.round(((nowweek - lastweek) / lastweek) * 100);
+      let wowrate: number = 0;
+      console.log(nowweek, lastweek);
+      if (lastweek != 0 && nowweek != 0) {
+        wowrate = ((nowweek - lastweek) / lastweek / 60) * 100;
+      } else if (lastweek == 0 && nowweek != 0) {
+        wowrate = (nowweek / 60) * 100;
       } else {
-        wowrate = Math.round((nowweek / 60) * 100);
+        wowrate = -(lastweek / 60) * 100;
       }
 
       item.usetime = {
@@ -152,6 +155,7 @@ export class UsersComponent {
 
   users = [
     { name: '张三', email: 'zhangsan@example.com' },
+
     { name: '李四', email: 'lisi@example.com' },
     { name: '王五', email: 'wangwu@example.com' },
     { name: '赵六', email: 'zhaoliu@example.com' }

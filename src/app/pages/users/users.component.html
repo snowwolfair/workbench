@@ -31,16 +31,16 @@
             [title]="item.appname | friendlyName"
             [bordered]="true"
             [total]="item.usetime.total | timeFormat"
-            footer="日访问量 12,423"
+            [footer]="`最高值${}`"
             contentHeight="46"
           >
             周同比
             <trend [flag]="item.usetime.wowrate >= 0 ? 'up' : 'down'" style="margin: 0 16px 0 8px; color: rgba(0, 0, 0, 0.85)"
-              >{{ item.usetime.wowrate || '' }}%</trend
+              >{{ item.usetime.wowrate || '' | number: '1.2-2' }}%</trend
             >
             日环比
             <trend [flag]="item.usetime.dodrate >= 0 ? 'up' : 'down'" style="margin: 0 0 0 8px; color: rgba(0, 0, 0, 0.85)"
-              >{{ item.usetime.dodrate }}%</trend
+              >{{ item.usetime.dodrate || '' | number: '1.2-2' }}%</trend
             >
           </g2-card>
         </div>
