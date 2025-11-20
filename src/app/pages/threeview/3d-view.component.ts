@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzSliderModule } from 'ng-zorro-antd/slider';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzInputNumberLegacyModule } from 'ng-zorro-antd/input-number-legacy';
 import * as THREE from 'three';
 // 引入轨道控制器扩展库OrbitControls.js
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -17,7 +17,7 @@ import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
     NzGridModule, 
     NzSliderModule, 
     FormsModule, 
-    NzInputNumberModule
+    NzInputNumberLegacyModule
   ],
   templateUrl: './3d-view.component.html',
   styleUrl: './3d-view.component.less'
