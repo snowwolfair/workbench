@@ -6,7 +6,7 @@ import { NzAffixModule } from 'ng-zorro-antd/affix';
 import { NzDividerComponent } from "ng-zorro-antd/divider";
 import { ElementRef, ViewChild, HostListener } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { CommonModule } from '@angular/common';
+
 import { _HttpClient } from '@delon/theme';
 import { ColorfulTagComponent } from '../../components/home/colorful-tag.component';
 import { HttpContext } from '@angular/common/http';
@@ -21,7 +21,6 @@ import APlayer from 'aplayer';
     NzButtonModule,
     NzAffixModule,
     NzDividerComponent,
-    CommonModule,
     ColorfulTagComponent
 ],
   templateUrl: './home.component.html',

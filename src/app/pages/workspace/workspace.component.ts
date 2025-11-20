@@ -1,12 +1,12 @@
 import { Component, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NzSplitterModule } from 'ng-zorro-antd/splitter';
 import { LitematicaComponent } from '../../pages/litematica/litematica.component';
 import { MapViewComponent } from '../../pages/map-view/map-view.component';
 
 @Component({
     selector: 'app-workspace',
-    imports: [CommonModule, LitematicaComponent, MapViewComponent, NzSplitterModule],
+    imports: [LitematicaComponent, MapViewComponent, NzSplitterModule],
     templateUrl: './workspace.component.html',
     styleUrls: ['./workspace.component.less']
 })
