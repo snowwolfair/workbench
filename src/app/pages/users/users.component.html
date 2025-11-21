@@ -31,7 +31,7 @@
             [title]="item.appname | friendlyName"
             [bordered]="true"
             [total]="item.usetime.total | timeFormat"
-            [footer]="`最高值${}`"
+            [footer]="`最高值 ${topDay(item)}`"
             contentHeight="46"
           >
             周同比
@@ -46,5 +46,9 @@
         </div>
       }
     </div>
+    <div class="top-title">
+      <span style="font-size: 24px; font-weight: bold">历史使用应用时长前五</span>
+    </div>
+    <div id="top-use-chart" style="width: 600px; height: 400px"> </div>
   </nz-skeleton>
 </div>

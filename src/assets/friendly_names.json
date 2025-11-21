@@ -27,5 +27,9 @@
     "wps.exe":"WPS office",
     "taskmgr.exe":"任务管理器",
     "test.exe":"视频转音频程序",
-    "mstsc.exe":"远程桌面连接"
+    "mstsc.exe":"远程桌面连接",
+    "koishell.exe":"koishi桌面编辑器",
+    "wpscloudsvr.exe":"WPS云盘",
+    "photolaunch.exe":"WPS看图",
+    "qqpcfileopen.exe":"腾讯电脑管家"
 }
