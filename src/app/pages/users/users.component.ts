@@ -10,7 +10,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { TimeFormatPipe } from '../../pipes/time-format.pipe';
 import { FriendlyNamePipe } from '../../pipes/friendly-name.pipe';
 
-import * as echarts from '../../../assets/echarts/echarts';
+import echarts from 'src/assets/echarts/echarts';
 
 @Component({
   selector: 'app-users',
@@ -30,17 +30,20 @@ export class UsersComponent {
     this.getDailyList();
   }
 
+  data: any[] = [];
+
   getDailyList() {
     this.loading = true;
     this.http.get('/assets/workTime/app_usage.json').subscribe((data: Record<string, { total: number; daily: Record<string, number> }>) => {
       console.log(data);
+      const newTimeInfo = [];
       Object.entries(data).forEach(([appName, info]) => {
         const dailyList = Object.entries(info.daily).map(([date, time]) => ({
           date: new Date(date),
           time: time
         }));
 
-        this.timeInfo.push({
+        newTimeInfo.push({
           appname: appName,
           usetime: {
             total: info.total, // 或用 parseInt/Number.toFixed 等
@@ -50,11 +53,16 @@ export class UsersComponent {
         // const map = JSON.parse(data);
         // console.log(map);
       });
+      this.timeInfo = newTimeInfo;
       this.getTopFiveList();
 
       console.log(this.timeInfo);
       this.dayOnDay();
       this.weekOnWeek();
+
+      setTimeout(() => {
+        this.initChart();
+      }, 10);
     });
   }
 
@@ -77,24 +85,24 @@ export class UsersComponent {
 
   date = new Date();
   newdate = new Date(Date.UTC(this.date.getFullYear(), this.date.getMonth(), this.date.getDate()));
+  yestoday = new Date(this.newdate);
 
   dayOnDay() {
     this.timeInfo.forEach(item => {
       const todayIndex = item.usetime.daily.findIndex(i => i.date.getTime() == this.newdate.getTime());
-      let yestoday = new Date(this.newdate);
-      yestoday.setDate(this.date.getDate() - 1);
-      const yestodayIndex = item.usetime.daily.findIndex(i => i.date.getTime() == yestoday.getTime());
+      this.yestoday.setDate(this.newdate.getDate() - 1);
+
+      const yestodayIndex = item.usetime.daily.findIndex(i => i.date.getTime() == this.yestoday.getTime());
 
       let dodrate = 0;
       if (todayIndex == -1 && yestodayIndex !== -1) {
-        dodrate = (-item.usetime.daily[yestodayIndex].time / 60) * 100;
+        dodrate = -item.usetime.daily[yestodayIndex].time / 60;
       } else if (todayIndex !== -1 && yestodayIndex == -1) {
-        dodrate = (item.usetime.daily[todayIndex].time / 60) * 100;
+        dodrate = item.usetime.daily[todayIndex].time / 60;
       } else if (yestodayIndex == -1 && todayIndex == -1) {
       } else {
         dodrate =
-          ((item.usetime.daily[todayIndex].time - item.usetime.daily[yestodayIndex].time) / item.usetime.daily[yestodayIndex].time / 60) *
-          100;
+          ((item.usetime.daily[todayIndex].time - item.usetime.daily[yestodayIndex].time) / item.usetime.daily[yestodayIndex].time) * 10;
       }
       item.usetime = {
         ...item.usetime,
@@ -104,45 +112,44 @@ export class UsersComponent {
     console.log(this.timeInfo);
   }
 
+  weekstart = new Date(this.newdate);
+  lastweekstart = new Date(this.weekstart);
   weekOnWeek() {
     this.timeInfo.forEach(item => {
-      let weekstart = new Date(this.newdate);
       let weekstartIndex: number = 0;
       let nowweek = 0;
 
       while (true) {
-        weekstartIndex = item.usetime.daily.findIndex(i => i.date.getTime() == weekstart.getTime());
+        weekstartIndex = item.usetime.daily.findIndex(i => i.date.getTime() == this.weekstart.getTime());
         if (weekstartIndex != -1) {
           nowweek = nowweek + item.usetime.daily[weekstartIndex].time;
         }
-        if (weekstart.getDay() == 1) {
+        if (this.weekstart.getDay() == 1) {
           break;
         }
-        weekstart.setDate(weekstart.getDate() - 1);
+        this.weekstart.setDate(this.weekstart.getDate() - 1);
       }
 
-      let lastweekstart = new Date(weekstart);
-      lastweekstart.setDate(weekstart.getDate() - 1);
+      this.lastweekstart.setDate(this.weekstart.getDate() - 1);
       let lastweekstartIndex = 0;
       let lastweek = 0;
       while (true) {
-        lastweekstartIndex = item.usetime.daily.findIndex(i => i.date.getTime() == lastweekstart.getTime());
+        lastweekstartIndex = item.usetime.daily.findIndex(i => i.date.getTime() == this.lastweekstart.getTime());
         if (lastweekstartIndex != -1) {
           lastweek = lastweek + item.usetime.daily[lastweekstartIndex].time;
         }
-        if (lastweekstart.getDay() == 1) {
+        if (this.lastweekstart.getDay() == 1) {
           break;
         }
-        lastweekstart.setDate(lastweekstart.getDate() - 1);
+        this.lastweekstart.setDate(this.lastweekstart.getDate() - 1);
       }
       let wowrate: number = 0;
-      console.log(nowweek, lastweek);
       if (lastweek != 0 && nowweek != 0) {
-        wowrate = ((nowweek - lastweek) / lastweek / 60) * 100;
+        wowrate = ((nowweek - lastweek) / lastweek) * 10;
       } else if (lastweek == 0 && nowweek != 0) {
-        wowrate = (nowweek / 60) * 100;
+        wowrate = nowweek / 60;
       } else {
-        wowrate = -(lastweek / 60) * 100;
+        wowrate = -(lastweek / 60);
       }
 
       item.usetime = {
@@ -151,6 +158,47 @@ export class UsersComponent {
       };
     });
     console.log(this.timeInfo);
+  }
+
+  topDay(item: any) {
+    const top = item.usetime.daily.reduce((prev, cur) => (prev.time > cur.time ? prev : cur));
+    const str = `${top.date.getFullYear()}-${top.date.getMonth() + 1}-${top.date.getDate()} : ${this.formatSeconds(top.time)}`;
+    return str;
+  }
+
+  topchart: any;
+  topchartoption: any;
+  initChart() {
+    // 初始化 ECharts 实例
+    if (this.topchart) {
+      this.topchart.dispose();
+    }
+    this.topchart = echarts.init(document.getElementById('top-use-chart'));
+    this.topchartoption = {
+      xAxis: {
+        type: 'category',
+        data: this.data
+      },
+      yAxis: {},
+      series: [
+        {
+          type: 'bar',
+          name: '2015',
+          data: [89.3, 92.1, 94.4, 85.4]
+        },
+        {
+          type: 'bar',
+          name: '2016',
+          data: [95.8, 89.4, 91.2, 76.9]
+        },
+        {
+          type: 'bar',
+          name: '2017',
+          data: [97.7, 83.1, 92.5, 78.1]
+        }
+      ]
+    };
+    this.topchart.setOption(this.topchartoption);
   }
 
   users = [
