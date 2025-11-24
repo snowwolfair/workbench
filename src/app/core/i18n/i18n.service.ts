@@ -71,8 +71,8 @@ export class I18NService extends AlainI18nBaseService {
     return { code, text: item.text, abbr: item.abbr };
   });
 
-  constructor(private cov: AlainConfigService) {
-    super(cov);
+  constructor() {
+    super();
 
     const defaultLang = this.getDefaultLang();
     this._defaultLang = this._langs.findIndex(w => w.code === defaultLang) === -1 ? DEFAULT : defaultLang;

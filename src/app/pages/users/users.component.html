@@ -1,22 +1,24 @@
 <h1>用户列表</h1>
 <div class="user-list">
-  <div class="user-card" *ngFor="let user of users">
-    <h3>{{ user.name }}</h3>
-    <p>{{ user.email }}</p>
-  </div>
+  @for (user of users; track user) {
+    <div class="user-card">
+      <h3>{{ user.name }}</h3>
+      <p>{{ user.email }}</p>
+    </div>
+  }
 </div>
 <!-- @for (item of timeInfo; track item.appname) {
-  <div>
-    <h3>{{ item.appname | friendlyName }}</h3>
-    <p>总使用时间: {{ item.usetime[0].total | timeFormat }}</p>
-    <div class="daily-list">
-      @for (daily of item.usetime[1]; track daily.date) {
-        <div class="daily-item">
-          <p>{{ daily.date | date: 'yyyy-MM-dd' }} : {{ daily.time | timeFormat }}</p>
-        </div>
-      }
-    </div>
+<div>
+  <h3>{{ item.appname | friendlyName }}</h3>
+  <p>总使用时间: {{ item.usetime[0].total | timeFormat }}</p>
+  <div class="daily-list">
+    @for (daily of item.usetime[1]; track daily.date) {
+      <div class="daily-item">
+        <p>{{ daily.date | date: 'yyyy-MM-dd' }} : {{ daily.time | timeFormat }}</p>
+      </div>
+    }
   </div>
+</div>
 } -->
 
 <div class="top">
@@ -35,13 +37,13 @@
             contentHeight="46"
           >
             周同比
-            <trend [flag]="item.usetime.wowrate >= 0 ? 'up' : 'down'" style="margin: 0 16px 0 8px; color: rgba(0, 0, 0, 0.85)"
-              >{{ item.usetime.wowrate || '' | number: '1.2-2' }}%</trend
-            >
+            <trend [flag]="item.usetime.wowrate >= 0 ? 'up' : 'down'" style="margin: 0 16px 0 8px; color: rgba(0, 0, 0, 0.85)">
+              {{ item.usetime.wowrate || '' | number: '1.2-2' }}%
+            </trend>
             日环比
-            <trend [flag]="item.usetime.dodrate >= 0 ? 'up' : 'down'" style="margin: 0 0 0 8px; color: rgba(0, 0, 0, 0.85)"
-              >{{ item.usetime.dodrate || '' | number: '1.2-2' }}%</trend
-            >
+            <trend [flag]="item.usetime.dodrate >= 0 ? 'up' : 'down'" style="margin: 0 0 0 8px; color: rgba(0, 0, 0, 0.85)">
+              {{ item.usetime.dodrate || '' | number: '1.2-2' }}%
+            </trend>
           </g2-card>
         </div>
       }

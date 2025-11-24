@@ -1,12 +1,5 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { AboutComponent } from './about/about.component';
-import { UsersComponent } from './users/users.component';
-import { MapViewComponent } from './map-view/map-view.component';
-import { WorkspaceComponent } from './workspace/workspace.component';
 import { LayoutBlankComponent } from '../layout/blank/blank.component';
-import { TagPoolComponent } from './litematica/tag-pool/tag-pool.component';
-import { ThreeViewComponent } from './threeview/3d-view.component';
 import { HomeComponent } from './home/home.component';
 import { authSimpleCanActivate, authSimpleCanActivateChild } from '@delon/auth';
 import { startPageGuard } from '@core';
@@ -68,9 +61,8 @@ export const routes: Routes = [
         }
       }
     ]
-  },
-
+  }
   //先导页
-  { path: 'exception', loadChildren: () => import('./exception/routes').then(m => m.routes) },
-  { path: '**', redirectTo: 'exception/404' }
+  // { path: 'exception', loadChildren: () => import('./exception/routes').then(m => m.routes) },
+  // { path: '**', redirectTo: 'exception/404' }
 ];

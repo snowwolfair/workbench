@@ -19,14 +19,13 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/mywork",
+            "outputPath": {
+              "base": "dist/mywork"
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -36,26 +35,13 @@
               "src/assets",
               "src/favicon.ico"
             ],
-            "styles": [
-              "src/theme.less",
-              "src/styles.less",
-              "node_modules/aplayer/dist/APlayer.min.css"
-            ],
+            "styles": ["src/theme.less", "src/styles.less", "node_modules/aplayer/dist/APlayer.min.css"],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "node_modules"
-              ]
+              "includePaths": ["node_modules"]
             },
-            "scripts": [
-              "node_modules/aplayer/dist/APlayer.min.js"
-            ],
-            "allowedCommonJsDependencies": [
-              "ajv",
-              "ajv-formats",
-              "mockjs",
-              "file-saver",
-              "extend"
-            ]
+            "scripts": ["node_modules/aplayer/dist/APlayer.min.js"],
+            "allowedCommonJsDependencies": ["ajv", "ajv-formats", "mockjs", "file-saver", "extend"],
+            "browser": "src/main.ts"
           },
           "configurations": {
             "production": {
@@ -72,7 +58,9 @@
                 }
               ],
               "outputHashing": "all",
-              "outputPath": "dist/production"
+              "outputPath": {
+                "base": "dist/production"
+              }
             },
             "development": {
               "optimization": false,
@@ -81,9 +69,9 @@
             }
           },
           "defaultConfiguration": "production"
-          },
+        },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "port": 4500
           },
@@ -98,15 +86,12 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n"
+          "builder": "@angular/build:extract-i18n"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               {
@@ -114,25 +99,25 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.less",
-              "node_modules/aplayer/dist/APlayer.min.css"
-            ],
+            "styles": ["src/styles.less", "node_modules/aplayer/dist/APlayer.min.css"],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "node_modules"
-              ]
+              "includePaths": ["node_modules"]
             },
-            "scripts": [
-              "node_modules/aplayer/dist/APlayer.min.js"
-            ]
+            "scripts": ["node_modules/aplayer/dist/APlayer.min.js"]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
     }
   },
   "cli": {
-    "analytics": "e127774a-1428-413d-be58-388bc21c66cd"
+    "analytics": "e127774a-1428-413d-be58-388bc21c66cd",
+    "schematicCollections": ["angular-eslint"]
   },
   "schematics": {
     "@schematics/angular:component": {
