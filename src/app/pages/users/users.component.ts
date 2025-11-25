@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { _HttpClient } from '@delon/theme';
+import { FormsModule } from '@angular/forms';
 
 import { G2CardModule } from '@delon/chart/card';
 import { TrendModule } from '@delon/chart/trend';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzFormModule } from 'ng-zorro-antd/form';
 
 import { TimeFormatPipe } from '../../pipes/time-format.pipe';
 import { FriendlyNamePipe } from '../../pipes/friendly-name.pipe';
@@ -14,7 +17,18 @@ import echarts from 'src/assets/echarts/echarts';
 
 @Component({
   selector: 'app-users',
-  imports: [CommonModule, TimeFormatPipe, FriendlyNamePipe, G2CardModule, TrendModule, NzIconModule, NzSkeletonModule],
+  imports: [
+    CommonModule,
+    TimeFormatPipe,
+    FriendlyNamePipe,
+    FormsModule,
+    // NzFormModule,
+    G2CardModule,
+    TrendModule,
+    NzIconModule,
+    NzSkeletonModule,
+    NzDatePickerModule
+  ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.less']
 })
@@ -27,6 +41,7 @@ export class UsersComponent {
   loading = false;
 
   ngOnInit(): void {
+    this.startValue.setDate(this.startValue.getDate() - 5);
     this.getDailyList();
   }
 
@@ -60,6 +75,7 @@ export class UsersComponent {
       this.dayOnDay();
       this.weekOnWeek();
 
+      // this.getstart();
       setTimeout(() => {
         this.initChart();
       }, 10);
@@ -164,6 +180,28 @@ export class UsersComponent {
     const top = item.usetime.daily.reduce((prev, cur) => (prev.time > cur.time ? prev : cur));
     const str = `${top.date.getFullYear()}-${top.date.getMonth() + 1}-${top.date.getDate()} : ${this.formatSeconds(top.time)}`;
     return str;
+  }
+
+  startValue: Date = new Date(this.date);
+  endValue: Date = new Date(this.date);
+
+  disabledStartDate = (startValue: Date): boolean => {
+    if (startValue.getTime() <= new Date('2025-11-12').getTime() || startValue.getTime() >= this.date.getTime()) {
+      return true;
+    }
+    return false;
+  };
+
+  disabledEndDate = (endValue: Date): boolean => {
+    if (!this.startValue || endValue.getTime() <= this.startValue.getTime() || endValue.getTime() >= this.date.getTime()) {
+      return true; // 必须先选开始日期
+    }
+    return false;
+  };
+
+  clearEndDate() {
+    // this.endValue = new Date(this.date);
+    this.endValue = null;
   }
 
   topchart: any;

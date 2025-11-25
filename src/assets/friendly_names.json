@@ -31,5 +31,6 @@
     "koishell.exe":"koishi桌面编辑器",
     "wpscloudsvr.exe":"WPS云盘",
     "photolaunch.exe":"WPS看图",
-    "qqpcfileopen.exe":"腾讯电脑管家"
+    "qqpcfileopen.exe":"腾讯电脑管家",
+    "qqpctray.exe":"腾讯电脑管家安全警告"
 }

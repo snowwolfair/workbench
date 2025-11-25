@@ -23,7 +23,8 @@
 
 <div class="top">
   <div class="top-title">
-    <span style="font-size: 24px; font-weight: bold">历史使用应用时长前五</span>
+    <span>历史使用应用时长前五</span>
+    <span style="font-size: 16px; color: #666">最后一次更新时间：{{ date | date: 'yyyy-MM-dd HH:mm:ss' }}</span>
   </div>
   <nz-skeleton [nzLoading]="loading">
     <div class="top-use">
@@ -54,3 +55,21 @@
     <div id="top-use-chart" style="width: 600px; height: 400px"> </div>
   </nz-skeleton>
 </div>
+<nz-date-picker
+  [nzDisabledDate]="disabledStartDate"
+  nzFormat="yyyy-MM-dd"
+  [(ngModel)]="startValue"
+  nzPlaceHolder="Start"
+  [nzShowToday]="false"
+  (ngModelChange)="clearEndDate()"
+></nz-date-picker>
+<nz-date-picker
+  #endDatePicker
+  [nzDisabledDate]="disabledEndDate"
+  nzFormat="yyyy-MM-dd"
+  [nzShowToday]="false"
+  [(ngModel)]="endValue"
+  nzPlaceHolder="End"
+></nz-date-picker>
+<span>{{ startValue | date: 'yyyy-MM-dd' }}</span>
+<span>{{ endValue | date: 'yyyy-MM-dd' }}</span>
