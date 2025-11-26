@@ -1,7 +1,7 @@
-import { Component, HostListener, ElementRef, ViewChild, ViewChildren,} from '@angular/core';
+import { Component, HostListener, ElementRef, ViewChild, ViewChildren } from '@angular/core';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzPaginationComponent } from "ng-zorro-antd/pagination";
+import { NzPaginationComponent } from 'ng-zorro-antd/pagination';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzGridModule } from 'ng-zorro-antd/grid';
@@ -18,25 +18,18 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 
-
-
-
-
-
 // import { MessageService } from 'src/app/core/services/message.service';
-
-
 
 @Component({
   selector: 'app-litematica',
   imports: [
     NzDividerModule,
-    NzCardModule, 
-    NzPaginationComponent, 
-    NzPageHeaderModule, 
-    NzTagModule, 
-    NzGridModule, 
-    NzTypographyModule, 
+    NzCardModule,
+    NzPaginationComponent,
+    NzPageHeaderModule,
+    NzTagModule,
+    NzGridModule,
+    NzTypographyModule,
     NzInputModule,
     NzIconModule,
     ScrollingModule,
@@ -47,9 +40,9 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 })
 export class LitematicaComponent {
   tags = [
-    {'name': 'Unremovable', 'color': 'red'}, 
-    {'name': 'Tag 2', 'color': 'green'}, 
-    {'name': 'Tag 3', 'color': 'blue'}
+    { name: 'Unremovable', color: 'red' },
+    { name: 'Tag 2', color: 'green' },
+    { name: 'Tag 3', color: 'blue' }
   ];
 
   listOfData: any[] = [];
@@ -66,7 +59,7 @@ export class LitematicaComponent {
   constructor(
     private modalService: NzModalService,
     private http: _HttpClient,
-    public msg: NzMessageService,
+    public msg: NzMessageService
   ) {}
 
   onEnter(event: any) {
@@ -107,7 +100,6 @@ export class LitematicaComponent {
     ];
     console.log(this.loading);
     this.getListofData();
-    
   }
 
   showtagcolor = 'red';
@@ -125,8 +117,7 @@ export class LitematicaComponent {
     return isLongTag ? `${tag.slice(0, 20)}...` : tag;
   }
 
-  @HostListener('window:scroll', ['$event'])
-
+  // @HostListener('window:scroll', ['$event'])
 
   @HostListener('dragstart', ['$event'])
   onDragStart(event: DragEvent) {
@@ -138,7 +129,7 @@ export class LitematicaComponent {
     this.dragImage = this.dragImages[Number(index)];
 
     event.dataTransfer.setDragImage(this.dragImage, 50, 50);
-    
+
     event.dataTransfer.effectAllowed = 'move';
   }
 
@@ -161,7 +152,7 @@ export class LitematicaComponent {
 
   detailModal: any;
 
-  loding(data: any){
+  loding(data: any) {
     this.detailModal = this.modalService.create({
       nzWidth: 800,
       nzTitle: '模型详情',
@@ -175,15 +166,15 @@ export class LitematicaComponent {
 
   addModal: any;
 
-  showmodel(){
+  showmodel() {
     this.addModal = this.modalService.create({
       nzWidth: 800,
       nzTitle: '上传模型',
       nzContent: LitematicaCreateComponent,
-      nzFooter: null,
+      nzFooter: null
     });
     this.addModal.afterClose.subscribe((result: any) => {
-      if(result){
+      if (result) {
         this.sendData(result);
       }
 
@@ -191,36 +182,34 @@ export class LitematicaComponent {
     });
   }
 
-  sendData(data: any){
+  sendData(data: any) {
     const params = {
       title: data.get('name'),
       author: data.author,
       file: data.get('file'),
       tags: data.getAll('tags'),
       description: data.get('description')
-    }
-    this.http
-      .post('/litematica/saveData', params)
-      .subscribe((res: any) => {
-        console.log(res);
-        if (res.success) {
-          this.msg.success(res.message);
-          this.getListofData();
-        } else {
-          this.msg.error(res.message);
-        }
-      });
+    };
+    this.http.post('/litematica/saveData', params).subscribe((res: any) => {
+      console.log(res);
+      if (res.success) {
+        this.msg.success(res.message);
+        this.getListofData();
+      } else {
+        this.msg.error(res.message);
+      }
+    });
   }
 
-  getListofData(){
+  getListofData() {
     this.loading = true;
-    console.log(this.loading)
-    
+    console.log(this.loading);
+
     this.http
       .get('/litematica/getData', {
-          key: this.key,
-          page: this.pageIndex,
-          limit: this.pageSize
+        key: this.key,
+        page: this.pageIndex,
+        limit: this.pageSize
       })
       .pipe(
         tap((res: any) => {
@@ -229,22 +218,22 @@ export class LitematicaComponent {
       )
       .subscribe((res: any) => {
         if (res.success) {
-            if(this.ftion === 1){
-              this.listOfData = [...this.listOfData, ...res.data];
-              this.total = res.count;
-              this.loading = false;
-              this.ftion = 0;
-            }else{
-              this.scrollContainer.nativeElement.scrollTop = 0;
-              this.listOfData = res.data;
-              this.total = res.count;
-              this.loading = false;
-            }       
+          if (this.ftion === 1) {
+            this.listOfData = [...this.listOfData, ...res.data];
+            this.total = res.count;
+            this.loading = false;
+            this.ftion = 0;
+          } else {
+            this.scrollContainer.nativeElement.scrollTop = 0;
+            this.listOfData = res.data;
+            this.total = res.count;
+            this.loading = false;
+          }
         } else {
           this.msg.error(res.message);
           setTimeout(() => {
             this.loading = false;
-          }, 1000);  
+          }, 1000);
         }
         this.dragImages = this.listOfData.map(data => {
           const img = new Image();
@@ -256,25 +245,20 @@ export class LitematicaComponent {
 
   @ViewChild('tableContainer') scrollContainer!: ElementRef;
 
-
-  onScroll(event: Event){
-    
+  onScroll(event: Event) {
     const scrollTop = (event.target as HTMLElement).scrollTop;
     const scrollHeight = (event.target as HTMLElement).scrollHeight;
     const clientHeight = (event.target as HTMLElement).clientHeight;
 
     if (scrollTop + clientHeight + 5 >= scrollHeight && !this.loading && this.total / this.pageSize > this.pageIndex) {
-
-      console.log(this.total / this.pageSize,this.pageIndex);
+      console.log(this.total / this.pageSize, this.pageIndex);
 
       this.pageIndex++;
       this.ftion = 1;
-      
+
       this.getListofData();
     }
   }
-
-
 
   //后端某个api需要传入data，data中包含以下字段
   //title: 标题
@@ -284,5 +268,4 @@ export class LitematicaComponent {
   //description: 描述
 
   //tags是一个数组，数组每个元素是一个对象，对象有name和color属性
-
 }

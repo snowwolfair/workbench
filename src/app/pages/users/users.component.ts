@@ -7,13 +7,17 @@ import { G2CardModule } from '@delon/chart/card';
 import { TrendModule } from '@delon/chart/trend';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 import { TimeFormatPipe } from '../../pipes/time-format.pipe';
 import { FriendlyNamePipe } from '../../pipes/friendly-name.pipe';
 
 import echarts from 'src/assets/echarts/echarts';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-users',
@@ -22,6 +26,8 @@ import echarts from 'src/assets/echarts/echarts';
     TimeFormatPipe,
     FriendlyNamePipe,
     FormsModule,
+    NzSelectModule,
+    NzButtonModule,
     // NzFormModule,
     G2CardModule,
     TrendModule,
@@ -35,14 +41,33 @@ import echarts from 'src/assets/echarts/echarts';
 export class UsersComponent {
   constructor(private http: _HttpClient) {}
 
+  searchChange$ = new BehaviorSubject('');
+
   timeInfo: any[] = [];
   topFiveList: any[] = [];
 
   loading = false;
 
+  selectedApp?: string = '';
+  optionList: any[] = [];
+
   ngOnInit(): void {
     this.startValue.setDate(this.startValue.getDate() - 5);
+
     this.getDailyList();
+
+    setTimeout(() => {
+      this.searchChange$
+        .pipe(
+          debounceTime(500),
+          map(name => this.getAppNameList(name))
+        )
+        .subscribe(data => {
+          this.optionList = data;
+          console.log(this.optionList);
+          this.loading = false;
+        });
+    }, 10);
   }
 
   data: any[] = [];
@@ -54,7 +79,7 @@ export class UsersComponent {
       const newTimeInfo = [];
       Object.entries(data).forEach(([appName, info]) => {
         const dailyList = Object.entries(info.daily).map(([date, time]) => ({
-          date: new Date(date),
+          date: date,
           time: time
         }));
 
@@ -100,15 +125,16 @@ export class UsersComponent {
   }
 
   date = new Date();
+  zdate = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate());
   newdate = new Date(Date.UTC(this.date.getFullYear(), this.date.getMonth(), this.date.getDate()));
   yestoday = new Date(this.newdate);
 
   dayOnDay() {
     this.timeInfo.forEach(item => {
-      const todayIndex = item.usetime.daily.findIndex(i => i.date.getTime() == this.newdate.getTime());
+      const todayIndex = item.usetime.daily.findIndex(i => new Date(i.date).getTime() == this.newdate.getTime());
       this.yestoday.setDate(this.newdate.getDate() - 1);
 
-      const yestodayIndex = item.usetime.daily.findIndex(i => i.date.getTime() == this.yestoday.getTime());
+      const yestodayIndex = item.usetime.daily.findIndex(i => new Date(i.date).getTime() == this.yestoday.getTime());
 
       let dodrate = 0;
       if (todayIndex == -1 && yestodayIndex !== -1) {
@@ -136,7 +162,7 @@ export class UsersComponent {
       let nowweek = 0;
 
       while (true) {
-        weekstartIndex = item.usetime.daily.findIndex(i => i.date.getTime() == this.weekstart.getTime());
+        weekstartIndex = item.usetime.daily.findIndex(i => new Date(i.date).getTime() == this.weekstart.getTime());
         if (weekstartIndex != -1) {
           nowweek = nowweek + item.usetime.daily[weekstartIndex].time;
         }
@@ -150,7 +176,7 @@ export class UsersComponent {
       let lastweekstartIndex = 0;
       let lastweek = 0;
       while (true) {
-        lastweekstartIndex = item.usetime.daily.findIndex(i => i.date.getTime() == this.lastweekstart.getTime());
+        lastweekstartIndex = item.usetime.daily.findIndex(i => new Date(i.date).getTime() == this.lastweekstart.getTime());
         if (lastweekstartIndex != -1) {
           lastweek = lastweek + item.usetime.daily[lastweekstartIndex].time;
         }
@@ -178,65 +204,231 @@ export class UsersComponent {
 
   topDay(item: any) {
     const top = item.usetime.daily.reduce((prev, cur) => (prev.time > cur.time ? prev : cur));
-    const str = `${top.date.getFullYear()}-${top.date.getMonth() + 1}-${top.date.getDate()} : ${this.formatSeconds(top.time)}`;
+
+    const str = `${new Date(top.date).getFullYear()}-${new Date(top.date).getMonth() + 1}-${new Date(top.date).getDate()} : ${this.formatSeconds(top.time)}`;
     return str;
   }
 
-  startValue: Date = new Date(this.date);
-  endValue: Date = new Date(this.date);
+  startValue: Date = new Date(this.zdate);
+  endValue: Date = new Date(this.zdate);
 
   disabledStartDate = (startValue: Date): boolean => {
-    if (startValue.getTime() <= new Date('2025-11-12').getTime() || startValue.getTime() >= this.date.getTime()) {
+    if (startValue.getTime() <= new Date('2025-11-12').getTime() || startValue.getTime() >= this.zdate.getTime()) {
       return true;
     }
     return false;
   };
 
   disabledEndDate = (endValue: Date): boolean => {
-    if (!this.startValue || endValue.getTime() <= this.startValue.getTime() || endValue.getTime() >= this.date.getTime()) {
+    if (!this.startValue || endValue.getTime() <= this.startValue.getTime() || endValue.getTime() > this.zdate.getTime()) {
       return true; // 必须先选开始日期
     }
     return false;
   };
 
-  clearEndDate() {
-    // this.endValue = new Date(this.date);
-    this.endValue = null;
+  onSearch(value: string): void {
+    // this.loading = true;
+    console.log(value);
+    this.searchChange$.next(value);
+    console.log(this.optionList);
   }
 
-  topchart: any;
-  topchartoption: any;
-  initChart() {
-    // 初始化 ECharts 实例
+  getAppNameList(name: string): string[] {
+    return this.timeInfo.filter(item => item.appname.includes(name)).map(item => item.appname);
+  }
+
+  clearEndDate() {
+    this.endValue = new Date(this.zdate);
+    // this.endValue = null;
+  }
+
+  dataSource: any[] = [];
+  dataSeries: any[] = [];
+
+  getChartInfo() {
     if (this.topchart) {
       this.topchart.dispose();
     }
     this.topchart = echarts.init(document.getElementById('top-use-chart'));
+    console.log(this.selectedApp);
+    this.datelist = this.getDatesInRange(this.startValue, this.endValue);
+    this.dataSource = [];
+
+    let dimensions: string[] = [];
+    dimensions.push('appname');
+    dimensions.push(...this.datelist);
+
+    this.dataSource.push(dimensions);
+
+    let applist: any;
+    if (!this.selectedApp) {
+      applist = this.timeInfo.filter(item => item.usetime.total > 1200);
+    } else {
+      applist = this.timeInfo.filter(item => item.appname == this.selectedApp);
+    }
+
+    for (let item of applist) {
+      let row: any[] = [];
+      row.push(item.appname);
+      for (let date of this.datelist) {
+        let index = item.usetime.daily.findIndex(i => new Date(i.date).getTime() == new Date(date).getTime());
+        if (index != -1) {
+          row.push(Math.round(item.usetime.daily[index].time / 60));
+        } else {
+          row.push(0);
+        }
+      }
+      this.dataSource.push(row);
+    }
+
+    let cot = 0;
+    while (cot <= applist.length) {
+      this.dataSeries.push({
+        type: 'line',
+        seriesLayoutBy: 'row'
+      });
+      cot++;
+    }
+
     this.topchartoption = {
+      legend: {
+        // data: [this.selectedApp]
+      },
+      dataset: {
+        source: this.dataSource
+      },
       xAxis: {
         type: 'category',
-        data: this.data
+        gridIndex: 0
       },
-      yAxis: {},
+      yAxis: { gridIndex: 0 },
+      series: this.dataSeries
+    };
+    console.log(this.dataSource);
+
+    this.topchart.setOption(this.topchartoption);
+    console.log(this.topchartoption);
+  }
+
+  addChartLine() {
+    let applist: any;
+    if (!this.selectedApp) {
+      return;
+    } else {
+      applist = this.timeInfo.filter(item => item.appname == this.selectedApp);
+    }
+
+    for (let item of applist) {
+      let row: any[] = [];
+      row.push(item.appname);
+      for (let date of this.datelist) {
+        let index = item.usetime.daily.findIndex(i => new Date(i.date).getTime() == new Date(date).getTime());
+        if (index != -1) {
+          row.push(Math.round(item.usetime.daily[index].time / 60));
+        } else {
+          row.push(0);
+        }
+      }
+      this.dataSource.push(row);
+      this.dataSeries.push({
+        type: 'line',
+        seriesLayoutBy: 'row'
+      });
+
+      this.topchartoption = {
+        legend: {
+          // data: [this.selectedApp]
+        },
+        dataset: {
+          source: this.dataSource
+        },
+        xAxis: {
+          type: 'category',
+          gridIndex: 0
+        },
+        yAxis: { gridIndex: 0 },
+        series: this.dataSeries
+      };
+      console.log(this.dataSource);
+
+      this.topchart.setOption(this.topchartoption);
+    }
+  }
+
+  datelist: string[] = [];
+  topchart: any;
+  topchartoption: any;
+
+  initChart() {
+    // 初始化 ECharts 实例
+    this.datelist = this.getDatesInRange(this.startValue, this.endValue);
+    console.log(this.datelist);
+    if (this.topchart) {
+      this.topchart.dispose();
+    }
+    this.topchart = echarts.init(document.getElementById('top-use-chart'));
+    this.topchart.showLoading();
+    this.topchartoption = {
+      legend: {
+        // data: [this.selectedApp]
+      },
+      dataset: {
+        source: [
+          ['appname', '2025-11-13', '2025-11-14', '2025-11-15'],
+          ['Visual Studio Code', 49, 65, 2],
+          ['Microsoft Edge', 48, 282, 454],
+          ['Google Chrome', 11, 16, 9]
+        ]
+      },
+      xAxis: {
+        type: 'category',
+        gridIndex: 0
+      },
+      yAxis: { gridIndex: 0 },
       series: [
         {
-          type: 'bar',
-          name: '2015',
-          data: [89.3, 92.1, 94.4, 85.4]
+          type: 'line',
+          seriesLayoutBy: 'row'
         },
         {
-          type: 'bar',
-          name: '2016',
-          data: [95.8, 89.4, 91.2, 76.9]
+          type: 'line',
+          seriesLayoutBy: 'row'
         },
         {
-          type: 'bar',
-          name: '2017',
-          data: [97.7, 83.1, 92.5, 78.1]
+          type: 'line',
+          seriesLayoutBy: 'row'
         }
       ]
     };
     this.topchart.setOption(this.topchartoption);
+    this.topchart.hideLoading();
+  }
+
+  getDatesInRange(startDate: Date, endDate: Date): string[] {
+    const dates: string[] = [];
+
+    // 确保 startDate <= endDate
+    if (startDate > endDate) {
+      return dates; // 或交换两者，根据需求
+    }
+
+    // 创建一个可变的当前日期（避免修改原始 startDate）
+    const currentDate = new Date(startDate);
+
+    // 遍历每一天，直到超过 endDate
+    while (currentDate <= endDate) {
+      // 格式化为 'yyyy-MM-dd'
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需+1
+      const day = String(currentDate.getDate()).padStart(2, '0');
+
+      dates.push(`${year}-${month}-${day}`);
+
+      // 增加一天
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return dates;
   }
 
   users = [

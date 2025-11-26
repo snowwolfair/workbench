@@ -52,24 +52,53 @@
     <div class="top-title">
       <span style="font-size: 24px; font-weight: bold">历史使用应用时长前五</span>
     </div>
+    <div class="top-option">
+      <div class="top-option-item">
+        <nz-select
+          class="select"
+          nzPlaceHolder="Select apps"
+          nzAllowClear
+          nzShowSearch
+          nzServerSearch
+          [(ngModel)]="selectedApp"
+          (nzOnSearch)="onSearch($event)"
+        >
+          @for (app of optionList; track $index) {
+            <nz-option [nzValue]="app" [nzLabel]="app | friendlyName"></nz-option>
+          }
+        </nz-select>
+      </div>
+      <div class="top-option-item">
+        <nz-date-picker
+          [nzDisabledDate]="disabledStartDate"
+          nzFormat="yyyy-MM-dd"
+          [(ngModel)]="startValue"
+          nzPlaceHolder="Start"
+          [nzShowToday]="false"
+          (ngModelChange)="clearEndDate()"
+        ></nz-date-picker>
+      </div>
+      <div class="top-option-item">
+        <nz-date-picker
+          #endDatePicker
+          [nzDisabledDate]="disabledEndDate"
+          nzFormat="yyyy-MM-dd"
+          [nzShowToday]="false"
+          [(ngModel)]="endValue"
+          nzPlaceHolder="End"
+        ></nz-date-picker>
+      </div>
+      <div class="top-option-item">
+        <button nz-button nzType="primary" (click)="addChartLine()">add</button>
+      </div>
+      <div class="top-option-item">
+        <button nz-button nzType="primary" (click)="getChartInfo()">查询</button>
+      </div>
+    </div>
+
     <div id="top-use-chart" style="width: 600px; height: 400px"> </div>
   </nz-skeleton>
 </div>
-<nz-date-picker
-  [nzDisabledDate]="disabledStartDate"
-  nzFormat="yyyy-MM-dd"
-  [(ngModel)]="startValue"
-  nzPlaceHolder="Start"
-  [nzShowToday]="false"
-  (ngModelChange)="clearEndDate()"
-></nz-date-picker>
-<nz-date-picker
-  #endDatePicker
-  [nzDisabledDate]="disabledEndDate"
-  nzFormat="yyyy-MM-dd"
-  [nzShowToday]="false"
-  [(ngModel)]="endValue"
-  nzPlaceHolder="End"
-></nz-date-picker>
-<span>{{ startValue | date: 'yyyy-MM-dd' }}</span>
-<span>{{ endValue | date: 'yyyy-MM-dd' }}</span>
+
+<span>{{ startValue }}</span>
+<span>{{ endValue }}</span>

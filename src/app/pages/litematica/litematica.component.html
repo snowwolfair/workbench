@@ -1,72 +1,39 @@
 <!-- <div class="all-layout" [style.height.px]="height"> -->
 
-  <div class="titile">
-    <nz-input-group [nzSuffix]="suffix">
-      <input type="text" (keyup.enter)="onEnter($event)" nz-input placeholder="input search text" />
-    </nz-input-group>
+<div class="titile">
+  <nz-input-group [nzSuffix]="suffix">
+    <input type="text" (keyup.enter)="onEnter($event)" nz-input placeholder="input search text" />
+  </nz-input-group>
 
-    <ng-template #suffix>
-      <nz-icon nzType="search" />
-    </ng-template>
-  </div>
-  <nz-divider/>
-  <div class="litematica-layout" #tableContainer (scroll)="onScroll($event)">
-    <nz-pagination class="pagination" [(nzPageIndex)]="pageIndex" [nzTotal]="total" nzSimple (nzPageIndexChange)="getListofData()"></nz-pagination>
-    @for(data of listOfData; track data.id;let i = $index){
-      <div class="litematica-card" (click)="loding(data)" draggable="true" display="true" [attr.data-index]="i">
-        <nz-page-header>
-
-          <nz-page-header-title>{{data.title}}</nz-page-header-title>
-
-          <nz-page-header-subtitle>
-            <div class="sizeable">by : {{data.author}}</div>
-          </nz-page-header-subtitle>
-
-          <nz-page-header-extra>
-            <div class="sizeable">{{data.size}}M</div>
-          </nz-page-header-extra>
-
-          <nz-page-header-content>
-            <nz-row>
-              @for (tag of data.tags; track tag.name) {
-                <nz-tag [nzColor]="tag.color">
-                  {{ sliceTagName(tag.name) }}
-                </nz-tag>
-              }
-            </nz-row>
-            <nz-row>
-              <div class="divid"></div>
-            </nz-row>
-            <nz-row>
-              <p
-                nzEllipsis
-                nzEllipsisRows="2"
-                nz-typography
-                [nzContent]="data.description">
-              </p>
-            </nz-row>
-          </nz-page-header-content>
-        </nz-page-header>
-      </div>
-    }
-    <div class="litematica-card" (click)="loding($event)" draggable="true" display="true">
-
+  <ng-template #suffix>
+    <nz-icon nzType="search" />
+  </ng-template>
+</div>
+<nz-divider />
+<div class="litematica-layout" #tableContainer (scroll)="onScroll($event)">
+  <nz-pagination
+    class="pagination"
+    [(nzPageIndex)]="pageIndex"
+    [nzTotal]="total"
+    nzSimple
+    (nzPageIndexChange)="getListofData()"
+  ></nz-pagination>
+  @for (data of listOfData; track data.id; let i = $index) {
+    <div class="litematica-card" (click)="loding(data)" draggable="true" display="true" [attr.data-index]="i">
       <nz-page-header>
-
-        <nz-page-header-title>Title</nz-page-header-title>
+        <nz-page-header-title>{{ data.title }}</nz-page-header-title>
 
         <nz-page-header-subtitle>
-          <div class="sizeable">by : {{author}}</div>
-
+          <div class="sizeable">by : {{ data.author }}</div>
         </nz-page-header-subtitle>
 
         <nz-page-header-extra>
-          <div class="sizeable">{{size}}M</div>
+          <div class="sizeable">{{ data.size }}M</div>
         </nz-page-header-extra>
 
         <nz-page-header-content>
           <nz-row>
-            @for (tag of tags; track tag) {
+            @for (tag of data.tags; track tag.name) {
               <nz-tag [nzColor]="tag.color">
                 {{ sliceTagName(tag.name) }}
               </nz-tag>
@@ -76,25 +43,56 @@
             <div class="divid"></div>
           </nz-row>
           <nz-row>
-            <p
-              nzEllipsis
-              nzEllipsisRows="2"
-              nz-typography
-              [nzContent]="'这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers'">
-            </p>
+            <p nzEllipsis nzEllipsisRows="2" nz-typography [nzContent]="data.description"> </p>
           </nz-row>
         </nz-page-header-content>
       </nz-page-header>
     </div>
-    
+  }
+  <div class="litematica-card" (click)="loding($event)" draggable="true" display="true">
+    <nz-page-header>
+      <nz-page-header-title>Title</nz-page-header-title>
 
-    @if(loading){
-      <nz-spin nzTip="Loading..." style="margin-top: 40px"></nz-spin>
-    }
-    
+      <nz-page-header-subtitle>
+        <div class="sizeable">by : {{ author }}</div>
+      </nz-page-header-subtitle>
+
+      <nz-page-header-extra>
+        <div class="sizeable">{{ size }}M</div>
+      </nz-page-header-extra>
+
+      <nz-page-header-content>
+        <nz-row>
+          @for (tag of tags; track tag) {
+            <nz-tag [nzColor]="tag.color">
+              {{ sliceTagName(tag.name) }}
+            </nz-tag>
+          }
+        </nz-row>
+        <nz-row>
+          <div class="divid"></div>
+        </nz-row>
+        <nz-row>
+          <p
+            nzEllipsis
+            nzEllipsisRows="2"
+            nz-typography
+            [nzContent]="
+              '这是一个litematica文件Ant Design\'s design team preferred to design with the HSB color model, which makes it easier for designers'
+            "
+          >
+          </p>
+        </nz-row>
+      </nz-page-header-content>
+    </nz-page-header>
   </div>
-  <nz-divider/>
-  <div class="titile">
-    <button class="upload-btn" (click)="showmodel()">上传</button>
-  </div>
+
+  @if (loading) {
+    <nz-spin nzTip="Loading..." style="margin-top: 40px"></nz-spin>
+  }
+</div>
+<nz-divider />
+<div class="titile">
+  <button class="upload-btn" (click)="showmodel()">上传</button>
+</div>
 <!-- </div> -->
