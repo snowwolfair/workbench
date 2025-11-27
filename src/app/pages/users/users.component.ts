@@ -1,23 +1,20 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { _HttpClient } from '@delon/theme';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
 import { G2CardModule } from '@delon/chart/card';
 import { TrendModule } from '@delon/chart/trend';
-import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
-import { NzIconModule } from 'ng-zorro-antd/icon';
+import { _HttpClient } from '@delon/theme';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-
-import { TimeFormatPipe } from '../../pipes/time-format.pipe';
-import { FriendlyNamePipe } from '../../pipes/friendly-name.pipe';
-
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
+import { BehaviorSubject } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
 import echarts from 'src/assets/echarts/echarts';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
+
+import { FriendlyNamePipe } from '../../pipes/friendly-name.pipe';
+import { TimeFormatPipe } from '../../pipes/time-format.pipe';
 
 @Component({
   selector: 'app-users',
@@ -38,8 +35,8 @@ import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.less']
 })
-export class UsersComponent {
-  constructor(private http: _HttpClient) {}
+export class UsersComponent implements OnInit {
+  private http = inject(_HttpClient);
 
   searchChange$ = new BehaviorSubject('');
 
@@ -142,6 +139,7 @@ export class UsersComponent {
       } else if (todayIndex !== -1 && yestodayIndex == -1) {
         dodrate = item.usetime.daily[todayIndex].time / 60;
       } else if (yestodayIndex == -1 && todayIndex == -1) {
+        // ?
       } else {
         dodrate =
           ((item.usetime.daily[todayIndex].time - item.usetime.daily[yestodayIndex].time) / item.usetime.daily[yestodayIndex].time) * 10;
@@ -158,7 +156,7 @@ export class UsersComponent {
   lastweekstart = new Date(this.weekstart);
   weekOnWeek() {
     this.timeInfo.forEach(item => {
-      let weekstartIndex: number = 0;
+      let weekstartIndex = 0;
       let nowweek = 0;
 
       while (true) {
@@ -185,7 +183,7 @@ export class UsersComponent {
         }
         this.lastweekstart.setDate(this.lastweekstart.getDate() - 1);
       }
-      let wowrate: number = 0;
+      let wowrate = 0;
       if (lastweek != 0 && nowweek != 0) {
         wowrate = ((nowweek - lastweek) / lastweek) * 10;
       } else if (lastweek == 0 && nowweek != 0) {
@@ -266,7 +264,7 @@ export class UsersComponent {
     } else {
       applist = this.timeInfo.filter(item => item.appname == this.selectedApp);
     }
-
+    console.log(applist);
     for (let item of applist) {
       let row: any[] = [];
       row.push(item.appname);
@@ -282,7 +280,9 @@ export class UsersComponent {
     }
 
     let cot = 0;
-    while (cot <= applist.length) {
+    this.dataSeries = [];
+    console.log(this.dataSeries);
+    while (cot < applist.length) {
       this.dataSeries.push({
         type: 'line',
         seriesLayoutBy: 'row'
@@ -291,6 +291,12 @@ export class UsersComponent {
     }
 
     this.topchartoption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'line'
+        }
+      },
       legend: {
         // data: [this.selectedApp]
       },
@@ -308,6 +314,18 @@ export class UsersComponent {
 
     this.topchart.setOption(this.topchartoption);
     console.log(this.topchartoption);
+    this.topchart.on('click', (params: any) => {
+      this.topchart.dispatchAction({
+        type: 'showTip',
+        dataIndex: params.dataIndex
+      });
+      console.log(params.value);
+      setTimeout(() => {
+        this.topchart.dispatchAction({
+          type: 'hideTip'
+        });
+      }, 10000);
+    });
   }
 
   addChartLine() {
@@ -336,6 +354,12 @@ export class UsersComponent {
       });
 
       this.topchartoption = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line'
+          }
+        },
         legend: {
           // data: [this.selectedApp]
         },
@@ -352,6 +376,18 @@ export class UsersComponent {
       console.log(this.dataSource);
 
       this.topchart.setOption(this.topchartoption);
+      this.topchart.on('click', (params: any) => {
+        this.topchart.dispatchAction({
+          type: 'highlight',
+          dataIndex: params.dataIndex
+        });
+        console.log(params.value);
+        setTimeout(() => {
+          this.topchart.dispatchAction({
+            type: 'hideTip'
+          });
+        }, 10000);
+      });
     }
   }
 
@@ -369,6 +405,12 @@ export class UsersComponent {
     this.topchart = echarts.init(document.getElementById('top-use-chart'));
     this.topchart.showLoading();
     this.topchartoption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'line'
+        }
+      },
       legend: {
         // data: [this.selectedApp]
       },
