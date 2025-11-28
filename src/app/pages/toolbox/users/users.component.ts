@@ -13,8 +13,8 @@ import { BehaviorSubject } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import echarts from 'src/assets/echarts/echarts';
 
-import { FriendlyNamePipe } from '../../pipes/friendly-name.pipe';
-import { TimeFormatPipe } from '../../pipes/time-format.pipe';
+import { FriendlyNamePipe } from '../../../pipes/friendly-name.pipe';
+import { TimeFormatPipe } from '../../../pipes/time-format.pipe';
 
 @Component({
   selector: 'app-users',

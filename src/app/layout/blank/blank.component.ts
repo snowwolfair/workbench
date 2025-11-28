@@ -1,14 +1,14 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { Component, inject, ChangeDetectorRef, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
-import { NzMenuModule } from 'ng-zorro-antd/menu';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { DA_SERVICE_TOKEN } from '@delon/auth';
+import { SettingsService, User } from '@delon/theme';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
-import { NzAvatarModule } from 'ng-zorro-antd/avatar';
-import { SettingsService, User } from '@delon/theme';
-import { DA_SERVICE_TOKEN } from '@delon/auth';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
 
 // rgba(24, 144, 255, 1);
 @Component({
@@ -27,7 +27,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
               <a routerLink="/workbench/dashboard">Dashboard</a>
             </li>
             <li nz-menu-item nzMatchRouter>
-              <a routerLink="/workbench/tag-pool">标签池</a>
+              <a routerLink="/workbench/toolbox">工具箱</a>
             </li>
             <li nz-menu-item nzMatchRouter>
               <a routerLink="/workbench/3d-view">3D视野</a>
@@ -141,7 +141,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
   // },
   imports: [RouterOutlet, RouterLink, NzMenuModule, NzIconModule, NzLayoutModule, NzBreadCrumbModule, NzDropDownModule, NzAvatarModule]
 })
-export class LayoutBlankComponent {
+export class LayoutBlankComponent implements OnInit {
   private readonly settings = inject(SettingsService);
   private readonly tokenService = inject(DA_SERVICE_TOKEN);
   private readonly router = inject(Router);

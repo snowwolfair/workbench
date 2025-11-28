@@ -1,6 +1,5 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { ViewportScroller } from '@angular/common';
 import { ViewportRuler } from '@angular/cdk/overlay';
+import { Component, ViewChild, ElementRef, inject, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-about',
@@ -8,10 +7,10 @@ import { ViewportRuler } from '@angular/cdk/overlay';
   templateUrl: './about.component.html',
   styleUrl: './about.component.less'
 })
-export class AboutComponent {
-  constructor(private ViewportRuler: ViewportRuler) {}
+export class AboutComponent implements OnInit {
+  private ViewportRuler = inject(ViewportRuler);
   ngOnInit() {
-    console.log(this.ViewportRuler.getViewportScrollPosition);
+    console.log(this.ViewportRuler.getViewportScrollPosition());
   }
 
   showOverlay = false;
@@ -23,6 +22,11 @@ export class AboutComponent {
     // 可选逻辑：如果点击不在 special-panel 上，才关闭？或完全禁止关闭？
     // 默认：点击蒙层不关闭（因为你说“必须点 div 内按钮才关闭”）
     // 所以这里可以留空，或阻止默认行为
+    let h = event;
+    if (h) {
+      console.log('点击了蒙层');
+    }
+
     // event.stopPropagation();
     this.showOverlay = false; // ❌ 不要自动关闭
   }

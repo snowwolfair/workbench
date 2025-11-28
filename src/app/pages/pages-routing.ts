@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
-import { LayoutBlankComponent } from '../layout/blank/blank.component';
-import { HomeComponent } from './home/home.component';
-import { authSimpleCanActivate, authSimpleCanActivateChild } from '@delon/auth';
 import { startPageGuard } from '@core';
+import { authSimpleCanActivate, authSimpleCanActivateChild } from '@delon/auth';
+
+import { HomeComponent } from './home/home.component';
+import { LayoutBlankComponent } from '../layout/blank/blank.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: '首页' },
@@ -27,21 +28,21 @@ export const routes: Routes = [
       },
       {
         path: '3d-view',
-        loadComponent: () => import('./threeview/3d-view.component').then(m => m.ThreeViewComponent),
+        loadComponent: () => import('./toolbox/threeview/3d-view.component').then(m => m.ThreeViewComponent),
         data: {
           breadcrumb: '3D视野'
         }
       },
       {
         path: 'about',
-        loadComponent: () => import('./about/about.component').then(m => m.AboutComponent),
+        loadComponent: () => import('./toolbox/about/about.component').then(m => m.AboutComponent),
         data: {
           breadcrumb: '关于'
         }
       },
       {
         path: 'users',
-        loadComponent: () => import('./users/users.component').then(m => m.UsersComponent),
+        loadComponent: () => import('./toolbox/users/users.component').then(m => m.UsersComponent),
         data: {
           breadcrumb: '用户列表'
         }
@@ -58,6 +59,13 @@ export const routes: Routes = [
         loadComponent: () => import('./workspace/workspace.component').then(m => m.WorkspaceComponent),
         data: {
           breadcrumb: '工作区'
+        }
+      },
+      {
+        path: 'toolbox',
+        loadChildren: () => import('./toolbox/routes').then(m => m.routes),
+        data: {
+          breadcrumb: '工具箱'
         }
       }
     ]
