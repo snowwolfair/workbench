@@ -2,7 +2,7 @@ module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     "type-enum": [2, 'always', [
-      'feat', 'fix', 'docs', 'perf', 'revert', 'ci', 'test', 'refactor', 'build', 'style', 'chore', 'merge'
+      'feat', 'fix', 'docs', 'perf', 'revert', 'ci', 'test', 'refactor', 'build', 'style', 'chore', 'merge', 'daily'
     ]],
     'type-case': [0],//type 的输入格式,默认为小写‘lower-case’
     'type-empty': [0],//type 是否可为空
