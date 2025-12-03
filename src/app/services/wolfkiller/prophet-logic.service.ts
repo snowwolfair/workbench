@@ -1,14 +1,13 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+
 import { Player, GameState, NightAction } from './options';
 import { SuspicionService } from './suspicion.service';
 import { ReplyService } from '../../services/speakmodal/replay.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProphetLogicService {
-  constructor(
-    private suspicionService: SuspicionService,
-    private replyService: ReplyService
-  ) {}
+  private suspicionService = inject(SuspicionService);
+  private replyService = inject(ReplyService);
 
   lastNightAction: NightAction | null = null;
   prophecySet = new Map<number, boolean>();
@@ -24,7 +23,7 @@ export class ProphetLogicService {
       targetPlayer = allPlayers[Math.floor(Math.random() * allPlayers.length)];
     } while (this.prophecySet.has(targetPlayer.id));
 
-    if (!!state.targetProphecy) {
+    if (state.targetProphecy) {
       targetPlayer = state.targetProphecy;
     }
 
@@ -47,8 +46,6 @@ export class ProphetLogicService {
   }
 
   async day(currentPlayer: Player, state: GameState) {
-    const allPlayers = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id);
-
     let role = currentPlayer.role;
     let name = currentPlayer.name;
     currentPlayer.jumpRole = currentPlayer.role;
@@ -62,12 +59,15 @@ export class ProphetLogicService {
 
       const speechMessage = await this.replyService.getRandomMessageAsync('prophet_speech_d1', context);
 
-      state.daySpeeches.push({
-        playerId: currentPlayer.id,
-        say: this.lastNightAction,
-        content: speechMessage,
-        day: state.currentDay
-      });
+      this.pushState(
+        state,
+        currentPlayer.id,
+        speechMessage,
+        this.lastNightAction.type,
+        this.lastNightAction.actorId,
+        this.lastNightAction.targetId,
+        this.lastNightAction.result
+      );
     } else {
       let context = {
         role: currentPlayer.jumpRole,
@@ -77,17 +77,42 @@ export class ProphetLogicService {
 
       const speechMessage = await this.replyService.getRandomMessageAsync('prophet_speech', context);
 
-      state.daySpeeches.push({
-        playerId: currentPlayer.id,
-        say: this.lastNightAction,
-        content: speechMessage,
-        day: state.currentDay
-      });
+      this.pushState(
+        state,
+        currentPlayer.id,
+        speechMessage,
+        this.lastNightAction.type,
+        this.lastNightAction.actorId,
+        this.lastNightAction.targetId,
+        this.lastNightAction.result
+      );
     }
 
     state.log.push(
       `(${role})${name} 说 ${state.players[this.lastNightAction.targetId].name} 是 ${this.lastNightAction.result ? '狼人' : '村民'}`
     );
     return state;
+  }
+
+  pushState(
+    state: GameState,
+    playerId: number,
+    speechMessage: string,
+    type: 'psychic' | 'kill' | 'see' | 'heal' | 'guard' | 'poison' | 'sleep' | 'hunt',
+    actorId?: number,
+    targetId?: number,
+    result?: boolean
+  ) {
+    state.daySpeeches.push({
+      playerId: playerId,
+      say: {
+        type: type,
+        targetId: targetId,
+        actorId: actorId,
+        result: result
+      },
+      content: speechMessage,
+      day: state.currentDay
+    });
   }
 }

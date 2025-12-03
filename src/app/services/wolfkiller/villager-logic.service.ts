@@ -1,10 +1,13 @@
-import { Injectable } from '@angular/core';
-import { Player, GameState, NightAction } from './options';
+import { Injectable, inject } from '@angular/core';
+
+import { Player, GameState } from './options';
 import { SuspicionService } from './suspicion.service';
+import { ReplyService } from '../../services/speakmodal/replay.service';
 
 @Injectable({ providedIn: 'root' })
 export class VillagerLogicService {
-  constructor(private suspicionService: SuspicionService) {}
+  private suspicionService = inject(SuspicionService);
+  private replyService = inject(ReplyService);
 
   // 伪装成神职
   // 预言家 、 通灵人
@@ -13,18 +16,11 @@ export class VillagerLogicService {
 
   prophecySet = new Map<number, boolean>();
 
-  lastNightAction: NightAction = {
-    type: 'sleep'
-  };
-
   night(currentPlayer: Player, state: GameState) {
     return state;
   }
 
-  day(currentPlayer: Player, state: GameState) {
-    let role = currentPlayer.role;
-    let name = currentPlayer.name;
-
+  async day(currentPlayer: Player, state: GameState) {
     const villagerGroup = state.players.filter(p => p.role === 'villager' && p.isAlive);
     const notSelfGroup = state.players.filter(p => p.id !== currentPlayer.id && p.isAlive);
 
@@ -46,43 +42,40 @@ export class VillagerLogicService {
         // 预言家发言
         // 随机发言
         if (Math.random() < 0.5) {
-          state.daySpeeches.push({
-            playerId: currentPlayer.id,
-            say: {
-              type: 'see',
-              targetId: targetPlayer,
-              actorId: currentPlayer.id,
-              result: true
-            },
-            content: `我是prophet，${state.players[targetPlayer].name} 是 狼人`,
-            day: state.currentDay
-          });
+          let context = {
+            role: currentPlayer.jumpRole,
+            name: state.players[targetPlayer].name,
+            result: '狼人'
+          };
+          const speechMessage = await this.replyService.getRandomMessageAsync('prophet_speech_d1', context);
+          this.pushState(state, currentPlayer.id, speechMessage, 'see', currentPlayer.id, targetPlayer, true);
           this.prophecySet.set(targetPlayer, true);
         } else {
-          state.daySpeeches.push({
-            playerId: currentPlayer.id,
-            say: {
-              type: 'see',
-              targetId: choosePlayer,
-              actorId: currentPlayer.id,
-              result: false
-            },
-            content: `我是prophet，${state.players[choosePlayer].name} 是 村民`,
-            day: state.currentDay
-          });
+          let context = {
+            role: currentPlayer.jumpRole,
+            name: state.players[choosePlayer].name,
+            result: '村民'
+          };
+          const speechMessage = await this.replyService.getRandomMessageAsync('prophet_speech_d1', context);
+          this.pushState(state, currentPlayer.id, speechMessage, 'see', currentPlayer.id, choosePlayer, false);
           this.prophecySet.set(choosePlayer, false);
         }
         state.players.find(p => p.id === currentPlayer.id).prophecySet = this.prophecySet;
       } else {
+        let context = {
+          role: currentPlayer.jumpRole
+        };
+        const speechMessage = await this.replyService.getRandomMessageAsync('villager_speech', context);
         currentPlayer.jumpRole = 'villager';
-        state.daySpeeches.push({
-          playerId: currentPlayer.id,
-          say: {
-            type: 'sleep'
-          },
-          content: `我是 村民`,
-          day: state.currentDay
-        });
+        this.pushState(state, currentPlayer.id, speechMessage, 'sleep');
+        // state.daySpeeches.push({
+        //   playerId: currentPlayer.id,
+        //   say: {
+        //     type: 'sleep'
+        //   },
+        //   content: speechMessage,
+        //   day: state.currentDay
+        // });
       }
     }
     // 第二日
@@ -130,106 +123,83 @@ export class VillagerLogicService {
     return state;
   }
 
-  villagerProphet(currentPlayer: Player, state: GameState) {
+  async villagerProphet(currentPlayer: Player, state: GameState) {
     const notSelfGroup = state.players.filter(p => p.id !== currentPlayer.id && p.isAlive);
     if (currentPlayer.jumpRole === 'prophet') {
       let cont = 0;
-      let choosePlayer: number;
+      let choosePlayerId: number;
       do {
-        choosePlayer = notSelfGroup[Math.floor(Math.random() * notSelfGroup.length)].id;
+        choosePlayerId = notSelfGroup[Math.floor(Math.random() * notSelfGroup.length)].id;
         cont++;
-      } while (this.prophecySet.has(choosePlayer) && cont < 50);
+      } while (this.prophecySet.has(choosePlayerId) && cont < 50);
       // 预言家发言
-      if (!!state.targetProphecy) {
+      if (state.targetProphecy) {
         // 如果指定目标预测过，直接根据预测结果发言
         if (this.prophecySet.has(state.targetProphecy.id)) {
           // 预测为狼
           if (this.prophecySet.get(state.targetProphecy.id)) {
-            state.daySpeeches.push({
-              playerId: currentPlayer.id,
-              say: {
-                type: 'see',
-                targetId: state.targetProphecy.id,
-                actorId: currentPlayer.id,
-                result: true
-              },
-              content: `昨天预言的${state.players[state.targetProphecy.id].name} 是 狼人`,
-              day: state.currentDay
-            });
+            let context = {
+              role: currentPlayer.jumpRole,
+              name: state.players[state.targetProphecy.id].name,
+              result: '狼人'
+            };
+            const speechMessage = await this.replyService.getRandomMessageAsync('prophet_speech', context);
+            this.pushState(state, currentPlayer.id, speechMessage, 'see', currentPlayer.id, choosePlayerId, true);
           } else {
-            state.daySpeeches.push({
-              playerId: currentPlayer.id,
-              say: {
-                type: 'see',
-                targetId: state.targetProphecy.id,
-                actorId: currentPlayer.id,
-                result: false
-              },
-              content: `昨天预言的${state.players[state.targetProphecy.id].name} 是 村民`,
-              day: state.currentDay
-            });
+            let context = {
+              role: currentPlayer.jumpRole,
+              name: state.players[state.targetProphecy.id].name,
+              result: '村民'
+            };
+            const speechMessage = await this.replyService.getRandomMessageAsync('prophet_speech', context);
+            this.pushState(state, currentPlayer.id, speechMessage, 'see', currentPlayer.id, choosePlayerId, false);
           }
           return;
-        }
-        // 有目标，随机
-        if (Math.random() < 0.5) {
-          state.daySpeeches.push({
-            playerId: currentPlayer.id,
-            say: {
-              type: 'see',
-              targetId: state.targetProphecy.id,
-              actorId: currentPlayer.id,
-              result: true
-            },
-            content: `昨天预言的${state.players[state.targetProphecy.id].name} 是 狼人`,
-            day: state.currentDay
-          });
-          this.prophecySet.set(state.targetProphecy.id, true);
         } else {
-          state.daySpeeches.push({
-            playerId: currentPlayer.id,
-            say: {
-              type: 'see',
-              targetId: state.targetProphecy.id,
-              actorId: currentPlayer.id,
-              result: false
-            },
-            content: `昨天预言的${state.players[state.targetProphecy.id].name} 是 村民`,
-            day: state.currentDay
-          });
-          this.prophecySet.set(state.targetProphecy.id, false);
+          // 有目标，随机
+          if (Math.random() < 0.5) {
+            let context = {
+              role: currentPlayer.jumpRole,
+              name: state.players[state.targetProphecy.id].name,
+              result: '狼人'
+            };
+            const speechMessage = await this.replyService.getRandomMessageAsync('prophet_speech', context);
+            this.pushState(state, currentPlayer.id, speechMessage, 'see', currentPlayer.id, choosePlayerId, true);
+            this.prophecySet.set(state.targetProphecy.id, true);
+          } else {
+            let context = {
+              role: currentPlayer.jumpRole,
+              name: state.players[state.targetProphecy.id].name,
+              result: '村民'
+            };
+            const speechMessage = await this.replyService.getRandomMessageAsync('prophet_speech', context);
+            this.pushState(state, currentPlayer.id, speechMessage, 'see', currentPlayer.id, choosePlayerId, false);
+            this.prophecySet.set(state.targetProphecy.id, false);
+          }
         }
       } else {
         // 随机
         if (Math.random() < 0.5) {
-          state.daySpeeches.push({
-            playerId: currentPlayer.id,
-            say: {
-              type: 'see',
-              targetId: choosePlayer,
-              actorId: currentPlayer.id,
-              result: true
-            },
-            content: `昨天预言的${state.players[choosePlayer].name} 是 狼人`,
-            day: state.currentDay
-          });
-          this.prophecySet.set(choosePlayer, true);
+          let context = {
+            role: currentPlayer.jumpRole,
+            name: state.players[choosePlayerId].name,
+            result: '狼人'
+          };
+          const speechMessage = await this.replyService.getRandomMessageAsync('prophet_speech', context);
+          this.pushState(state, currentPlayer.id, speechMessage, 'see', currentPlayer.id, choosePlayerId, true);
+          this.prophecySet.set(choosePlayerId, true);
         } else {
           // 低概率测错
-          state.daySpeeches.push({
-            playerId: currentPlayer.id,
-            say: {
-              type: 'see',
-              targetId: choosePlayer,
-              actorId: currentPlayer.id,
-              result: false
-            },
-            content: `昨天预言的${state.players[choosePlayer].name} 是 村民`,
-            day: state.currentDay
-          });
-          this.prophecySet.set(choosePlayer, false);
+          let context = {
+            role: currentPlayer.jumpRole,
+            name: state.players[choosePlayerId].name,
+            result: '村民'
+          };
+          const speechMessage = await this.replyService.getRandomMessageAsync('prophet_speech', context);
+          this.pushState(state, currentPlayer.id, speechMessage, 'see', currentPlayer.id, choosePlayerId, false);
+          this.prophecySet.set(choosePlayerId, false);
         }
-        console.log(state.players[choosePlayer].name);
+        console.log(state.players[choosePlayerId].name);
       }
       state.players.find(p => p.id === currentPlayer.id).prophecySet = this.prophecySet;
     }
@@ -268,4 +238,26 @@ export class VillagerLogicService {
   }
 
   chat() {}
+
+  pushState(
+    state: GameState,
+    playerId: number,
+    speechMessage: string,
+    type: 'psychic' | 'kill' | 'see' | 'heal' | 'guard' | 'poison' | 'sleep' | 'hunt',
+    actorId?: number,
+    targetId?: number,
+    result?: boolean
+  ) {
+    state.daySpeeches.push({
+      playerId: playerId,
+      say: {
+        type: type,
+        targetId: targetId,
+        actorId: actorId,
+        result: result
+      },
+      content: speechMessage,
+      day: state.currentDay
+    });
+  }
 }
