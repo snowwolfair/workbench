@@ -5,6 +5,7 @@
 /tmp
 /out-tsc
 /bazel-out
+/_mock
 
 # Node
 /node_modules
