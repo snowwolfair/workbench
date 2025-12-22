@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { G2CardModule } from '@delon/chart/card';
 import { TrendModule } from '@delon/chart/trend';
 import { _HttpClient } from '@delon/theme';
+import { GoogleGenAI } from '@google/genai';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -61,10 +62,12 @@ export class UsersComponent implements OnInit {
         )
         .subscribe(data => {
           this.optionList = data;
-          console.log(this.optionList);
           this.loading = false;
+          this.getChartInfo();
         });
     }, 10);
+
+    this.startAI();
   }
 
   data: any[] = [];
@@ -72,7 +75,6 @@ export class UsersComponent implements OnInit {
   getDailyList() {
     this.loading = true;
     this.http.get('/assets/workTime/app_usage.json').subscribe((data: Record<string, { total: number; daily: Record<string, number> }>) => {
-      console.log(data);
       const newTimeInfo = [];
       Object.entries(data).forEach(([appName, info]) => {
         const dailyList = Object.entries(info.daily).map(([date, time]) => ({
@@ -107,7 +109,6 @@ export class UsersComponent implements OnInit {
   getTopFiveList() {
     this.topFiveList = this.timeInfo.sort((a, b) => b.usetime.total - a.usetime.total).slice(0, 5);
     this.loading = false;
-    console.log(this.topFiveList);
   }
 
   formatSeconds(seconds: number): string {
@@ -149,7 +150,6 @@ export class UsersComponent implements OnInit {
         dodrate: dodrate
       };
     });
-    console.log(this.timeInfo);
   }
 
   weekstart = new Date(this.newdate);
@@ -197,7 +197,6 @@ export class UsersComponent implements OnInit {
         wowrate: wowrate
       };
     });
-    console.log(this.timeInfo);
   }
 
   topDay(item: any) {
@@ -226,9 +225,7 @@ export class UsersComponent implements OnInit {
 
   onSearch(value: string): void {
     // this.loading = true;
-    console.log(value);
     this.searchChange$.next(value);
-    console.log(this.optionList);
   }
 
   getAppNameList(name: string): string[] {
@@ -248,7 +245,6 @@ export class UsersComponent implements OnInit {
       this.topchart.dispose();
     }
     this.topchart = echarts.init(document.getElementById('top-use-chart'));
-    console.log(this.selectedApp);
     this.datelist = this.getDatesInRange(this.startValue, this.endValue);
     this.dataSource = [];
 
@@ -264,7 +260,6 @@ export class UsersComponent implements OnInit {
     } else {
       applist = this.timeInfo.filter(item => item.appname == this.selectedApp);
     }
-    console.log(applist);
     for (let item of applist) {
       let row: any[] = [];
       row.push(item.appname);
@@ -281,7 +276,6 @@ export class UsersComponent implements OnInit {
 
     let cot = 0;
     this.dataSeries = [];
-    console.log(this.dataSeries);
     while (cot < applist.length) {
       this.dataSeries.push({
         type: 'line',
@@ -310,10 +304,8 @@ export class UsersComponent implements OnInit {
       yAxis: { gridIndex: 0 },
       series: this.dataSeries
     };
-    console.log(this.dataSource);
 
     this.topchart.setOption(this.topchartoption);
-    console.log(this.topchartoption);
     this.topchart.on('click', (params: any) => {
       this.topchart.dispatchAction({
         type: 'showTip',
@@ -373,8 +365,6 @@ export class UsersComponent implements OnInit {
         yAxis: { gridIndex: 0 },
         series: this.dataSeries
       };
-      console.log(this.dataSource);
-
       this.topchart.setOption(this.topchartoption);
       this.topchart.on('click', (params: any) => {
         this.topchart.dispatchAction({
@@ -449,22 +439,22 @@ export class UsersComponent implements OnInit {
   getDatesInRange(startDate: Date, endDate: Date): string[] {
     const dates: string[] = [];
 
-    // 确保 startDate <= endDate
     if (startDate > endDate) {
-      return dates; // 或交换两者，根据需求
+      return dates;
     }
 
-    // 创建一个可变的当前日期（避免修改原始 startDate）
     const currentDate = new Date(startDate);
 
-    // 遍历每一天，直到超过 endDate
     while (currentDate <= endDate) {
-      // 格式化为 'yyyy-MM-dd'
-      const year = currentDate.getFullYear();
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需+1
-      const day = String(currentDate.getDate()).padStart(2, '0');
+      const dayOfWeek = currentDate.getDay(); // 0 (Sun) to 6 (Sat)
 
-      dates.push(`${year}-${month}-${day}`);
+      // 只保留周一到周五（1 ~ 5）
+      if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        dates.push(`${year}-${month}-${day}`);
+      }
 
       // 增加一天
       currentDate.setDate(currentDate.getDate() + 1);
@@ -480,4 +470,24 @@ export class UsersComponent implements OnInit {
     { name: '王五', email: 'wangwu@example.com' },
     { name: '赵六', email: 'zhaoliu@example.com' }
   ];
+
+  ai: any;
+
+  async startAI() {
+    let apiKey = '';
+
+    this.http.get('/api/google/apikey').subscribe((data: any) => {
+      apiKey = data.APIkey;
+      this.ai = new GoogleGenAI({ apiKey });
+      // this.useAi();
+    });
+  }
+
+  async useAi() {
+    const response = await this.ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: '现在是什么时候，我在中国'
+    });
+    console.log(response.text);
+  }
 }
