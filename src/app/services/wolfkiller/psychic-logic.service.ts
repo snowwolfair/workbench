@@ -1,17 +1,20 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+
 import { Player, GameState, NightAction } from './options';
 import { SuspicionService } from './suspicion.service';
+import { ReplyService } from '../../services/speakmodal/replay.service';
 
 @Injectable({ providedIn: 'root' })
 export class PsychicLogicService {
-  constructor(private suspicionService: SuspicionService) {}
+  private suspicionService = inject(SuspicionService);
+  private replyService = inject(ReplyService);
 
   lastNightAction: NightAction = {
     type: 'sleep'
   };
 
   night(currentPlayer: Player, state: GameState) {
-    const allPlayers = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id);
+    // const allPlayers = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id);
 
     let role = currentPlayer.role;
     let name = currentPlayer.name;
@@ -40,19 +43,23 @@ export class PsychicLogicService {
     }
   }
 
-  day(currentPlayer: Player, state: GameState) {
-    const allPlayers = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id);
+  async day(currentPlayer: Player, state: GameState) {
+    // const allPlayers = state.players.filter(p => p.isAlive && p.id !== currentPlayer.id);
 
     let role = currentPlayer.role;
     let name = currentPlayer.name;
     if (state.currentDay === 1) {
       currentPlayer.jumpRole = 'villager';
       state.log.push(`(${role})${name} 说明他的身份是 ${currentPlayer.jumpRole}`);
+      let context = {
+        role: currentPlayer.jumpRole
+      };
+      const speechMessage = await this.replyService.getRandomMessageAsync('villager_speech', context);
 
       state.daySpeeches.push({
         playerId: currentPlayer.id,
         say: this.lastNightAction,
-        content: `我是${currentPlayer.jumpRole}`,
+        content: speechMessage,
         day: state.currentDay
       });
     } else {

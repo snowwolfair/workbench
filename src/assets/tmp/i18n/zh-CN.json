@@ -155,9 +155,10 @@
   "validation.goal.required": "请输入目标描述",
   "validation.standard.required": "请输入衡量标准",
   "wolf": "狼人",
-  "person": "平民",
+  "villager": "平民",
   "hunter": "猎人",
   "garder": "守卫",
   "prophet": "预言家",
-  "witch": "女巫"
+  "witch": "女巫",
+  "psychic": "通灵人"
 }

@@ -1,10 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+
 import { Player, GameState, NightAction } from './options';
 import { SuspicionService } from './suspicion.service';
+import { ReplyService } from '../../services/speakmodal/replay.service';
 
 @Injectable({ providedIn: 'root' })
 export class HunterLogicService {
-  constructor(private suspicionService: SuspicionService) {}
+  constructor() {}
+  private suspicionService = inject(SuspicionService);
+  private replyService = inject(ReplyService);
 
   lastNightAction: NightAction = {
     type: 'sleep'
@@ -32,7 +36,7 @@ export class HunterLogicService {
     return state;
   }
 
-  day(currentPlayer: Player, state: GameState) {
+  async day(currentPlayer: Player, state: GameState) {
     let role = currentPlayer.role;
     let name = currentPlayer.name;
 
@@ -41,12 +45,17 @@ export class HunterLogicService {
       state.log.push(`(${role})${name} 说明他的身份是 ${currentPlayer.jumpRole}`);
     }
 
+    let context = {
+      role: currentPlayer.jumpRole
+    };
+    const speechMessage = await this.replyService.getRandomMessageAsync('villager_speech', context);
+
     state.daySpeeches.push({
       playerId: currentPlayer.id,
       say: {
         type: 'sleep'
       },
-      content: `我是${currentPlayer.jumpRole}`,
+      content: speechMessage,
       day: state.currentDay
     });
 
