@@ -191,3 +191,68 @@ p::before {
 	            -15px -15px 35px rgba(255, 255, 255, 0.7),
                inset -1px 1px 10px rgba(0, 0, 0, 0.5);
 }
+
+.cards {
+  height: 300px;
+  width: 700px;
+	list-style: none;
+	white-space: nowrap;
+	max-width: calc(var(--cover-size) * 6);
+	overflow: scroll;
+  scroll-snap-type: x mandatory;
+}
+
+.cards li {
+	display: inline-block;
+	width: var(--cover-size);
+	aspect-ratio: 1;
+  view-timeline-name: --li-in-and-out-of-view;
+	view-timeline-axis: inline;
+  animation: linear adjust-z-index both;
+	animation-timeline: --li-in-and-out-of-view;
+  perspective: 40em;
+  scroll-snap-align: center;
+}
+
+.cards li img{
+  width: 100%;
+	height: auto;
+	-webkit-box-reflect: below 0.5em linear-gradient(rgb(0 0 0 / 0), rgb(0 0 0 / 0.25));
+	/* Link an animation to the established view-timeline (of the parent li) and have it run during the contain phase */
+}
+
+.cards li > img {
+  
+	animation: linear rotate-cover both;
+	animation-timeline: --li-in-and-out-of-view;
+}
+
+@keyframes adjust-z-index {
+	0% {
+		z-index: 1;
+	}
+	50% {
+		z-index: 100; /* When at the center, be on top */
+	}
+	100% {
+		z-index: 1;
+	}
+}
+
+@keyframes rotate-cover {
+	0% {
+		transform: translateX(-100%) rotateY(-45deg);
+	}
+	35% {
+		transform: translateX(0) rotateY(-45deg);
+	}
+	50% {
+		transform: rotateY(0deg) translateZ(1em) scale(1.5);
+	}
+	65% {
+		transform: translateX(0) rotateY(45deg);
+	}
+	100% {
+		transform: translateX(100%) rotateY(45deg);
+	}
+}
