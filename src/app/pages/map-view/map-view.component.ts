@@ -1,25 +1,25 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import * as THREE from 'three';
-import { OrbitControls } from 'three-orbitcontrols-ts';
+import { Component, ViewChild, ElementRef, ChangeDetectorRef, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { I18nPipe, _HttpClient } from '@delon/theme';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { I18nPipe, SettingsService, _HttpClient } from '@delon/theme';
-import { ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, inject } from '@angular/core';
-import { GameState } from '../../services/wolfkiller/options';
-import { WolflogicService } from '../../services/wolfkiller/wolf-logic.service';
-import { ProphetLogicService } from '../../services/wolfkiller/prophet-logic.service';
-import { SuspicionService } from '../../services/wolfkiller/suspicion.service';
-import { PsychicLogicService } from '../../services/wolfkiller/psychic-logic.service';
-import { GarderLogicService } from '../../services/wolfkiller/garder-logic.service';
-import { HunterLogicService } from '../../services/wolfkiller/hunter-logic.service';
-import { VillagerLogicService } from '../../services/wolfkiller/villager-logic.service';
 
 import { ReplyService } from '../../services/speakmodal/replay.service';
+import { GarderLogicService } from '../../services/wolfkiller/garder-logic.service';
+import { HunterLogicService } from '../../services/wolfkiller/hunter-logic.service';
+import { GameState, Player } from '../../services/wolfkiller/options';
+import { ProphetLogicService } from '../../services/wolfkiller/prophet-logic.service';
+import { PsychicLogicService } from '../../services/wolfkiller/psychic-logic.service';
+import { SuspicionService } from '../../services/wolfkiller/suspicion.service';
+import { VillagerLogicService } from '../../services/wolfkiller/villager-logic.service';
+import { WolflogicService } from '../../services/wolfkiller/wolf-logic.service';
 
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { Player } from '../../services/wolfkiller/options';
+interface LookGameLog {
+  currentPlayer: Player;
+  sentence: string;
+}
 
 @Component({
   selector: 'app-map-view',
@@ -27,20 +27,21 @@ import { Player } from '../../services/wolfkiller/options';
   templateUrl: './map-view.component.html',
   styleUrls: ['./map-view.component.less']
 })
-export class MapViewComponent {
+export class MapViewComponent implements OnInit {
   // 这里只保留地图相关逻辑，如需扩展可在此添加
   private readonly http = inject(_HttpClient);
-  constructor(
-    private wolflogicService: WolflogicService,
-    private prophetlogicService: ProphetLogicService,
-    private psychiclogicService: PsychicLogicService,
-    private garderlogicService: GarderLogicService,
-    private hunterlogicService: HunterLogicService,
-    private villagerlogicService: VillagerLogicService,
-    private suspicionService: SuspicionService,
-    private replyService: ReplyService,
-    private msg: NzMessageService
-  ) {}
+  private wolflogicService = inject(WolflogicService);
+  private prophetlogicService = inject(ProphetLogicService);
+  private psychiclogicService = inject(PsychicLogicService);
+  private garderlogicService = inject(GarderLogicService);
+  private hunterlogicService = inject(HunterLogicService);
+  private villagerlogicService = inject(VillagerLogicService);
+  private suspicionService = inject(SuspicionService);
+  private replyService = inject(ReplyService);
+  private msg = inject(NzMessageService);
+  private cdr = inject(ChangeDetectorRef);
+
+  constructor() {}
 
   @ViewChild('player-container-wrapper', { static: false }) specialPanel!: ElementRef;
 
@@ -81,16 +82,19 @@ export class MapViewComponent {
     isAlive: true
   };
 
+  sentenceList: LookGameLog[] = [];
+
   // 指定时的蒙层
   showOverlay = false;
 
   // 当前发言玩家
   currentPlayer: Player;
 
-  talk: string = '';
+  talk = '';
 
   ngOnInit() {
     this.switchGameMode();
+    // this.showSentence(this.talk);
   }
 
   // 开始游戏
@@ -98,8 +102,8 @@ export class MapViewComponent {
     this.gameResult = '';
     this.shuffledRoles = this.shuffle([...this.roles]);
     console.log(this.shuffledRoles);
-    for (let i = 0; i < this.playerList.length; i++) {
-      this.voteList.set(this.playerList[i].id, 0);
+    for (const player of this.playerList) {
+      this.voteList.set(player.id, 0);
     }
     this.switchRole();
     this.gamelink();
@@ -132,7 +136,7 @@ export class MapViewComponent {
       for (let i = 0; i < 12; i++) {
         this.playerList[i] = {
           id: i,
-          name: 'player' + (i + 1),
+          name: `player${i + 1}`,
           role: this.roles[i],
           isAlive: true
         };
@@ -142,7 +146,7 @@ export class MapViewComponent {
       for (let i = 0; i < 9; i++) {
         this.playerList[i] = {
           id: i,
-          name: 'player' + (i + 1),
+          name: `player${i + 1}`,
           role: this.roles[i],
           isAlive: true
         };
@@ -252,7 +256,7 @@ export class MapViewComponent {
         // this.resetGame();
 
         this.currentPlayer = this.system;
-        this.talk = '请指定猎物';
+        this.showSentence('请指定猎人猎物');
         break;
       case 2:
         this.choosePlayer = true;
@@ -260,7 +264,7 @@ export class MapViewComponent {
         this.showOverlay = true;
 
         this.currentPlayer = this.system;
-        this.talk = '请指定预言';
+        this.showSentence('请指定预言');
         break;
       case 3:
         this.choosePlayer = true;
@@ -268,17 +272,10 @@ export class MapViewComponent {
         this.showOverlay = true;
 
         this.currentPlayer = this.system;
-        this.talk = '请指定守卫';
+        this.showSentence('请指定守卫目标');
         break;
       case 4:
-        let message = '';
-        let context = {
-          name: 'wanjia'
-        };
-        this.replyService.getRandomMessage('jump_role_announce', context).subscribe(msg => {
-          message = msg;
-        });
-        console.log(message);
+        console.log('temp');
         break;
       case 5:
         this.showPlayerRole = !this.showPlayerRole;
@@ -286,8 +283,10 @@ export class MapViewComponent {
       case 6:
         this.choosePlayer = true;
         this.forceVote = true;
+        this.showOverlay = true;
 
-        this.talk = '请指定投票目标';
+        this.currentPlayer = this.system;
+        this.showSentence('请指定投票目标');
         break;
       case 7:
         this.target = undefined;
@@ -295,10 +294,11 @@ export class MapViewComponent {
         this.votedSign = false;
         this.choosePlayer = false;
 
+        this.talk = '投票进行中...';
         setTimeout(() => {
-          this.talk = '投票进行中...';
-        }, 1000);
-        this.gameVote();
+          this.gameVote();
+          this.talk = '';
+        }, 10000);
         if (this.playerList.filter(p => p.isAlive && p.role == 'wolf').length == 0) {
           console.log(this.playerList.filter(p => p.isAlive && p.role == 'villager').length);
           this.state[this.today].log.push(`---游戏结束，村民胜利---`);
@@ -328,12 +328,13 @@ export class MapViewComponent {
   }
 
   onOverlayClick(event?: MouseEvent) {
-    // event.stopPropagation();
+    event.stopPropagation();
     this.choosePlayer = false;
     this.forceVote = false;
     this.guardSign = false;
     this.hunterSign = false;
     this.prophecySign = false;
+    this.talk = '';
     this.showOverlay = false; // 点击蒙层关闭
   }
 
@@ -367,6 +368,7 @@ export class MapViewComponent {
       this.target = this.playerList[id];
 
       this.gameLogs.push(`指定${this.target.name}为强制投票目标`);
+      this.showSentence(`指定${this.target.name}为强制投票目标`);
 
       this.state[this.today].log.push(`${this.target.name} 被强制投票`);
 
@@ -388,11 +390,14 @@ export class MapViewComponent {
       if (this.targetProphecy) {
         this.targetProphecy = this.playerList[id];
         this.gameLogs.push(`重新指定${this.targetProphecy.name}为夜晚预言目标`);
+        this.showSentence(`重新指定${this.targetProphecy.name}为夜晚预言目标`);
       } else {
         this.targetProphecy = this.playerList[id];
         this.gameLogs.push(`指定${this.targetProphecy.name}为夜晚预言目标`);
+        this.showSentence(`指定${this.targetProphecy.name}为夜晚预言目标`);
       }
       this.state[this.today].log.push(`${this.targetProphecy.name} 被指定预言`);
+      this.showSentence(`${this.targetProphecy.name} 被指定预言`);
       // 清除选择玩家状态
       this.choosePlayer = false;
       this.prophecySign = false;
@@ -403,11 +408,14 @@ export class MapViewComponent {
       if (this.targetGuard) {
         this.targetGuard = this.playerList[id];
         this.gameLogs.push(`重新指定${this.targetGuard.name}为夜晚守卫目标`);
+        this.showSentence(`重新指定${this.targetGuard.name}为夜晚守卫目标`);
       } else {
         this.targetGuard = this.playerList[id];
         this.gameLogs.push(`指定${this.targetGuard.name}为夜晚守卫目标`);
+        this.showSentence(`指定${this.targetGuard.name}为夜晚守卫目标`);
       }
       this.state[this.today].log.push(`${this.targetGuard.name} 被指定守卫`);
+      this.showSentence(`${this.targetGuard.name} 被指定守卫`);
       // 清除选择玩家状态
       this.choosePlayer = false;
       this.guardSign = false;
@@ -417,11 +425,14 @@ export class MapViewComponent {
       if (this.targetHunter) {
         this.targetHunter = this.playerList[id];
         this.gameLogs.push(`重新指定${this.targetHunter.name}为猎人目标`);
+        this.showSentence(`重新指定${this.targetHunter.name}为猎人目标`);
       } else {
         this.targetHunter = this.playerList[id];
         this.gameLogs.push(`指定${this.targetHunter.name}为猎人目标`);
+        this.showSentence(`指定${this.targetHunter.name}为猎人目标`);
       }
       this.state[this.today].log.push(`${this.targetHunter.name} 被指定猎人目标`);
+      this.showSentence(`${this.targetHunter.name} 被指定猎人目标`);
       this.state[this.today].targetHunter = this.targetHunter;
       // 清除选择玩家状态
       this.choosePlayer = false;
@@ -429,6 +440,65 @@ export class MapViewComponent {
     }
     console.log(this.talk);
     this.onOverlayClick();
+  }
+
+  // 对话框文字显示
+  currentIndex = -1;
+  currentAnimationId = 0;
+  @ViewChild('sentenceDisplay') sentenceDisplay: ElementRef;
+  characters: any[] = [];
+
+  showSentence(sentence: string) {
+    // 递增动画ID，用于标识新的动画批次
+    this.currentAnimationId++;
+
+    if (this.currentAnimationId > 1000000) {
+      this.currentAnimationId = 1;
+      console.log('Animation ID has been reset to prevent overflow');
+    }
+
+    const thisAnimationId = this.currentAnimationId;
+
+    this.characters = [];
+
+    this.cdr.detectChanges();
+
+    // 创建字符数组，每个字符包含显示状态
+    this.characters = sentence.split('').map(char => ({
+      value: char === ' ' ? '\u00A0' : char,
+      visible: false
+    }));
+
+    console.log(this.characters);
+
+    // 使用setTimeout确保DOM更新后再开始动画
+    setTimeout(() => {
+      // 设置动画延迟，逐个显示字符
+      this.characters.forEach((_, index) => {
+        // 检查是否是当前最新的动画批次，如果不是则停止
+        if (thisAnimationId !== this.currentAnimationId) {
+          return;
+        }
+
+        // 使用setTimeout来实现逐字显示
+        setTimeout(() => {
+          if (thisAnimationId === this.currentAnimationId) {
+            // 更新字符的可见性
+            this.characters[index].visible = true;
+          }
+        }, index * 10); // 每个字符间隔10ms
+      });
+    });
+  }
+
+  nextSentence() {
+    console.log(this.sentenceList);
+    this.currentIndex++;
+    if (this.currentIndex >= this.sentenceList.length) {
+      return;
+    }
+    this.currentPlayer = this.sentenceList[this.currentIndex].currentPlayer;
+    this.showSentence(this.sentenceList[this.currentIndex].sentence);
   }
 
   // 游戏链接
@@ -453,8 +523,8 @@ export class MapViewComponent {
 
     let currentState = this.state[this.today];
     console.log(JSON.parse(JSON.stringify(this.state)));
-    for (let i = 0; i < this.playerList.length; i++) {
-      if (!this.playerList[i].isAlive) {
+    for (let i of this.playerList) {
+      if (!i.isAlive) {
         continue;
       }
       switch (this.playerList[i].role) {
@@ -519,12 +589,14 @@ export class MapViewComponent {
       this.state[this.today].log.push(`---游戏结束，狼人胜利---`);
       this.gameOver(false);
     }
+
+    this.showSentence(this.gameLogs[0]);
   }
 
   async gameDay() {
     this.state[this.today].log.push(`---第${this.today + 1}日早---`);
-    for (let i = 0; i < this.playerList.length; i++) {
-      if (!this.playerList[i].isAlive) {
+    for (let i of this.playerList) {
+      if (!i.isAlive) {
         continue;
       }
       switch (this.playerList[i].role) {
@@ -535,15 +607,15 @@ export class MapViewComponent {
           this.state[this.today] = await this.villagerlogicService.day(this.playerList[i], this.state[this.today]);
           break;
         case 'hunter':
-          this.state[this.today] = this.hunterlogicService.day(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = await this.hunterlogicService.day(this.playerList[i], this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'psychic':
-          this.state[this.today] = this.psychiclogicService.day(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = await this.psychiclogicService.day(this.playerList[i], this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'garder':
-          this.state[this.today] = this.garderlogicService.day(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = await this.garderlogicService.day(this.playerList[i], this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'prophet':
@@ -583,13 +655,13 @@ export class MapViewComponent {
   // 玩家发言
 
   // 投票系统
-  voteList: Map<number, number> = new Map();
+  voteList = new Map<number, number>();
 
   startVote() {
     this.state[this.today].log.push(`---第${this.today + 1}日投票---`);
     console.log(this.state[this.today].daySpeeches);
-    for (let i = 0; i < this.playerList.length; i++) {
-      if (!this.playerList[i].isAlive) {
+    for (let i of this.playerList) {
+      if (!i.isAlive) {
         continue;
       }
       const sortedKeys = Array.from(this.suspicionService.calculateSuspicion(this.playerList[i], this.state[this.today]).entries())
@@ -616,15 +688,15 @@ export class MapViewComponent {
     // 找到投票最多的玩家
     const maxVotes = Math.max(...this.voteList.values());
     const candidates = Array.from(this.voteList.entries())
-      .filter(([key, votes]) => votes === maxVotes)
-      .map(([key, votes]) => key);
+      .filter(([votes]) => votes === maxVotes)
+      .map(([key]) => key);
     // 如果有多个玩家获得最多投票，随机选择一个
     const voteTarget = candidates[Math.floor(Math.random() * candidates.length)];
 
     return voteTarget;
   }
 
-  gameResult: string = 'true';
+  gameResult = 'true';
   gameOver(isWin: boolean) {
     if (isWin) {
       this.gameResult = '村民胜利';
@@ -649,11 +721,12 @@ export class MapViewComponent {
     this.hunterDie = false;
     this.voteList.clear();
     this.switchGameMode();
+    this.sentenceList = [];
   }
 
   // 游戏日志
   gameLogs: string[] = [];
-  gameLogVisible: boolean = false;
+  gameLogVisible = false;
   // 显示游戏日志
   showGameLog(): void {
     this.gameLogVisible = true;
@@ -672,26 +745,32 @@ export class MapViewComponent {
           };
           message = await this.replyService.getRandomMessageAsync('death_night', context);
           this.gameLogs.push(message);
+          this.sentenceList.push({
+            currentPlayer: this.system,
+            sentence: message
+          });
         }
       }
     } else {
       let context = {};
       message = await this.replyService.getRandomMessageAsync('safe_night', context);
       this.gameLogs.push(message);
+      this.sentenceList.push({
+        currentPlayer: this.system,
+        sentence: message
+      });
     }
   }
 
   async addGameLogDay(state: GameState): Promise<void> {
-    let message = '';
     console.log(state);
     this.gameLogs.push(`---第 ${state.currentDay} 日白天---`);
     for (const speech of state.daySpeeches) {
-      let context = {
-        name: `玩家${speech.playerId + 1}`,
-        content: speech.content
-      };
-      message = await this.replyService.getRandomMessageAsync('day_speech', context);
       this.gameLogs.push(`玩家${speech.playerId + 1} 说: ${speech.content}`);
+      this.sentenceList.push({
+        currentPlayer: this.playerList[speech.playerId],
+        sentence: speech.content
+      });
     }
   }
 
@@ -701,12 +780,20 @@ export class MapViewComponent {
     this.gameLogs.push(`---第 ${state.currentDay} 日投票结果---`);
     this.voteList.forEach((vote, playerId) => {
       this.gameLogs.push(`玩家${playerId + 1} : ${vote} 票`);
+      this.sentenceList.push({
+        currentPlayer: this.system,
+        sentence: `玩家${playerId + 1} : ${vote} 票`
+      });
     });
     let context = {
       name: `玩家${state.vote.id + 1}`
     };
     message = await this.replyService.getRandomMessageAsync('death_day', context);
     this.gameLogs.push(message);
+    this.sentenceList.push({
+      currentPlayer: this.system,
+      sentence: message
+    });
 
     this.voteList.clear();
     for (const player of this.playerList) {
@@ -721,8 +808,17 @@ export class MapViewComponent {
       };
       message = await this.replyService.getRandomMessageAsync('hunter_death_day', context);
       this.currentPlayer = state.targetHunter;
-
+      this.sentenceList = [
+        {
+          currentPlayer: this.system,
+          sentence: message
+        }
+      ];
       this.gameLogs.push(`玩家${state.targetHunter.id + 1}被猎人开枪带走了`);
+      this.sentenceList.push({
+        currentPlayer: this.system,
+        sentence: `玩家${state.targetHunter.id + 1}被猎人开枪带走了`
+      });
     }
   }
 
@@ -732,7 +828,7 @@ export class MapViewComponent {
   }
 
   // 系统日志
-  systemLogVisible: boolean = false;
+  systemLogVisible = false;
   systemLogs: string[] = [];
   // 显示系统日志
   showSystemLog(): void {

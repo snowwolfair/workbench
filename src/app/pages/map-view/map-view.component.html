@@ -32,7 +32,7 @@
                 <div class="player-role" [ngClass]="{}"> {{ player?.jumpRole ? (player.jumpRole | i18n) : '&nbsp;' }} </div>
               }
               @if (showPlayerRole) {
-                <div class="player-role" [ngClass]="{}"> {{ player.role | i18n }} | {{ player?.jumpRole | i18n }} </div>
+                <div class="player-role" [ngClass]="{}"> {{ player?.jumpRole | i18n }} | {{ player.role | i18n }} </div>
               }
             </div>
           }
@@ -60,11 +60,14 @@
                   <div class="player-role" [ngClass]="{}"> {{ player?.jumpRole ? (player.jumpRole | i18n) : '&nbsp;' }} </div>
                 }
                 @if (showPlayerRole) {
-                  <div class="player-role" [ngClass]="{}"> {{ player.role | i18n }} | {{ player?.jumpRole | i18n }} </div>
+                  <div class="player-role" [ngClass]="{}"> {{ player?.jumpRole | i18n }} | {{ player.role | i18n }} </div>
                 }
               </div>
             }
           </div>
+        }
+        @if (showModel) {
+          <div>{{ talk }} </div>
         }
       </div>
     </div>
@@ -96,7 +99,13 @@
       }
 
       @if (showModel) {
-        <div class="model">{{ talk }}</div>
+        <div class="model" (click)="nextSentence()">
+          <div id="sentenceDisplay" class="sentence-text">
+            @for (char of characters; track $index) {
+              <span [ngClass]="{ 'show-character': char.visible, 'sentence-character': !char.visible }">{{ char.value }}</span>
+            }
+          </div>
+        </div>
       }
     </div>
   </div>

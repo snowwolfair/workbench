@@ -211,4 +211,36 @@
   pointer-events: none; /* 防止遮罩干扰player内部元素的交互 */
 }
 
+.sentence-container {
+      min-height: 100px;
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 80%;
+      max-width: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .sentence-text {
+      font-size: 24px;
+      line-height: 1.5;
+      color: #333;
+    }
+
+    .sentence-character {
+      opacity: 0;
+      display: inline-block;
+      transition: all 0.2s ease;
+    }
+
+    /* 逐字显示动画 */
+    .show-character {
+      opacity: 1;
+    }
+
 
