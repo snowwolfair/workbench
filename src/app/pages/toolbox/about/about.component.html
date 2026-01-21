@@ -7,13 +7,27 @@
   <li>处理路由激活状态...</li>
   <li>设置默认路由和通配符路由...</li>
 </ul>
+<div class="color-picker-container">
+  <div class="panel-wrapper">
+    <canvas #colorpanel appDragMove (dragMove)="onPanelMove($any($event))" class="main-panel"></canvas>
+    <div class="picker-cursor" [style.left.px]="panelCursor.x" [style.top.px]="panelCursor.y"></div>
+  </div>
+
+  <div class="hue-wrapper">
+    <canvas #colorbar appDragMove (dragMove)="onHueMove($any($event))" class="hue-bar"></canvas>
+    <div class="hue-cursor" [style.left.px]="hueCursorX"></div>
+  </div>
+  <div [style.backgroundColor]="selectedColor" style="width: 300px; height: 20px"> </div>
+  <div>{{ selectedColor }}</div>
+</div>
+
 <!-- <div class="water-drop"></div> -->
-<div class="svg-container">
+<!-- <div class="svg-container">
   <svg class="g-svg" width="400" height="160" xmlns="http://www.w3.org/2000/svg">
     <path id="svgpath" d="M 350 40 C 1000 1000, -350 1000, 350 1960" stroke="black" fill="transparent" />
   </svg>
   <div class="ele"></div>
-</div>
+</div> -->
 
 <!-- 触发按钮 -->
 <button (click)="showOverlay = true" style="background: linear-gradient(to right, #000000, #ffd700); color: #ffffff">启用蒙层模式</button>
