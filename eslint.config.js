@@ -142,6 +142,14 @@ export default tseslint.config(
       "no-empty-function": "off",
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'all',           // 检查所有参数
+          argsIgnorePattern: '^_', // 忽略以下划线开头的参数
+          caughtErrors: 'none',  // 可选：是否检查 catch 中的 error
+        },
+      ],
     }
   },
   {
