@@ -298,7 +298,7 @@ export class MapViewComponent implements OnInit {
         setTimeout(() => {
           this.gameVote();
           this.talk = '';
-        }, 10000);
+        }, 1000);
         if (this.playerList.filter(p => p.isAlive && p.role == 'wolf').length == 0) {
           console.log(this.playerList.filter(p => p.isAlive && p.role == 'villager').length);
           this.state[this.today].log.push(`---游戏结束，村民胜利---`);
@@ -327,8 +327,9 @@ export class MapViewComponent implements OnInit {
     }
   }
 
-  onOverlayClick(event?: MouseEvent) {
-    event.stopPropagation();
+  onOverlayClick(_event?: MouseEvent) {
+    // event.stopPropagation();
+
     this.choosePlayer = false;
     this.forceVote = false;
     this.guardSign = false;
@@ -523,32 +524,33 @@ export class MapViewComponent implements OnInit {
 
     let currentState = this.state[this.today];
     console.log(JSON.parse(JSON.stringify(this.state)));
+    console.log(this.playerList);
     for (let i of this.playerList) {
       if (!i.isAlive) {
         continue;
       }
-      switch (this.playerList[i].role) {
+      switch (i.role) {
         case 'wolf':
-          this.state[this.today] = this.wolflogicService.night(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = this.wolflogicService.night(i, this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'villager':
-          this.state[this.today] = this.villagerlogicService.night(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = this.villagerlogicService.night(i, this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'hunter':
           // 猎人无晚上活动
           break;
         case 'psychic':
-          this.state[this.today] = this.psychiclogicService.night(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = this.psychiclogicService.night(i, this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'garder':
-          this.state[this.today] = this.garderlogicService.night(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = this.garderlogicService.night(i, this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'prophet':
-          this.state[this.today] = this.prophetlogicService.night(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = this.prophetlogicService.night(i, this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
       }
@@ -599,27 +601,27 @@ export class MapViewComponent implements OnInit {
       if (!i.isAlive) {
         continue;
       }
-      switch (this.playerList[i].role) {
+      switch (i.role) {
         case 'wolf':
-          this.state[this.today] = await this.wolflogicService.day(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = await this.wolflogicService.day(i, this.state[this.today]);
           break;
         case 'villager':
-          this.state[this.today] = await this.villagerlogicService.day(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = await this.villagerlogicService.day(i, this.state[this.today]);
           break;
         case 'hunter':
-          this.state[this.today] = await this.hunterlogicService.day(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = await this.hunterlogicService.day(i, this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'psychic':
-          this.state[this.today] = await this.psychiclogicService.day(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = await this.psychiclogicService.day(i, this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'garder':
-          this.state[this.today] = await this.garderlogicService.day(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = await this.garderlogicService.day(i, this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
         case 'prophet':
-          this.state[this.today] = await this.prophetlogicService.day(this.playerList[i], this.state[this.today]);
+          this.state[this.today] = await this.prophetlogicService.day(i, this.state[this.today]);
           console.log(JSON.parse(JSON.stringify(this.state)));
           break;
       }
@@ -638,6 +640,7 @@ export class MapViewComponent implements OnInit {
 
   gameVote() {
     this.voted = this.startVote();
+    console.log(this.voted);
     this.state[this.today].log.push(`玩家${this.voted + 1} 被投票出局`);
     this.playerList[this.voted].isAlive = false;
     console.log(this.playerList[this.voted].role);
@@ -664,35 +667,38 @@ export class MapViewComponent implements OnInit {
       if (!i.isAlive) {
         continue;
       }
-      const sortedKeys = Array.from(this.suspicionService.calculateSuspicion(this.playerList[i], this.state[this.today]).entries())
+      const sortedKeys = Array.from(this.suspicionService.calculateSuspicion(i, this.state[this.today]).entries())
         .sort((a, b) => b[1] - a[1]) // 按 value 降序：b[1] - a[1]
         .map(entry => entry[0]); // 提取 key
+      console.log(sortedKeys);
       if (this.target) {
-        if (this.target !== this.playerList[i]) {
+        if (this.target !== i) {
           this.voteList.set(this.target.id, (this.voteList.get(this.target.id) || 0) + 1);
-          this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${this.target.id + 1}`);
+          this.state[this.today].log.push(`玩家${i.id + 1} 投票给玩家${this.target.id + 1}`);
         } else {
           this.voteList.set(sortedKeys[0], (this.voteList.get(sortedKeys[0]) || 0) + 1);
-          this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${sortedKeys[0] + 1}`);
+          this.state[this.today].log.push(`玩家${i.id + 1} 投票给玩家${sortedKeys[0] + 1}`);
         }
       } else {
-        if (sortedKeys[1] === this.playerList[i].id) {
+        if (sortedKeys[1] === i.id) {
           this.voteList.set(sortedKeys[2], (this.voteList.get(sortedKeys[2]) || 0) + 1);
-          this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${sortedKeys[2] + 1}`);
+          this.state[this.today].log.push(`玩家${i.id + 1} 投票给玩家${sortedKeys[2] + 1}`);
         } else {
           this.voteList.set(sortedKeys[0], (this.voteList.get(sortedKeys[0]) || 0) + 1);
-          this.state[this.today].log.push(`玩家${this.playerList[i].id + 1} 投票给玩家${sortedKeys[0] + 1}`);
+          this.state[this.today].log.push(`玩家${i.id + 1} 投票给玩家${sortedKeys[0] + 1}`);
         }
       }
+      console.log(this.voteList);
     }
     // 找到投票最多的玩家
+
     const maxVotes = Math.max(...this.voteList.values());
     const candidates = Array.from(this.voteList.entries())
-      .filter(([votes]) => votes === maxVotes)
+      .filter(([, votes]) => votes === maxVotes)
       .map(([key]) => key);
     // 如果有多个玩家获得最多投票，随机选择一个
+    console.log(candidates);
     const voteTarget = candidates[Math.floor(Math.random() * candidates.length)];
-
     return voteTarget;
   }
 
