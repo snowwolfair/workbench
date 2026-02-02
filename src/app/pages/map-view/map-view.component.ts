@@ -339,10 +339,17 @@ export class MapViewComponent implements OnInit {
     this.showOverlay = false; // 点击蒙层关闭
   }
 
+  contextLoading = false;
+
   // 按钮禁用
   setDisabled(option: any) {
     // 游戏结束后，禁用所有选项
     if (this.gameResult) {
+      return true;
+    }
+
+    // 上下文加载中，禁用所有选项
+    if (this.contextLoading) {
       return true;
     }
 
@@ -470,8 +477,6 @@ export class MapViewComponent implements OnInit {
       visible: false
     }));
 
-    console.log(this.characters);
-
     // 使用setTimeout确保DOM更新后再开始动画
     setTimeout(() => {
       // 设置动画延迟，逐个显示字符
@@ -494,8 +499,11 @@ export class MapViewComponent implements OnInit {
 
   nextSentence() {
     console.log(this.sentenceList);
+    this.contextLoading = true;
     this.currentIndex++;
     if (this.currentIndex >= this.sentenceList.length) {
+      this.contextLoading = false;
+      this.currentIndex--;
       return;
     }
     this.currentPlayer = this.sentenceList[this.currentIndex].currentPlayer;
@@ -591,8 +599,9 @@ export class MapViewComponent implements OnInit {
       this.state[this.today].log.push(`---游戏结束，狼人胜利---`);
       this.gameOver(false);
     }
-
-    this.showSentence(this.gameLogs[0]);
+    this.contextLoading = true;
+    this.nextSentence();
+    // this.showSentence(this.gameLogs[0]);
   }
 
   async gameDay() {
@@ -647,6 +656,7 @@ export class MapViewComponent implements OnInit {
     if (this.playerList[this.voted].role === 'hunter') {
       if (this.state[this.today].targetHunter && this.state[this.today].targetHunter.id !== this.playerList[this.voted].id) {
         this.playerList[this.state[this.today].targetHunter.id].isAlive = false;
+        this.playerList[this.voted].jumpRole = 'hunter';
         this.hunterDie = true;
       }
     }
@@ -742,7 +752,13 @@ export class MapViewComponent implements OnInit {
     console.log(state);
     let message = '';
 
-    this.gameLogs.push(`---第 ${state.currentDay - 1} 日夜晚---`);
+    message = `---第 ${state.currentDay - 1} 日夜晚---`;
+    this.gameLogs.push(message);
+    this.sentenceList.push({
+      currentPlayer: this.system,
+      sentence: message
+    });
+
     if (isKill) {
       for (const action of state.nightActions) {
         if (action.type === 'kill') {
@@ -770,7 +786,12 @@ export class MapViewComponent implements OnInit {
 
   async addGameLogDay(state: GameState): Promise<void> {
     console.log(state);
-    this.gameLogs.push(`---第 ${state.currentDay} 日白天---`);
+    let message = `---第 ${state.currentDay} 日白天---`;
+    this.gameLogs.push(message);
+    this.sentenceList.push({
+      currentPlayer: this.system,
+      sentence: message
+    });
     for (const speech of state.daySpeeches) {
       this.gameLogs.push(`玩家${speech.playerId + 1} 说: ${speech.content}`);
       this.sentenceList.push({
@@ -783,7 +804,12 @@ export class MapViewComponent implements OnInit {
   async addGameLogVote(state: GameState): Promise<void> {
     console.log(state);
     let message = '';
-    this.gameLogs.push(`---第 ${state.currentDay} 日投票结果---`);
+    message = `---第 ${state.currentDay} 日投票结果---`;
+    this.gameLogs.push(message);
+    this.sentenceList.push({
+      currentPlayer: this.system,
+      sentence: message
+    });
     this.voteList.forEach((vote, playerId) => {
       this.gameLogs.push(`玩家${playerId + 1} : ${vote} 票`);
       this.sentenceList.push({
@@ -826,6 +852,8 @@ export class MapViewComponent implements OnInit {
         sentence: `玩家${state.targetHunter.id + 1}被猎人开枪带走了`
       });
     }
+
+    this.nextSentence();
   }
 
   // 关闭游戏日志
