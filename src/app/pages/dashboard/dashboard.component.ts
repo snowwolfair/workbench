@@ -1,28 +1,30 @@
-import { Component, ViewChild, inject, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { CdkDragPlaceholder } from '@angular/cdk/drag-drop';
+import { Component, ViewChild, inject, ElementRef, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-
-import { tap, timer } from 'rxjs';
-
-import { OnboardingConfig, OnboardingService } from '@delon/abc/onboarding';
-import { _HttpClient } from '@delon/theme';
-
+import { OnboardingService } from '@delon/abc/onboarding';
+import { I18nPipe, _HttpClient } from '@delon/theme';
+import { ThemeBtnComponent } from '@delon/theme/theme-btn';
+import APlayer from 'aplayer';
+import * as echarts from 'echarts';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import 'echarts-wordcloud';
-import * as echarts from 'echarts';
-
-import APlayer from 'aplayer';
+import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
+import { tap, timer } from 'rxjs';
+// import 'echarts-wordcloud';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [NzButtonModule, RouterLink],
+  imports: [NzButtonModule, RouterLink, CdkDragPlaceholder, I18nPipe, NzSegmentedModule, FormsModule, ThemeBtnComponent],
 
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.less']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly Obsrv = inject(OnboardingService);
   private readonly http = inject(_HttpClient);
+  private msg = inject(NzMessageService);
+  mode = 'compact';
 
   start() {
     this.Obsrv.start({
@@ -85,7 +87,7 @@ export class DashboardComponent {
   myChart: any;
 
   defaultTitle = document.title;
-  constructor(private msg: NzMessageService) {}
+  constructor() {}
 
   timeoutID: any;
 
@@ -115,7 +117,7 @@ export class DashboardComponent {
 
     this.myChart.on('click', (params: any) => {
       console.log(params);
-      this.msg.success(params.name + '被点击了');
+      this.msg.success(`${params.name}被点击了`);
     });
 
     // this.myChart.on('mouseover', (params: any) => {
@@ -137,7 +139,7 @@ export class DashboardComponent {
   }
 
   getRandomColor() {
-    return 'rgb(' + [Math.round(Math.random() * 220), Math.round(Math.random() * 220), Math.round(Math.random() * 220)].join(',') + ')';
+    return `rgb(${[Math.round(Math.random() * 220), Math.round(Math.random() * 220), Math.round(Math.random() * 220)].join(',')})`;
   }
 
   getKeywords() {}
@@ -185,9 +187,7 @@ export class DashboardComponent {
           fontWeight: 'bold',
           // 颜色可以用一个函数来返回字符串，这里是随机色
           color: function () {
-            return (
-              'rgb(' + [Math.round(Math.random() * 220), Math.round(Math.random() * 220), Math.round(Math.random() * 220)].join(',') + ')'
-            );
+            return `rgb(${[Math.round(Math.random() * 220), Math.round(Math.random() * 220), Math.round(Math.random() * 220)].join(',')})`;
           }
         },
         emphasis: {

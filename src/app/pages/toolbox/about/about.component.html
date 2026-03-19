@@ -7,6 +7,15 @@
   <li>处理路由激活状态...</li>
   <li>设置默认路由和通配符路由...</li>
 </ul>
+
+<div class="container">
+  <div class="layer level-1" style="height: 200px; width: 300px; margin-top: 10px; border-radius: 10px">
+    <span>20% 透明度</span>
+    <div class="layer level-3" style="height: 100px; width: 200px; margin-top: 10px; border-radius: 10px">100% 透明度</div>
+  </div>
+
+  <div class="layer level-2">50% 透明度</div>
+</div>
 <div class="color-picker-container">
   <div class="panel-wrapper">
     <canvas #colorpanel appDragMove (dragMove)="onPanelMove($any($event))" class="main-panel"></canvas>

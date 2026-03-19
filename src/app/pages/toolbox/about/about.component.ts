@@ -1,5 +1,6 @@
 import { ViewportRuler } from '@angular/cdk/overlay';
 import { Component, ViewChild, ElementRef, inject, OnInit, HostListener, AfterViewInit } from '@angular/core';
+import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 
 import { DragMoveDirective } from '../../directive/drag-move.directive';
 
@@ -17,7 +18,7 @@ interface Point {
 
 @Component({
   selector: 'app-about',
-  imports: [DragMoveDirective],
+  imports: [DragMoveDirective, NzCarouselModule],
   templateUrl: './about.component.html',
   styleUrl: './about.component.less'
 })
@@ -29,6 +30,35 @@ export class AboutComponent implements OnInit, AfterViewInit {
     console.log(event);
     console.log(this.selectedColor);
   }
+
+  weatherDataChunk = [
+    [
+      {
+        date: '2023-10-01',
+        temp: '25°C',
+        condition: 'Clear'
+      },
+      {
+        date: '2023-10-02',
+        temp: '26°C',
+        condition: 'Cloudy'
+      },
+      {
+        date: '2023-10-03',
+        temp: '24°C',
+        condition: 'Rainy'
+      }
+    ],
+    [
+      {
+        date: '2023-10-01',
+        temp: '25°C',
+        condition: 'Clear'
+      }
+    ]
+  ];
+
+  array = [1, 2, 3, 4];
 
   private ViewportRuler = inject(ViewportRuler);
   ngOnInit() {
