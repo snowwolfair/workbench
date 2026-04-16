@@ -1,0 +1,479 @@
+<!-- <head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+</head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Almendra", serif;
+  }
+
+  body {
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0
+  }
+  .main-wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 20px;
+  }
+  .img-container {
+    position: relative;
+    height: 100%;
+    max-height: 100vh;
+  }
+
+  .img-container .i {
+    height: 100%;
+    width: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  .top-left {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    font-size: 26px;
+    color: #2C1E14;
+    align-items: center;
+  }
+
+  .cet-b {
+    position: absolute;
+    font-weight: bold;
+    font-style: italic;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    font-size: 30px;
+  }
+
+  .tt {
+    top: 12%;
+    font-style:normal;
+    font-weight: normal;
+    font-size: 14px;
+    color: #8d7c6f;
+  }
+
+  .f{
+    position: absolute;
+    right: 0;
+    top: 22%;
+    width:400px;
+    height: 640px;
+  }
+
+  .ct-c {
+    position: absolute;
+    width: 75%;
+    top: 15%;
+    left: 5%;
+    z-index: 10;
+    color: #2C1E14;
+  }
+
+  .ct-b {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 5px;
+  }
+
+  .ct {
+    font-size: 20px;
+    width: 45%;
+    border-bottom: 1px solid #5d4037;
+    filter: blur(0.4px);
+  }
+
+  .ct-l {
+    font-size: 20px;
+    margin-top: 10px;
+    width: 85%;
+    border-bottom: 1px solid #5d4037;
+    filter: blur(0.4px);
+  }
+
+  .title {
+    color: #794017;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 5px;
+    margin-right: 5px;
+  }
+
+  .l {
+    width: 90%;
+    background: rgba(255, 237, 137, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .05)
+  }
+
+  .h {
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+  }
+
+  .D {
+    width: 34px;
+    height: 34px;
+  }
+
+  .u2 { vertical-align: 2px; }
+  .d2 { vertical-align: -2px; }
+  .d3 { vertical-align: -3px; }
+
+  .g5 { margin-right: 5px; }
+  .g3 { margin-right: 3px; }
+  .cpp{
+    position: absolute;
+    right: 18px;
+    font-size: 20px;
+    top: 20%;
+    color:red;
+
+    text-shadow: 
+      0px 0px 5px #ff0000,
+      0px 0px 15px #ff0000,
+      1px 1px 0px #000000,
+      6px 6px 5px rgba(0,0,0,0.5);
+  }
+  .cpp span{
+    display: inline-block;
+  }
+</style>
+<div class="main-wrapper">
+  <div class="img-container">
+    <img class="i" src="https://i.postimg.cc/c48QbYxF/bg.png">
+    <div class="top-left">
+      <img class="D" src="https://i.postimg.cc/qvWwD672/DHlogo.png" />
+      <b>Daggerheart</b>
+    </div>
+    <div class="cet-b">[ Dagger the Spire ]</div>
+    <div class="cet-b tt">( Monster & Event Testing )</div>
+    <div class="cpp">
+      <span class="u2">.</span>
+      <span>.</span>
+      <span>.</span>
+      <span>S</span>
+      <span>O</span>
+      <span class="d2">.</span>
+      <span class="d2">.</span>
+      <span class="d3">.</span>
+      <span>L</span>
+      <span>E</span>
+      <span class="g5">T </span>
+      <span class="u2">U</span>
+      <span class="u2 g5">S </span>
+      <span>B</span>
+      <span>E</span>
+      <span class="d2">G</span>
+      <span class="d3">I</span>
+      <span class="d3">N</span>
+      <span class="d3">.</span>
+      <span>.</span>
+      <span>.</span>
+    </div>
+    <img class="f" src="https://i.postimg.cc/NMytkNQ6/slay2.webp">
+    <div class="ct-c">
+      <div class="ct-b">
+        <div class="ct fs">
+          <span class="title">Format:</span>
+          <span>Voice Chat</span>
+        </div>
+        <div class="ct fs">
+          <span class="title">Platform:</span>
+          <span>QQ+oopz</span>
+        </div>
+        <div class="ct fs">
+          <span class="title">Players:</span>
+          <span>3~4</span>
+        </div>
+      </div>
+      <div class="ct-l fs" style="display: flex">
+        <span class="title">GM:</span>
+        <img class="h" src="https://i.postimg.cc/nrjWCqZ7/touxiang.jpg">
+        <span>Snow-wolf (1622929837)</span>
+      </div>
+      <div class="ct-l fs">
+        <span class="title">Resources:</span>
+        <span>【Core Rulebook】</span>
+      </div>
+      <div class="ct-l fs">
+        <span class="title">Schedule:</span>
+        <span>Sat (4/25) 8 PM. , Sun (4/26) 2 PM.</span>
+      </div>
+      <div class="l">
+        <span class="title">Story Intro:</span>
+        A spire suddenly appeared in the depths of the jungle, and the trees near the spire continued to die and mutate.<br>
+        &nbsp;&nbsp;Fearing that this would cause irreversible damage to the jungle, Aderun summoned the warriors and asked them to uncover the secrets of the spire and solve the disaster spread by the spire.
+      </div>
+      <div class="l">
+        <span class="title">Note:</span>
+        <span style="font-size: 20px;font-weight: 500;">Many!Many!Many Battles!<br></span>
+        &nbsp;&nbsp;This is a test group that tests monster values and adaptation events, the story will be less developed.<br>
+        &nbsp;&nbsp;We'll start at Level 1.I'm a new GM and this will be theater-of-the-mind (no maps), so I don't have much experience yet—please bear with me!<br>
+        &nbsp;&nbsp;I'm looking for a chill group where we discuss things peacefully and work together.
+      </div>
+    </div>
+  </div>
+</div> -->
+<!-- https://i.postimg.cc/257FbGwz/slay1.jpg -->
+
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Almendra", serif
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      min-height: 100vh
+    }
+
+    .main-wrapper {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      padding: 20px
+    }
+
+    .img-container {
+      position: relative;
+      height: 100%
+    }
+
+    .i {
+      height: 100%;
+      display: block;
+      object-fit: contain
+    }
+
+    .a {
+      position: absolute;
+      z-index: 10
+    }
+
+    .tl {
+      top: 20px;
+      left: 20px;
+      font-size: 26px;
+      color: #2C1E14;
+      display: flex;
+      align-items: center
+    }
+
+    .z {
+      width: 34px;
+      height: 34px;
+      margin-right: 5px
+    }
+
+    .cb {
+      font-weight: 700;
+      font-style: italic;
+      top: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 30px;
+      color: #2C1E14;
+      white-space: nowrap
+    }
+
+    .tt {
+      top: 12%;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      color: #8d7c6f
+    }
+
+    .f {
+      right: 0;
+      top: 22%;
+      width: 400px;
+      height: 640px
+    }
+
+    .cc {
+      width: 75%;
+      top: 15%;
+      left: 5%;
+      color: #2C1E14
+    }
+
+    .ctb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 5px
+    }
+
+    .li {
+      font-size: 20px;
+      border-bottom: 1px solid #5d4037;
+      filter: blur(.4px);
+      margin-bottom: 10px
+    }
+
+    .w45 {
+      width: 45%
+    }
+
+    .w85 {
+      width: 85%
+    }
+
+    .title {
+      color: #794017;
+      font-weight: 700;
+      font-style: italic;
+      margin-right: 5px
+    }
+
+    .box {
+      width: 90%;
+      background: rgba(255, 237, 137, .2);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .05)
+    }
+
+    .h {
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      vertical-align: middle
+    }
+
+    .cpp {
+      right: 18px;
+      top: 20%;
+      color: red;
+      font-size: 20px;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 5px red, 0 0 15px red, 1px 1px 0 #000, 6px 6px 5px rgba(0, 0, 0, .5)
+    }
+
+    .cpp span {
+      display: inline-block
+    }
+
+    .u {
+      vertical-align: 2px
+    }
+
+    .d {
+      vertical-align: -2px
+    }
+
+    .dd {
+      vertical-align: -3px
+    }
+
+    .g {
+      margin-right: 9px
+    }
+  </style>
+</head>
+<div class="main-wrapper">
+  <div class="img-container"><img class="i" src="https://i.postimg.cc/c48QbYxF/bg.png">
+    <div class="a tl"><img class="z" src="https://i.postimg.cc/qvWwD672/DHlogo.png">
+      <b>Daggerheart</b>
+    </div>
+    <div class="a cb">[ 塔之匕心 ]</div>
+    <div class="a cb tt">( 怪物 & 事件测试 )</div>
+    <div class="a cpp">
+      <span class="u">.</span>
+      <span>.</span>
+      <span>.</span>
+      <span>那</span>
+      <span>么</span>
+      <span class="d">.</span>
+      <span class="d">.</span>
+      <span class="dd">.</span>
+      <span>让</span>
+      <span>我</span>
+      <span class="g">们</span>
+      <span class="u">开</span>
+      <span class="u g">始</span>
+      <!-- <span>B</span>
+      <span>E</span> -->
+      <span class="d">吧</span>
+      <!-- <span class="dd">I</span>
+      <span class="dd">N</span> -->
+      <span class="dd">.</span>
+      <span>.</span>
+      <span>.</span>
+    </div>
+    <img class="a f" src="https://i.postimg.cc/NMytkNQ6/slay2.webp">
+    <div class="a cc">
+      <div class="ctb">
+        <div class="li w45">
+          <span class="title">跑团方式:</span>
+          语音团
+        </div>
+        <div class="li w45">
+          <span class="title">平台:</span>
+          QQ+oopz
+        </div>
+        <div class="li w45">
+          <span class="title">人数:</span>
+          3~4人
+        </div>
+      </div>
+      <div class="li w85">
+        <span class="title">GM:</span>
+        <img class="h" src="https://i.postimg.cc/nrjWCqZ7/touxiang.jpg">
+        Snow-wolf (1622929837)
+      </div>
+      <div class="li w85">
+        <span class="title">资源:</span>
+        【核心书】
+      </div>
+      <div class="li w85">
+        <span class="title">时间:</span>
+        周五(4/24)晚上7点S0,周六(4/25)下午2点.
+      </div>
+      <div class="box">
+        <span class="title">背景故事:<br></span>
+        <span>在翡翠之森深处，一座漆黑尖塔突兀地拔地而起。它带来了诅咒，周围的树木随着瘟疫的传播开始死亡和变异。<br></span>
+        <span style="margin-left: 9px;">森林中的古树贤者艾德伦，为了遏制瘟疫的传播，燃烧了自己的生命设下了封印。并用仅剩的力量向外界召唤勇士：<br></span>
+        <span style="margin-left: 9px;font-weight: 500;font-style: italic;">揭开尖塔的秘密，阻止瘟疫的传播，拯救翡翠之森。</span>
+      </div>
+      <div class="box">
+        <span class="title">注意事项:<br></span>
+        <span style="font-size: 20px;font-weight: 500;">很多!很多!很多战斗!<br></span>
+        <span style="margin-left: 9px;">本团为怪物/事件测试团，比较多战斗，比较少故事背景描述，社交元素较少。<br></span>
+        <span style="margin-left: 9px;">1级开卡，新人GM，没什么带团经验多多包含（）。和平讨论，共存为上。<br></span>
+      </div>
+    </div>
+  </div>
+</div>
